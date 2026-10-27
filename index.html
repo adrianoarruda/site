@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Adriano Arruda · dados, design e IA</title>
+<meta name="description" content="Adriano Arruda: dados, design, desenvolvimento e IA. Trajetória, como trabalho e análises públicas em Python.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
+<style>
+  /* ---------- Tokens (valores medidos no site) ---------- */
+  :root {
+    --ink: #17191c; --slate: #777b86; --ash: #979799; --smoke: #a3a6af;
+    --mist: #f2f2f3; --card: #f7f7f8; --fog: #fafafb; --paper: #fff;
+    --peach: #fbe1d1; --sienna: #5d2a1a; --body2: #4c4c4c; --soft: rgba(23,25,28,.6);
+    --sky: #d5e3fb; --night: #161616;
+    --serif: "Newsreader", "Source Serif 4", Georgia, serif;
+    --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --shadow-float: 0 0 0 1px rgba(4,23,43,.05), 0 2px 4px rgba(0,0,0,.04), 0 12px 32px -8px rgba(0,0,0,.1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.5 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, p { margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { width: min(1200px, calc(100% - 32px)); margin-inline: auto; }
+
+  /* Títulos com serifa sempre no peso 400: é a assinatura do estilo */
+  .display { font: 400 100px/1.05 var(--serif); letter-spacing: -2.5px; font-optical-sizing: auto; }
+  .h-lg { font: 400 64px/1.3 var(--serif); letter-spacing: -.96px; }
+  .h-md { font: 400 44px/1.3 var(--serif); letter-spacing: -.66px; }
+
+  /* Botões em pílula */
+  .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding-inline: 22px; border-radius: 9999px; font: 430 18px/1 var(--sans); border: 0; cursor: pointer; white-space: nowrap; }
+  .btn.dark { background: var(--ink); color: #fff; }
+  .btn.dark:hover { background: #2b2e33; }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.soft { background: rgba(0,0,0,.04); height: 40px; font-size: 16px; padding-inline: 18px; }
+  .btn.soft:hover { background: rgba(0,0,0,.07); }
+  .on-dark .btn.soft { background: rgba(255,255,255,.08); color: #fff; }
+  /* Setinha que "sai" pela direita e volta pela esquerda no hover (arrow-slide-frames) */
+  .arr { display: inline-block; overflow: hidden; width: 1em; }
+  .arr i { display: inline-block; font-style: normal; }
+  a:hover .arr i, button:hover .arr i { animation: arrow-slide .5s ease-in-out; }
+  @keyframes arrow-slide { 0% { transform: translateX(0); } 50% { transform: translateX(100%); } 51% { transform: translateX(-100%); } 100% { transform: translateX(0); } }
+  .crumb { font-size: 16px; display: inline-flex; gap: 4px; align-items: center; }
+  .crumb::after { content: "›"; color: var(--smoke); }
+
+  /* Entrada ao rolar (fade-in-y) */
+  .reveal { opacity: 0; transform: translateY(10px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- Navegação ---------- */
+  nav.top { position: fixed; inset: 0 0 auto; z-index: 50; height: 64px; background: rgba(255,255,255,.8); backdrop-filter: blur(16px); }
+  nav.top .wrap { height: 100%; display: flex; align-items: center; gap: 24px; }
+  .logo { display: flex; align-items: center; gap: 6px; font: 500 22px/1 var(--sans); letter-spacing: -.4px; }
+  .menu { display: flex; gap: 6px; margin-inline: auto; }
+  .menu a { font: 430 16px/21px var(--sans); padding: 5px 12px; border-radius: 9999px; }
+  .menu a:hover { background: rgba(0,0,0,.04); }
+  nav.top .btn { height: 32px; font-size: 15px; padding-inline: 14px; }
+
+  /* ---------- Hero com rolagem presa (sticky) ---------- */
+  .hero { position: relative; height: 230vh; }
+  .hero-bg { position: absolute; inset: 0 0 auto; height: 1480px; overflow: hidden; z-index: 0; background: linear-gradient(var(--card), #fff); }
+  /* No original é uma foto (bg-home.jpg). Aqui: manchas de cor em CSS */
+  .hero-bg::before { content: ""; position: absolute; inset: -10% -10% 0;
+    background:
+      radial-gradient(28% 30% at 58% 26%, rgba(251,170,150,.85), transparent 70%),
+      radial-gradient(30% 34% at 70% 34%, rgba(252,198,170,.8), transparent 72%),
+      radial-gradient(26% 28% at 40% 30%, rgba(253,214,196,.7), transparent 70%),
+      radial-gradient(34% 26% at 55% 52%, rgba(253,228,190,.75), transparent 72%),
+      radial-gradient(40% 30% at 30% 60%, rgba(245,240,226,.7), transparent 75%);
+    filter: blur(30px); }
+  /* Ruído de grão por cima (o mesmo filtro feTurbulence do original, opacidade .6) */
+  .hero-bg::after { content: ""; position: absolute; inset: 0; opacity: .6; mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.91' numOctaves='2' seed='10' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .hero-bg .fade { position: absolute; inset: auto 0 0; height: 400px; background: linear-gradient(transparent, #fff); }
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 1; }
+  .copy { position: absolute; inset: 96px 0 auto; text-align: center; display: grid; justify-items: center; gap: 0; will-change: transform, opacity; }
+  .news { display: inline-flex; align-items: center; gap: 10px; height: 42px; padding-inline: 16px; border-radius: 9999px; background: rgba(0,0,0,.04); font: 430 15px/1 var(--sans); }
+  .news:hover { background: rgba(0,0,0,.07); }
+  .copy h1 { margin-top: 44px; }
+  .copy p.sub { margin-top: 24px; font: 400 21px/1.5 var(--sans); max-width: 820px; }
+  .copy .ctas { margin-top: 32px; display: flex; gap: 6px; }
+
+  /* Painel que sobe e recebe os cartões */
+  .dash { position: absolute; left: 50%; top: 0; width: 960px; height: 640px; margin-left: -480px; border-radius: 24px; background: #fff; box-shadow: var(--shadow-float), 0 30px 60px -20px rgba(60,40,30,.18); overflow: hidden; will-change: transform; display: grid; grid-template-columns: 190px 1fr; }
+  .side { background: var(--fog); border-right: 1px solid var(--mist); padding: 14px 12px; font-size: 13px; display: grid; align-content: start; gap: 2px; }
+  .side .dots3 { display: flex; gap: 6px; margin-bottom: 14px; }
+  .side .dots3 i { width: 10px; height: 10px; border-radius: 50%; background: #e3e3e6; }
+  .side .ws { display: flex; align-items: center; gap: 6px; font-weight: 500; margin-bottom: 10px; }
+  .side .ws b { width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(135deg,#c86dd7,#5b7cfa); }
+  .side a { padding: 5px 8px; border-radius: 6px; color: #3c3f45; display: flex; gap: 8px; align-items: center; }
+  .side a.on { background: #ececef; }
+  .side a::before { content: ""; width: 12px; height: 12px; border-radius: 3px; border: 1.3px solid #9a9da5; }
+  .side h6 { margin: 12px 8px 4px; font: 500 11px var(--sans); color: var(--ash); }
+  .main { padding: 18px 22px; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto 1fr; gap: 12px; align-content: start; }
+  .main .greet { grid-column: 1 / -1; display: flex; justify-content: space-between; font-size: 13px; color: var(--slate); }
+  .main h4 { grid-column: 1 / 3; margin: 6px 0 0; font: 500 20px/1.3 var(--sans); }
+  .slot { position: relative; min-height: 10px; }
+
+  /* Cartões (flutuam no hero e encaixam no painel) */
+  .tile { background: #fff; border-radius: 12px; box-shadow: var(--shadow-float); padding: 14px 16px; font-size: 13px; }
+  .tile h5 { margin: 0 0 8px; font: 500 14px var(--sans); }
+  .tile.blue { background: #eef4fe; } .tile.blue h5 { color: #2a4f9a; }
+  .tile.pink { background: #fdf0ec; } .tile.pink h5 { color: #8d3b25; }
+  .tile.gray { background: #fafafb; }
+  .rows { display: grid; gap: 0; }
+  .rows div { display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid rgba(42,79,154,.08); color: #6a7fa8; }
+  .rows div b { font-weight: 500; color: #2a4f9a; font-variant-numeric: tabular-nums; }
+  .ring { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .big { font: 500 24px/1 var(--sans); color: #8d3b25; }
+  .up { font-size: 11.5px; color: #8d3b25; opacity: .8; }
+  .composer { background: #fff; border-radius: 20px; box-shadow: var(--shadow-float); padding: 14px 16px 12px; width: 400px; display: grid; gap: 12px; }
+  .composer .ph { color: var(--smoke); font: 430 15px/1.5 var(--sans); min-height: 22px; }
+  .composer .ph.typed { color: var(--ink); }
+  .composer .bar { display: flex; justify-content: space-between; align-items: center; color: var(--slate); font-size: 13px; }
+  .composer .send { width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 13px; }
+  .cursor { position: absolute; z-index: 5; display: flex; align-items: flex-start; pointer-events: none; }
+  .cursor svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
+  .cursor .who { margin: 16px 0 0 -4px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 500 13px var(--sans); border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  .floaty { position: absolute; will-change: transform, opacity; }
+  .bob { animation: bob 6s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+
+  /* ---------- Logos (carrossel infinito: carousel-scroll) ---------- */
+  .trusted { padding: 40px 0 100px; text-align: center; }
+  .trusted p { font-size: 15px; margin-bottom: 26px; }
+  .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
+  .track { display: flex; gap: 72px; width: max-content; animation: marquee 40s linear infinite; }
+  .track span { font: 700 26px/1 var(--sans); letter-spacing: -.5px; color: #1d1f22; white-space: nowrap; }
+  .track span:nth-child(3n) { font: italic 800 28px/1 var(--sans); letter-spacing: -1px; }
+  .track span:nth-child(4n) { font: 400 22px/1 var(--sans); letter-spacing: 3px; text-transform: uppercase; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* ---------- Três cartões ---------- */
+  .kind { padding: 60px 0 120px; text-align: center; }
+  .kind h2 { margin-bottom: 56px; }
+  .trio { display: flex; justify-content: center; align-items: flex-end; gap: 16px; }
+  .trio .c { width: 346px; height: 432px; border-radius: 24px; background: var(--card); color: var(--body2); padding: 22px 24px; text-align: left; display: flex; flex-direction: column; transition: width .5s cubic-bezier(.3,.7,.3,1), height .5s cubic-bezier(.3,.7,.3,1), background-color .4s, color .4s; cursor: default; }
+  .trio .c h3 { font: 450 26px/1.18 var(--sans); letter-spacing: -.24px; }
+  .trio .c .art { flex: 1; display: grid; place-items: center; }
+  .trio .c .art svg { width: 150px; height: 150px; stroke: currentColor; transition: transform .5s; }
+  .trio .c p { font: 400 17px/1.25 var(--sans); opacity: 0; max-height: 0; transition: opacity .4s, max-height .5s; }
+  .trio .c.on { width: 422px; height: 528px; background: var(--peach); color: var(--sienna); }
+  .trio .c.on p { opacity: 1; max-height: 120px; }
+  .trio .c.on .art svg { transform: scale(1.15); }
+
+  /* ---------- Engage everyone (abas com barra de progresso: progressFill) ---------- */
+  .band { background: var(--fog); padding: 80px 0 120px; position: relative; overflow: hidden; }
+  .band::before { content: ""; position: absolute; left: 50%; top: 460px; width: 1100px; height: 700px; transform: translateX(-30%); background: radial-gradient(closest-side, rgba(200,230,190,.35), rgba(250,230,200,.25) 50%, transparent); filter: blur(30px); }
+  .band .head { display: grid; gap: 18px; justify-items: start; margin-bottom: 64px; position: relative; }
+  .band .head p { font-size: 20px; line-height: 1.4; max-width: 520px; color: var(--soft); }
+  .tabs-wrap { position: relative; display: grid; grid-template-columns: 274px 1fr; gap: 48px; align-items: start; }
+  .tabs { display: grid; }
+  .tabs button { all: unset; cursor: pointer; padding: 14px 0; border-bottom: 1px solid #e6e6e9; display: grid; gap: 4px; }
+  .tabs button b { font: 400 17px/23px var(--sans); color: var(--slate); transition: color .3s; }
+  .tabs button span { font-size: 16px; line-height: 22px; color: var(--soft); max-height: 0; overflow: hidden; transition: max-height .5s; }
+  .tabs button i { display: block; height: 2px; width: 0; background: var(--ink); margin-top: 8px; }
+  .tabs button[aria-selected="true"] b { color: var(--ink); }
+  .tabs button[aria-selected="true"] span { max-height: 100px; }
+  .tabs button[aria-selected="true"] i { animation: fill 6s linear forwards; }
+  @keyframes fill { from { width: 0; } to { width: 100%; } }
+  .window { background: #fff; border-radius: 16px; box-shadow: var(--shadow-float), 0 40px 80px -30px rgba(0,0,0,.18); height: 571px; display: grid; grid-template-columns: 170px 1fr; overflow: hidden; }
+  .window .side { font-size: 12px; }
+  .pane { display: grid; place-items: center; padding: 24px; position: relative; }
+  .pane > div { position: absolute; inset: 24px; display: grid; place-content: center; justify-items: center; gap: 18px; opacity: 0; transform: translateY(8px); transition: opacity .5s, transform .5s; }
+  .pane > div.on { opacity: 1; transform: none; }
+  .pane h4 { font: 500 22px var(--sans); margin: 0; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 520px; }
+  .chips span { font-size: 12.5px; color: var(--slate); background: var(--card); border-radius: 10px; padding: 8px 12px; max-width: 160px; }
+  .mini-chart { width: 520px; max-width: 100%; height: 220px; border-radius: 12px; box-shadow: 0 0 0 1px var(--mist); padding: 14px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 150px); gap: 10px; }
+  .kpis div { border-radius: 12px; background: var(--card); padding: 12px; font-size: 12px; color: var(--slate); }
+  .kpis b { display: block; font: 500 24px/1.2 var(--sans); color: var(--ink); margin-top: 6px; }
+
+  /* ---------- História de cliente ---------- */
+  .story { background: var(--sky); padding: 110px 0; }
+  .story .wrap { display: grid; grid-template-columns: 1fr 480px; gap: 48px; align-items: center; }
+  .story blockquote { margin: 26px 0 14px; }
+  .story .by { font-size: 18px; color: var(--soft); }
+  .story .ctas { display: flex; gap: 6px; margin-top: 60px; }
+  .story .logos { display: flex; margin-top: 28px; border-top: 1px solid rgba(23,25,28,.08); max-width: 620px; }
+  .story .logos span { flex: 1; text-align: center; padding: 18px 0 0; font: 700 20px var(--sans); color: rgba(23,25,28,.35); border-top: 2px solid transparent; margin-top: -1px; }
+  .story .logos span.on { color: var(--ink); border-color: var(--ink); font-size: 28px; letter-spacing: -1px; }
+  .photo { aspect-ratio: 1; border-radius: 24px; filter: grayscale(1); background: linear-gradient(160deg,#b9c1c6,#6e777c 60%,#9aa3a8); position: relative; overflow: hidden; }
+  .photo::after { content: "foto do cliente"; position: absolute; inset: auto 0 18px; text-align: center; font-size: 13px; color: rgba(255,255,255,.7); }
+
+  /* ---------- Seção escura ---------- */
+  .night { background: var(--night); color: #fff; padding: 110px 0 100px; }
+  .night .head { display: grid; gap: 18px; justify-items: start; margin-bottom: 70px; }
+  .night .head h2 { color: rgba(255,255,255,.8); }
+  .night .head p { font-size: 20px; color: rgba(255,255,255,.6); max-width: 520px; }
+  .night .crumb::after { color: rgba(255,255,255,.4); }
+  .night .tabs button { border-color: rgba(255,255,255,.1); }
+  .night .tabs button b { color: rgba(255,255,255,.5); }
+  .night .tabs button[aria-selected="true"] b { color: #fff; }
+  .night .tabs button span { color: rgba(255,255,255,.6); }
+  .night .tabs button i { background: #fff; }
+  .diagram { position: relative; height: 470px; border-radius: 20px; overflow: hidden; background: linear-gradient(180deg,#1e1e22 0%,#26222c 60%,#4a3156 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+  .diagram::after { content: ""; position: absolute; inset: auto -10% -40% -10%; height: 70%; background: radial-gradient(closest-side, rgba(170,90,200,.45), transparent); filter: blur(20px); }
+  .diagram svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+  .src { position: absolute; left: 4%; display: grid; gap: 14px; top: 90px; z-index: 2; }
+  .src span, .outs span { display: flex; gap: 8px; align-items: center; font-size: 12px; color: rgba(255,255,255,.8); background: rgba(255,255,255,.06); border-radius: 9999px; padding: 6px 12px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+  .src span i { width: 10px; height: 10px; border-radius: 50%; }
+  .core { position: absolute; left: 34%; top: 80px; width: 32%; height: 270px; border-radius: 14px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); padding: 14px; z-index: 2; display: grid; gap: 10px; align-content: start; font-size: 12px; color: rgba(255,255,255,.7); }
+  .core b { color: #fff; font-weight: 500; font-size: 14px; }
+  .core .model { height: 60px; border-radius: 8px; background: rgba(255,255,255,.07); display: grid; place-items: center; margin-top: 10px; }
+  .core .three { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .core .three span { height: 60px; border-radius: 8px; background: rgba(255,255,255,.07); display: grid; place-items: center; }
+  .outs { position: absolute; right: 4%; top: 60px; width: 21%; border-radius: 14px; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); padding: 12px; display: grid; gap: 8px; z-index: 2; }
+  .outs span { background: none; box-shadow: none; padding: 4px 6px; }
+  .pulse-dot { fill: #d9b6ff; filter: drop-shadow(0 0 4px #c48cff); }
+  .four { display: grid; grid-template-columns: repeat(4,1fr); gap: 32px; margin-top: 80px; }
+  .four b { display: block; font-weight: 500; font-size: 15px; margin-bottom: 4px; }
+  .four span { font-size: 14px; color: rgba(255,255,255,.55); }
+
+  /* ---------- Unlock deep analysis ---------- */
+  .deep { padding: 110px 0 60px; position: relative; overflow: hidden; }
+  .deep .head { display: grid; gap: 18px; justify-items: start; margin-bottom: 70px; }
+  .deep .head p { font-size: 20px; color: var(--soft); max-width: 470px; line-height: 1.4; }
+  .deep::before { content: ""; position: absolute; left: 50%; top: 500px; width: 1200px; height: 900px; transform: translateX(-50%); background: radial-gradient(closest-side, rgba(214,196,250,.4), rgba(196,214,250,.25) 50%, transparent); }
+  .chatwin { position: relative; width: 800px; max-width: 100%; margin: 0 auto; background: #fff; border-radius: 20px; box-shadow: var(--shadow-float), 0 40px 80px -30px rgba(80,60,140,.2); padding: 0 0 18px; }
+  .chatwin .tb { display: flex; align-items: center; gap: 14px; padding: 12px 16px; font-size: 13px; font-weight: 500; }
+  .chatwin .tb i { width: 10px; height: 10px; border-radius: 50%; background: #e3e3e6; }
+  .chatwin .tb .nc { margin-left: auto; font-weight: 400; }
+  .chatwin .q { margin: 10px 24px 0 auto; width: fit-content; background: var(--card); border-radius: 9999px; padding: 8px 14px; font-size: 13px; color: #3c3f45; }
+  .chatwin .ans { padding: 18px 28px 0; font-size: 13px; color: #3c3f45; display: grid; gap: 10px; }
+  .chatwin .ans .rs { color: var(--slate); }
+  .chatwin .chart { margin: 4px 0; border-radius: 12px; box-shadow: 0 0 0 1px var(--mist); padding: 14px 16px; }
+  .chatwin .chart h5 { margin: 0; font: 500 15px var(--sans); }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--slate); margin: 6px 0; }
+  .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .chatwin .ask { margin: 10px 18px 0; border-radius: 16px; background: var(--card); padding: 10px 14px; display: grid; gap: 8px; font-size: 13px; }
+  .chatwin .ask .send { justify-self: end; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 12px; }
+  .draw { stroke-dasharray: 1200; stroke-dashoffset: 1200; transition: stroke-dashoffset 2.2s ease; }
+  .in .draw { stroke-dashoffset: 0; }
+  .person { position: absolute; z-index: 3; display: grid; gap: 8px; justify-items: start; }
+  .person .tag { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 9999px; padding: 6px 14px 6px 6px; box-shadow: 0 0 0 1px rgba(0,0,0,.05), 0 4px 12px rgba(0,0,0,.08); font-size: 16px; }
+  .person .tag b { font-weight: 500; } .person .tag em { font-style: normal; color: rgba(23,25,28,.45); }
+  .person .tag i { width: 30px; height: 30px; border-radius: 50%; }
+  .person .bubble { background: #fff; border-radius: 20px; padding: 14px 18px; font-size: 16px; line-height: 1.3; box-shadow: 0 0 0 1px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.1); max-width: 340px; }
+  .feats3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; margin-top: 110px; position: relative; }
+  .feats3 .shot { aspect-ratio: 1; border-radius: 16px; background: var(--card); margin-bottom: 18px; display: grid; place-items: center; overflow: hidden; }
+  .feats3 b { display: block; font: 500 20px/27px var(--sans); }
+  .feats3 p { font: 400 18px/25px var(--sans); color: var(--soft); }
+
+  /* ---------- CTA final ---------- */
+  .cta { padding: 160px 0; }
+  .cta .wrap { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; }
+  .cta p { font-size: 20px; color: var(--soft); max-width: 420px; margin: 18px 0 34px; line-height: 1.4; }
+  .door { justify-self: center; width: 360px; }
+  .door .gap rect { transition: transform 1.6s cubic-bezier(.3,.7,.3,1); }
+  .twinkle { animation: twinkle 2.4s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
+
+  /* ---------- Rodapé ---------- */
+  footer { background: var(--card); padding: 70px 0 40px; }
+  footer .cols { display: grid; grid-template-columns: 1.3fr repeat(4, 1fr); gap: 24px; }
+  footer h6 { margin: 0 0 14px; font: 500 15px var(--sans); }
+  footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  footer li a { color: var(--slate); font-size: 16px; }
+  footer li a:hover { color: var(--ink); }
+  footer .bottom { margin-top: 60px; padding-top: 24px; border-top: 1px solid #e6e6e9; display: grid; grid-template-columns: 1.3fr repeat(4,1fr); gap: 24px; color: var(--slate); font-size: 15px; }
+  .credit { text-align: center; color: var(--ash); font-size: 12px; padding: 18px 16px 30px; background: var(--card); }
+
+  /* ---------- Celular ---------- */
+  @media (max-width: 900px) {
+    .menu, nav.top .ghost { display: none; }
+    .display { font-size: 52px; letter-spacing: -1.2px; }
+    .h-lg { font-size: 40px; line-height: 1.15; letter-spacing: -.5px; }
+    .h-md { font-size: 30px; }
+    .copy p.sub { font-size: 17px; padding-inline: 16px; }
+    .hero { height: auto; } .stage { position: relative; height: auto; padding-bottom: 40px; }
+    .copy { position: relative; inset: auto; padding-top: 96px; }
+    .floaty, .cursor, .dash { display: none; }
+    .trio { flex-direction: column; align-items: stretch; }
+    .trio .c, .trio .c.on { width: auto; height: 380px; }
+    .tabs-wrap, .story .wrap, .cta .wrap { grid-template-columns: 1fr; }
+    .window { height: 420px; grid-template-columns: 1fr; } .window .side { display: none; }
+    .diagram { height: 520px; } .core { left: 8%; width: 84%; top: 230px; height: 230px; } .outs { display: none; } .src { top: 24px; grid-template-columns: 1fr 1fr; right: 4%; }
+    .four, .feats3 { grid-template-columns: 1fr 1fr; }
+    .person { display: none; }
+    footer .cols, footer .bottom { grid-template-columns: 1fr 1fr; }
+    .door { width: 260px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } }
+</style>
+
+<style>
+  /* ================= v3: identidade inspirada no dayos.com ================= */
+  :root {
+    --ink: #000; --slate: #8a8a8a; --ash: #979797; --smoke: #b5b5b5;
+    --mist: #e5e5e5; --card: #f3f3f3; --fog: #f3f3f3; --paper: #fff;
+    --peach: #39ff14; --sienna: #000; --body2: #000; --soft: #5c5c5c;
+    --yellow: #39ff14; --green: #39ff14; --mint: #d1ffca; --line-d: rgba(255,255,255,.14);
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, Consolas, monospace;
+    --cond: "Archivo", "Arial Narrow", sans-serif;
+    --serif: var(--cond);
+    --shadow-float: 0 0 0 .8px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05), 0 16px 40px -12px rgba(0,0,0,.25);
+  }
+  body { font-family: var(--sans); letter-spacing: -.01em; }
+  /* Títulos: condensada, grossa, caixa alta e linhas bem justas */
+  .display, .h-lg, .h-md, .brand, .kpi .n, .aa b, .trio .c h3, .pane .tl h4, .tabs button b {
+    font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; }
+  .display { font-size: 108px; line-height: .84; letter-spacing: -.04em; }
+  .display .dim { color: #b5b5b5; }
+  .h-lg { font-size: 84px; line-height: .88; letter-spacing: -.035em; }
+  .h-md { font-size: 60px; line-height: .9; letter-spacing: -.03em; }
+  .brand { font-size: 26px; letter-spacing: -.02em; }
+  /* Rótulos em mono, caixa alta */
+  .crumb, .tile h5, .trio .c .yrs, .pane .tl .when, .chips span, .src span, .outs span, .tools span, .chipsrow span, .rs, .tb, .legend, .news, footer h6, .bottom, .trusted p, .greet, .side h6 {
+    font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+  .crumb { font-size: 12px; color: var(--slate); } .crumb::after { content: ""; }
+  .crumb::before { content: "— "; }
+  .tile h5 { font-size: 11px; font-weight: 400; color: var(--slate); }
+
+  /* Botões: pílula amarela (principal) e bloco preto com canto de 12px (secundário) */
+  .btn { font-family: var(--sans); font-weight: 500; font-size: 16px; letter-spacing: -.01em; }
+  .btn.dark { background: #000; color: #fff; border-radius: 12px; }
+  .btn.dark:hover { background: #222; }
+  .btn.yellow, nav.top .btn.dark { background: var(--yellow); color: #000; border-radius: 9999px; }
+  .btn.yellow:hover, nav.top .btn.dark:hover { background: #2ee010; }
+  .btn.soft { background: #f3f3f3; border-radius: 12px; }
+  .on-dark .btn.soft { background: #1a1a1a; }
+
+  /* Navegação: menu em pílula no centro, cor muda conforme o fundo */
+  nav.top { background: rgba(255,255,255,.88); backdrop-filter: blur(16px); height: 72px; transition: background-color .3s; }
+  nav.top.on-black { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  nav.top .menu { background: #f3f3f3; border-radius: 48px; padding: 6px; gap: 2px; }
+  nav.top .menu a { font: 500 14px/18px var(--sans); color: #444; padding: 9px 16px; }
+  nav.top .menu a:hover { background: #fff; }
+  nav.top.on-black .brand { color: #fff; }
+  nav.top.on-black .menu { background: #1a1a1a; }
+  nav.top.on-black .menu a { color: #979797; } nav.top.on-black .menu a:hover { background: #262626; color: #fff; }
+  nav.top .btn.dark { height: 40px; border-radius: 12px; font-size: 14px; padding-inline: 18px; }
+
+  /* Hero preto */
+  .hero { background: #000; }
+  .hero-bg { background: #000; }
+  .hero-bg::before { display: none; }
+  .hero-bg::after { opacity: .12; mix-blend-mode: screen; }
+  .hero-bg .fade { display: none; }
+  .copy h1 { color: #fff; margin-top: 40px; }
+  .copy p.sub { color: #cdcdcd; font-weight: 500; font-size: 19px; line-height: 1.45; letter-spacing: -.02em; }
+  .news { background: rgba(255,255,255,.08); color: #b5b5b5; font-size: 12px; height: 36px; box-shadow: inset 0 0 0 .8px var(--line-d); }
+  .news:hover { background: rgba(255,255,255,.14); color: #fff; }
+  .copy .btn.ghost { color: #cdcdcd; }
+  .dash { box-shadow: 0 0 0 .8px rgba(255,255,255,.14), 0 40px 80px -20px rgba(0,0,0,.6); border-radius: 24px; }
+  .side { background: #fafafa; border-right-color: #ececec; }
+  .side .ws b { background: var(--yellow); }
+  .side a.on { background: #ececec; }
+  .tile { border-radius: 16px; }
+  .tile.gray { background: #f3f3f3; }
+  .kpi .n { font-size: 60px; line-height: .9; letter-spacing: -.03em; }
+  /* Cartões das áreas */
+  [data-card="region"] .tile { background: #0b0b0b; color: #fff; box-shadow: 0 0 0 .8px var(--line-d), 0 20px 40px -10px rgba(0,0,0,.6); }
+  [data-card="region"] .tile h5 { color: var(--yellow); }
+  .code { font-family: var(--mono); color: #cdcdcd; }
+  .code .k { color: var(--yellow); } .code .s { color: var(--green); } .code .t { color: #fff; } .code .c { color: #8a8a8a; }
+  .feats3 .code { color: #444; } .feats3 .code .k { color: #000; font-weight: 500; } .feats3 .code .s { color: #0a8a44; } .feats3 .code .t { color: #000; }
+  .tile.pink { background: var(--yellow); }
+  .tile.pink h5 { color: #000; }
+  .aa b { color: #000; font-size: 56px; line-height: .8; }
+  .aa span { color: #000; font-family: var(--mono); font-size: 18px; opacity: .6; }
+  .swatches i { border-radius: 6px; box-shadow: inset 0 0 0 .8px rgba(0,0,0,.25); }
+  [data-card="activation"] .tile { background: #fff; }
+  .composer { border-radius: 16px; }
+  .composer .send, .chatwin .ask .send { background: var(--yellow); color: #000; }
+
+  /* Seções que sobem por cima da anterior com cantos de 64px */
+  .trusted, .band, .night, .deep { position: relative; z-index: 2; border-radius: 64px 64px 0 0; margin-top: -64px; }
+  .trusted { background: #fff; padding-top: 72px; }
+  .trusted p { font-size: 12px; color: var(--slate); }
+  .track span { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; color: #b5b5b5; font-size: 34px; letter-spacing: -.02em; font-style: normal; }
+  .track span:nth-child(3n), .track span:nth-child(4n) { font: inherit; font-family: var(--cond); font-stretch: 68%; font-weight: 700; font-size: 34px; letter-spacing: -.02em; text-transform: uppercase; color: #b5b5b5; }
+
+  /* Quatro áreas: cartão ativo vira amarelo */
+  .trio .c { background: #f3f3f3; color: #000; border-radius: 24px; }
+  .trio .c h3 { font-size: 34px; line-height: .9; letter-spacing: -.03em; }
+  .trio .c.on h3 { font-size: 40px; }
+  .trio .c .yrs { font-size: 11px; opacity: .55; margin-top: 8px; }
+  .trio .c p { font-weight: 500; letter-spacing: -.02em; }
+  .trio .c.on { background: var(--yellow); color: #000; }
+  .trio .c .tools span, .trio .c.on .tools span { background: rgba(0,0,0,.08); font-size: 11px; }
+
+  /* Trajetória */
+  .band { background: #f3f3f3; }
+  .band::before { display: none; }
+  .band .head p, .deep .head p { color: #5c5c5c; font-weight: 500; letter-spacing: -.02em; }
+  .tabs button { border-bottom-color: #dcdcdc; }
+  .tabs button b { font-size: 34px; line-height: .9; letter-spacing: -.03em; color: #b5b5b5; }
+  .tabs button[aria-selected="true"] b { color: #000; }
+  .tabs button span { font-weight: 500; margin-top: 6px; }
+  .window { border-radius: 24px; box-shadow: 0 0 0 .8px rgba(0,0,0,.06), 0 30px 60px -30px rgba(0,0,0,.25); }
+  .pane .tl h4 { font-size: 64px; line-height: .88; letter-spacing: -.035em; }
+  .pane .tl ul { font-weight: 500; }
+  .pane .tl .chipsrow span { background: #f3f3f3; font-size: 11px; }
+
+  /* Citação em bloco amarelo */
+  .story { background: var(--yellow); padding-bottom: 174px; }
+  .story .by { color: rgba(0,0,0,.7); font-weight: 500; }
+  .story .crumb { color: rgba(0,0,0,.55); }
+  .story .logos { border-top-color: rgba(0,0,0,.15); }
+  .story .logos span { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: rgba(0,0,0,.45); font-weight: 400; }
+  .story .logos span.on { font-size: 12px; letter-spacing: .04em; color: #000; border-color: #000; }
+  .photo { border-radius: 32px; }
+
+  /* Seção preta: item ativo em verde neon */
+  .night { background: #000; }
+  .night .head h2 { color: #fff; }
+  .night .head p { color: #cdcdcd; font-weight: 500; }
+  .night .tabs button { border-color: #1f1f1f; }
+  .night .tabs button b { color: #8a8a8a; font-size: 40px; }
+  .night .tabs button[aria-selected="true"] b { color: var(--green); }
+  .night .tabs button i { background: var(--green); }
+  .diagram { background: #0b0b0b; border-radius: 16px; box-shadow: inset 0 0 0 .8px var(--line-d); }
+  .diagram::after { background: radial-gradient(closest-side, rgba(57,255,20,.14), transparent); }
+  .pulse-dot { fill: var(--green); filter: drop-shadow(0 0 4px var(--green)); }
+  .src span, .outs span { font-size: 11px; }
+  .core, .outs { background: #050505; box-shadow: inset 0 0 0 .8px rgba(255,255,255,.28); border-radius: 12px; }
+  .core .model { background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 .8px var(--line-d); color: var(--yellow); font-family: var(--mono); text-transform: uppercase; font-size: 11px; letter-spacing: .04em; }
+  .core .three span { background: transparent; box-shadow: inset 0 0 0 .8px rgba(255,255,255,.28); border-radius: 99px; height: 34px; font-family: var(--mono); font-size: 10px; text-transform: uppercase; }
+  .four b { font-family: var(--cond); font-stretch: 68%; text-transform: uppercase; font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+  .four span { color: #979797; }
+  .four { grid-template-columns: repeat(2, minmax(0, 360px)); gap: 48px; }
+
+  /* Análises */
+  .deep { background: #fff; }
+  .deep::before { display: none; }
+  .chatwin { border-radius: 24px; box-shadow: 0 0 0 .8px rgba(0,0,0,.1), 0 40px 80px -30px rgba(0,0,0,.25); }
+  .chatwin .chart { border-radius: 16px; }
+  .person .bubble { border-radius: 16px; font-weight: 500; letter-spacing: -.02em; }
+  .feats3 .shot { background: #f3f3f3; border-radius: 24px; }
+  .feats3 b { font-family: var(--cond); font-stretch: 68%; text-transform: uppercase; font-size: 30px; line-height: .95; font-weight: 700; letter-spacing: -.02em; margin-bottom: 6px; }
+
+  /* Contato e rodapé */
+  .cta { background: #fff; }
+  .cta p { color: #5c5c5c; font-weight: 500; }
+  .ctas-contact .btn.dark { background: var(--yellow); color: #000; border-radius: 9999px; }
+  footer { background: #000; color: #fff; }
+  footer .brand, footer .cols > span { color: #fff; }
+  footer h6 { color: #fff; font-size: 12px; font-weight: 400; }
+  footer li a { color: #979797; font-weight: 500; }
+  footer li a:hover { color: var(--yellow); }
+  footer .bottom { border-top-color: #1f1f1f; color: #979797; font-size: 12px; }
+  .credit { background: #000; color: #555; font-family: var(--mono); text-transform: uppercase; font-size: 11px; letter-spacing: .04em; }
+
+  @media (max-width: 900px) {
+    .display { font-size: 60px; } .h-lg { font-size: 52px; } .h-md { font-size: 40px; }
+    .tabs button b, .night .tabs button b { font-size: 28px; }
+    .pane .tl h4 { font-size: 44px; }
+    nav.top .menu { display: none; }
+    .trusted, .band, .night, .deep { border-radius: 32px 32px 0 0; margin-top: -32px; }
+  }
+
+  /* As regras da v2 ficam num <style> dentro do body; aqui ganham prioridade */
+  html body .code { color: #cdcdcd; }
+  html body .code .k { color: var(--yellow); } html body .code .s { color: #b5b5b5; } html body .code .t { color: #fff; } html body .code .c { color: #8a8a8a; }
+  html body .feats3 .code { color: #444; } html body .feats3 .code .k { color: #000; } html body .feats3 .code .s { color: #0a8a44; } html body .feats3 .code .t { color: #000; }
+  html body .aa b { color: #000; font-family: var(--cond); font-stretch: 68%; } html body .aa span { color: #000; }
+  /* Logos oficiais, todos em cinza (monocromático como no dayos.com) */
+  .track { align-items: center; gap: 88px; }
+  .track img { width: auto; display: block; flex-shrink: 0; filter: grayscale(1) brightness(0); opacity: .38; transition: opacity .3s; }
+  .track img:hover { opacity: .8; }
+
+  /* Trajetória mais completa (dados do currículo) */
+  html body .window { height: 580px; }
+  html body .pane > div { inset: 28px 36px; place-content: start; justify-items: start; overflow: auto; }
+  html body .pane .tl { width: 100%; max-width: 620px; gap: 14px; }
+  html body .pane .tl h4 { font-family: var(--cond); font-stretch: 68%; font-weight: 700; font-size: 64px; line-height: .88; letter-spacing: -.035em; text-transform: uppercase; }
+  html body .pane .tl .when { font-size: 11px; color: var(--slate); }
+  .roles { display: grid; gap: 0; border-top: .8px solid #e5e5e5; }
+  .roles span { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: .8px solid #e5e5e5; font-size: 15px; }
+  .roles b { font-weight: 600; letter-spacing: -.01em; }
+  .roles em { font-style: normal; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--slate); white-space: nowrap; align-self: center; }
+  html body .pane .tl ul { margin: 2px 0 0; padding-left: 18px; color: #222; gap: 7px; font-size: 15px; line-height: 1.4; }
+  html body .pane .tl ul li::marker { color: #000; }
+  html body .tabs button b { font-size: 30px; }
+  @media (max-width: 900px) { html body .window { height: 620px; } html body .pane > div { inset: 18px; } html body .pane .tl h4 { font-size: 44px; } }
+
+  /* Textura do topo: a mesma do original (grão grande e orgânico), só que mais suave */
+  html body .hero-bg::after { opacity: .07; mix-blend-mode: screen; }
+
+  /* Trajetória: um bloco por cargo, com o que foi feito em cada um */
+  .role { display: grid; gap: 8px; padding: 12px 0 14px; border-top: .8px solid #e5e5e5; }
+  .role .rh { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
+  .role .rh b { font-weight: 600; font-size: 16px; letter-spacing: -.01em; }
+  .role .rh em { font-style: normal; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--slate); white-space: nowrap; }
+  .role .lead-in { font-size: 15px; line-height: 1.45; color: #333; margin: 0; }
+  html body .pane .tl .role ul { margin: 0; }
+  html body .pane .tl { gap: 10px; padding-bottom: 8px; }
+  html body .window { height: 770px; }
+  html body .pane > div { scrollbar-width: thin; }
+
+  /* Fundo do topo: malha de linhas onduladas (desenhada em canvas, original) */
+  .stage .malha { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+    -webkit-mask-image: linear-gradient(225deg, #000 0%, rgba(0,0,0,.15) 36%, transparent 48%, rgba(0,0,0,.15) 60%, #000 100%); mask-image: linear-gradient(225deg, #000 0%, rgba(0,0,0,.15) 36%, transparent 48%, rgba(0,0,0,.15) 60%, #000 100%); }
+  html body .hero-bg::after { opacity: 0; }
+</style>
+</head>
+<body>
+<style>
+  /* ---------- Ajustes da versão pessoal ---------- */
+  .copy .who-line { margin-top: 26px; display: inline-flex; align-items: center; gap: 10px; font: 430 16px var(--sans); color: var(--soft); }
+  .copy .who-line i { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#f3c9b5,#c98a6f); display: grid; place-items: center; font: 500 11px var(--sans); color: #fff; font-style: normal; }
+  .code { font: 400 12.5px/1.6 "JetBrains Mono", ui-monospace, Consolas, monospace; color: #3c3f45; white-space: pre; }
+  .code .k { color: #8a3ffc; } .code .s { color: #2f7a4b; } .code .t { color: #2a4f9a; } .code .c { color: var(--ash); }
+  .swatches { display: flex; gap: 6px; margin: 4px 0 10px; }
+  .swatches i { width: 26px; height: 26px; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .aa { display: flex; align-items: baseline; gap: 12px; }
+  .aa b { font: 400 44px/1 var(--serif); color: #8d3b25; }
+  .aa span { font: 500 22px/1 var(--sans); color: #8d3b25; opacity: .7; }
+  .pipe { display: grid; gap: 7px; font-size: 12.5px; }
+  .pipe div { display: flex; align-items: center; gap: 8px; }
+  .pipe div i { width: 8px; height: 8px; border-radius: 50%; background: #2f7a4b; box-shadow: 0 0 0 3px rgba(47,122,75,.15); }
+  .pipe div em { margin-left: auto; font-style: normal; color: var(--slate); font-variant-numeric: tabular-nums; }
+  .kpi { display: grid; align-content: space-between; }
+  .kpi .n { font: 400 46px/1 var(--serif); letter-spacing: -1px; }
+  .kpi small { color: var(--slate); font-size: 12px; }
+  .areas-chart text { font: 400 10px var(--sans); fill: var(--slate); }
+  .trio.four-up .c { width: 280px; height: 420px; }
+  .trio.four-up .c.on { width: 360px; height: 500px; }
+  .trio .c .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; opacity: 0; max-height: 0; transition: opacity .4s, max-height .5s; }
+  .trio .c.on .tools { opacity: 1; max-height: 90px; }
+  .trio .c .tools span { font-size: 12.5px; border-radius: 9999px; padding: 3px 10px; background: rgba(93,42,26,.08); }
+  .trio .c .yrs { font: 400 15px var(--sans); opacity: .6; margin-top: 4px; }
+  .pane .tl { width: 560px; max-width: 100%; display: grid; gap: 12px; text-align: left; }
+  .pane .tl h4 { font: 400 34px/1.15 var(--serif); letter-spacing: -.5px; }
+  .pane .tl .when { color: var(--slate); font-size: 14px; }
+  .pane .tl ul { margin: 6px 0 0; padding-left: 18px; color: #3c3f45; display: grid; gap: 6px; font-size: 15px; }
+  .pane .tl .chipsrow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .pane .tl .chipsrow span { font-size: 12.5px; background: var(--card); border-radius: 9999px; padding: 4px 10px; color: #3c3f45; }
+  .photo.me::after { content: "sua foto aqui"; }
+  .ctas-contact { display: flex; gap: 6px; flex-wrap: wrap; }
+  @media (max-width: 900px) { .trio.four-up .c, .trio.four-up .c.on { width: auto; height: 400px; } }
+</style>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="brand">Adriano Arruda</span></a>
+    <div class="menu"><a href="#areas">Áreas</a><a href="#trajetoria">Trajetória</a><a href="#como">Como trabalho</a><a href="#analises">Análises</a></div>
+    <a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</nav>
+
+<!-- HERO: as quatro áreas flutuam soltas e, ao rolar, se juntam num painel só -->
+<section class="hero" id="hero">
+  <div class="hero-bg"><div class="fade"></div></div>
+  <div class="stage" id="stage">
+    <canvas class="malha" aria-hidden="true"></canvas>
+    <div class="copy" id="copy">
+      <a class="news" href="#analises"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13 6 8l3 3 5-7" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>Nova análise: juro real no Brasil, em Python <span class="arr"><i>→</i></span></a>
+      <h1 class="display">Design, código<br><span class="dim">e dados num lugar só</span></h1>
+      <p class="sub">Trabalho com dados. Antes, passei por design e desenvolvimento, e hoje uso IA no dia a dia. Junto tudo isso para construir análises bonitas, confiáveis e que as pessoas realmente usam.</p>
+      <div class="ctas"><a class="btn dark yellow" href="#trajetoria">Ver trajetória <span class="arr"><i>→</i></span></a><a class="btn ghost" href="#analises">Ver análises <span class="arr"><i>→</i></span></a></div>
+    </div>
+
+    <div class="dash" id="dash">
+      <div class="side">
+        <div class="dots3"><i></i><i></i><i></i></div>
+        <div class="ws"><b></b>Adriano ⌄</div>
+        <a class="on">Visão geral</a><a>Design</a><a>Desenvolvimento</a><a>Dados</a><a>IA</a>
+        <h6>Trajetória</h6><a>Catho</a><a>Jüssi</a><a>MATH</a><a>Bradesco</a>
+        <h6>Análises</h6><a>Juro real</a>
+      </div>
+      <div class="main">
+        <div class="greet"><span>‹ › Visão geral</span><span>São Paulo · 2026</span></div>
+        <h4>Painel de carreira</h4>
+        <div></div>
+        <div class="slot" data-slot="composer" style="grid-column:1/3;height:76px"></div>
+        <div style="font-size:12px;color:var(--slate);line-height:1.9">Perguntas recentes<br>◌ Por que dados + design?<br>◌ Qual a stack de hoje?<br>◌ Projetos com IA</div>
+        <div class="slot" data-slot="region" style="height:190px"></div>
+        <div class="tile" style="height:190px"><h5>Áreas ao longo do tempo</h5>
+          <svg class="areas-chart" viewBox="0 0 220 120" width="100%" height="140" aria-hidden="true">
+            <g><rect x="6" y="22" width="200" height="16" rx="4" fill="#39ff14"/><text x="10" y="33" style="fill:#000">Design · 2006</text></g>
+            <g><rect x="40" y="46" width="166" height="16" rx="4" fill="#e5e5e5"/><text x="44" y="57" style="fill:#444">Desenvolvimento · 2009</text></g>
+            <g><rect x="120" y="70" width="86" height="16" rx="4" fill="#d1ffca"/><text x="124" y="81" style="fill:#0a5a2e">Dados · 2018</text></g>
+            <g><rect x="176" y="94" width="30" height="16" rx="4" fill="#17191c"/><text x="160" y="105" style="fill:#17191c">IA</text></g>
+          </svg></div>
+        <div class="slot" data-slot="regs" style="height:190px"></div>
+        <div class="slot" data-slot="activation" style="height:160px"></div>
+        <div class="tile gray kpi" style="height:160px"><h5>Anos de mercado</h5><div class="n">21</div><small>desde 2005, 13 deles na Catho</small></div>
+        <div class="tile gray kpi" style="height:160px"><h5>Áreas</h5><div class="n">4</div><small>design · desenvolvimento · dados · IA</small></div>
+      </div>
+    </div>
+
+    <!-- As quatro áreas, soltas -->
+    <div class="floaty" data-card="region" style="left:28px;top:150px;width:330px"><div class="tile blue bob" style="animation-delay:-1s">
+      <h5>Desenvolvimento</h5>
+<div class="code"><span class="c"># back-end</span>
+<span class="k">@app.get</span>(<span class="s">"/juro-real"</span>)
+<span class="k">def</span> <span class="t">juro_real</span>(): <span class="k">return</span> serie()
+<span class="c">// front-end</span>
+&lt;<span class="t">Grafico</span> dados={<span class="s">juroReal</span>} /&gt;</div></div></div>
+    <div class="floaty" data-card="regs" style="right:-60px;top:360px;width:290px"><div class="tile pink bob" style="animation-delay:-3s">
+      <h5>Design</h5><div class="swatches"><i style="background:#000"></i><i style="background:#fff"></i><i style="background:#39ff14;box-shadow:inset 0 0 0 2px #000"></i><i style="background:#e5e5e5"></i><i style="background:#8a8a8a"></i></div>
+      <div class="aa"><b>Aa</b><span>Aa</span></div></div></div>
+    <div class="floaty" data-card="activation" style="left:110px;top:640px;width:294px"><div class="tile gray bob" style="animation-delay:-2s">
+      <h5>Dados</h5><svg viewBox="0 0 260 70" width="100%" height="70" aria-hidden="true"><path d="M2 60 L40 52 L80 56 L120 34 L160 38 L200 18 L258 8" fill="none" stroke="#17191c" stroke-width="1.6"/><circle cx="258" cy="8" r="3" fill="#17191c"/><path d="M80 0V70M160 0V70" stroke="#ececef"/></svg>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="big" style="color:var(--ink);font-size:20px">9,5%</span><span class="up" style="color:var(--slate)">juro real · 12m</span></div></div></div>
+    <div class="floaty" data-card="composer" style="left:calc(50% + 60px);top:740px"><div class="composer bob" style="animation-delay:-4s">
+      <div class="ph" id="typing">Pergunte sobre a minha carreira...</div>
+      <div class="bar"><span>IA ✦</span><span class="send">↑</span></div></div></div>
+
+    <div class="cursor" id="curL" style="left:60px;top:600px"><svg width="22" height="24" viewBox="0 0 22 24"><path d="M2 2 20 10 11 12 8 21Z" fill="#17191c" stroke="#fff" stroke-width="1.5"/></svg><span class="who" style="background:#39ff14;color:#000">UX</span></div>
+    <div class="cursor" id="curR" style="left:calc(50% + 183px);top:784px"><svg width="22" height="24" viewBox="0 0 22 24"><path d="M2 2 20 10 11 12 8 21Z" fill="#17191c" stroke="#fff" stroke-width="1.5"/></svg><span class="who" style="background:#39ff14;color:#000">IA</span></div>
+  </div>
+</section>
+
+<section class="trusted">
+  <p>Empresas e marcas com quem já trabalhei</p>
+  <div class="marquee"><div class="track">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjMiIGhlaWdodD0iMjMuMSIgdmlld0JveD0iMCAwIDEyMyAyMy4xIj4NCiAgPHRpdGxlPmxvZ29zQXRpdm8gMjM8L3RpdGxlPg0KICA8cGF0aCBkPSJNMzQuNiw5LjhhNi4yLDYuMiwwLDAsMC0yLjYuNlY0LjFhMTEuOCwxMS44LDAsMCwwLTIuOSwxLjZBMS42LDEuNiwwLDAsMCwyOC41LDdWMjIuNGExMy45LDEzLjksMCwwLDAsNC42LjdjNC42LDAsNy4yLTIuOCw3LjItNi44UzM4LjUsOS44LDM0LjYsOS44Wk0zMy4zLDIwLjNhMy4yLDMuMiwwLDAsMS0xLjMtLjJ2LTdhNS40LDUuNCwwLDAsMSwyLS40YzEuOCwwLDIuNywxLjIsMi43LDMuNVMzNS42LDIwLjMsMzMuMywyMC4zWk0xMS42LDE2LjRsLTEuNC44Yy0uMi4xLS4yLjItLjIuNHY1LjFjMCwuMi4xLjMuMi4zaDEuNFYxNi40Wk00OS4yLDkuOWE0LjIsNC4yLDAsMCwwLTMuNSwxLjgsMTIuNCwxMi40LDAsMCwwLS40LTEuNmwtMS40LS4yLTEuNC4yVjIyLjhhNC40LDQuNCwwLDAsMCwxLjcuMmwxLjgtLjJWMTYuNmMwLTIuNSwxLjMtMy44LDMtMy44aDEuMmE4LjgsOC44LDAsMCwwLDAtMi44Wm0tMzUsNS0xLjgsMWgtLjF2Ni45aDJhLjQuNCwwLDAsMCwuNC0uNFYxNS4yQS4zLjMsMCwwLDAsMTQuMiwxNC45Wm0tMi44LTEwQTIyLjUsMjIuNSwwLDAsMCw3LDUuM2E4LjIsOC4yLDAsMCwxLDYuNi0zLjJBOSw5LDAsMCwxLDE5LDMuOWMuMi4yLjQuMy42LjFhLjQuNCwwLDAsMCwwLS42QTkuMyw5LjMsMCwwLDAsMTIuMiwwLDkuNSw5LjUsMCwwLDAsMy41LDYuMUwuMyw3LjRxLS40LjMtLjMuNmEuNC40LDAsMCwwLC42LjIsMTguMywxOC4zLDAsMCwxLDIuNS0uNkE2LjEsNi4xLDAsMCwwLDMsOWE5LjMsOS4zLDAsMCwwLDQuMyw4Yy4yLjEuNS4xLjYtLjFzLjEtLjQtLjEtLjZhNy45LDcuOSwwLDAsMS0yLjYtNiw2LjQsNi40LDAsMCwxLC43LTMuMUw4LjcsN2M2LjgsMCwxMi42LDIuMywxMi42LDUuMnMtMS45LDMtNC4yLDRjLS41LjItLjUuNC0uNS42cy4zLjMuNi4yYzQtMS4yLDYuOS0zLjQsNi45LTUuOVMxOC41LDQuOSwxMS40LDQuOVpNNzEuMyw3djNsLTEuOC0uMmMtMy45LDAtNi41LDIuNi02LjUsNi44czIuNSw2LjUsNi41LDYuNWExNS4xLDE1LjEsMCwwLDAsNS4zLS44VjQuMWExMS44LDExLjgsMCwwLDAtMi45LDEuNkExLjQsMS40LDAsMCwwLDcxLjMsN1ptMCwxMy4xYTQuMSw0LjEsMCwwLDEtMS41LjJjLTIuMywwLTMuMi0xLjUtMy4yLTMuN3MuOS00LDMuMi00bDEuNS4yWm0zNS44LjJjLTEuNywwLTIuOS0xLjQtMi45LTMuOHMxLTMuOCwyLjktMy44YTUuOSw1LjksMCwwLDEsMi4zLjQsNiw2LDAsMCwxLDEuMi0yLjQsNy41LDcuNSwwLDAsMC0zLjktLjljLTMuOSwwLTYuMSwyLjctNi4xLDYuN3MyLjMsNi42LDYuMiw2LjZhOCw4LDAsMCwwLDMuOS0uOCw5LjcsOS43LDAsMCwxLTEuNC0yLjVBNC43LDQuNywwLDAsMSwxMDcuMSwyMC4zWk01NS43LDkuOGExNS4zLDE1LjMsMCwwLDAtMy44LjQsNi42LDYuNiwwLDAsMCwwLDIuOCwxMC42LDEwLjYsMCwwLDEsMy4yLS40YzEuOCwwLDIuNy43LDIuNywyLjJWMTVsLTEuNy0uMmMtMi45LDAtNS41LDEuMS01LjUsNHMyLjMsNC4zLDUuNyw0LjNhMTkuOSwxOS45LDAsMCwwLDQuOC0uN1YxNS4xQzYxLjEsMTEuNiw1OS4yLDkuOSw1NS43LDkuOFptMi4xLDEwLjVINTYuM2MtMS42LDAtMi41LS41LTIuNS0xLjZzLjktMS42LDIuNS0xLjZoMS41Wk0xMTYuOSw5LjhjLTMuOSwwLTYuMSwyLjctNi4xLDYuN3MyLjMsNi42LDYuMSw2LjYsNi4xLTIuNiw2LjEtNi42UzEyMC44LDkuOCwxMTYuOSw5LjhabTAsMTAuNWMtMiwwLTIuNS0xLjYtMi41LTMuOHMuNS0zLjksMi41LTMuOSwyLjYsMS42LDIuNiwzLjlTMTE4LjgsMjAuMywxMTYuOSwyMC4zWk04Mi44LDkuOGMtMy43LDAtNiwyLjUtNiw2LjdzMi40LDYuNiw2LjYsNi42YTkuOSw5LjksMCwwLDAsNC0uNyw2LjIsNi4yLDAsMCwwLDAtMi43LDExLjgsMTEuOCwwLDAsMS0zLjYuNmMtMiwwLTMuMy0uOC0zLjYtMi44aDcuOWE5LjksOS45LDAsMCwwLC4yLTEuOEM4OC4zLDExLjksODYuMSw5LjgsODIuOCw5LjhabS0yLjYsNS4xYTIuNSwyLjUsMCwwLDEsMi42LTIuNGMxLjYsMCwyLjIsMSwyLjIsMi40Wm0xNi4xLjQtMS41LS42Yy0uOC0uNC0xLjItLjYtMS4yLTEuMnMuNy0xLDEuNi0xYTExLDExLDAsMCwxLDMuMy42LDUuNyw1LjcsMCwwLDAsMC0yLjYsOC4zLDguMywwLDAsMC0zLjgtLjdDOTIsOS44LDkwLDExLjIsOTAsMTMuNHMuOCwzLDMuMiw0bDEuMS40YzEsLjQsMS4zLjcsMS4zLDEuNHMtMSwxLjEtMS44LDEuMWE5LjksOS45LDAsMCwxLTMuOC0uNyw0LjIsNC4yLDAsMCwwLDAsMi43LDkuNCw5LjQsMCwwLDAsNC4zLjhjMi43LDAsNC45LTEuNCw0LjktMy45Uzk4LjMsMTYuMSw5Ni4zLDE1LjNaIiBmaWxsPSIjRTUxNzNGIi8+DQo8L3N2Zz4NCg==" alt="Bradesco" style="height:30px"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4KCjxzdmcKICAgdmVyc2lvbj0iMS4xIgogICBpZD0iU2FudGFuZGVyIgogICB4PSIwcHgiCiAgIHk9IjBweCIKICAgdmlld0JveD0iMCAwIDIzOC4yIDQxLjUiCiAgIHhtbDpzcGFjZT0icHJlc2VydmUiCiAgIHNvZGlwb2RpOmRvY25hbWU9IkJhbmNvX1NhbnRhbmRlcl9Mb2dvdGlwby5zdmciCiAgIHdpZHRoPSIyMzguMiIKICAgaGVpZ2h0PSI0MS41IgogICBpbmtzY2FwZTp2ZXJzaW9uPSIxLjEgKGM2OGUyMmMzODcsIDIwMjEtMDUtMjMpIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6Y2M9Imh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL25zIyIKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj48ZGVmcwogICBpZD0iZGVmczEzIiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcKICAgaWQ9Im5hbWVkdmlldzExIgogICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IgogICBib3JkZXJvcGFjaXR5PSIxLjAiCiAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiCiAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgIGlua3NjYXBlOnBhZ2VjaGVja2VyYm9hcmQ9IjAiCiAgIHNob3dncmlkPSJmYWxzZSIKICAgZml0LW1hcmdpbi10b3A9IjAiCiAgIGZpdC1tYXJnaW4tbGVmdD0iMCIKICAgZml0LW1hcmdpbi1yaWdodD0iMCIKICAgZml0LW1hcmdpbi1ib3R0b209IjAiCiAgIGlua3NjYXBlOnpvb209IjIuMzU3NTg4NCIKICAgaW5rc2NhcGU6Y3g9IjEwNS44Mjg0OCIKICAgaW5rc2NhcGU6Y3k9IjQ2LjQ0NTc2NyIKICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSIxOTIwIgogICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSIxMDE3IgogICBpbmtzY2FwZTp3aW5kb3cteD0iMTkxMiIKICAgaW5rc2NhcGU6d2luZG93LXk9Ii04IgogICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIgogICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJTYW50YW5kZXIiIC8+CjxzdHlsZQogICB0eXBlPSJ0ZXh0L2NzcyIKICAgaWQ9InN0eWxlMiI+Cgkuc3Qwe2ZpbGw6I0VBMUQyNTt9Cjwvc3R5bGU+Cjx0aXRsZQogICBpZD0idGl0bGU0Ij5TYW50YW5kZXI8L3RpdGxlPiAgICAKPGcKICAgaWQ9Imc4IgogICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC0wLjQpIj4KCTxwYXRoCiAgCiAgIGQ9Ik0gMzEuNSwxOS41IEMgMzEuNCwxOCAzMSwxNi41IDMwLjIsMTUuMiBMIDIzLjQsMy4zIEMgMjIuOSwyLjQgMjIuNSwxLjQgMjIuMywwLjQgTCAyMiwwLjkgYyAtMS43LDIuOSAtMS43LDYuNiAwLDkuNSBsIDUuNSw5LjUgYyAxLjcsMi45IDEuNyw2LjYgMCw5LjUgbCAtMC4zLDAuNSBjIC0wLjIsLTEgLTAuNiwtMiAtMS4xLC0yLjkgbCAtNSwtOC43IC0zLjIsLTUuNiBDIDE3LjQsMTEuOCAxNywxMC44IDE2LjgsOS44IGwgLTAuMywwLjUgYyAtMS43LDIuOSAtMS43LDYuNSAwLDkuNSB2IDAgbCA1LjUsOS41IGMgMS43LDIuOSAxLjcsNi42IDAsOS41IGwgLTAuMywwLjUgYyAtMC4yLC0xIC0wLjYsLTIgLTEuMSwtMi45IEwgMTMuNywyNC41IEMgMTIuOCwyMi45IDEyLjQsMjEuMSAxMi40LDE5LjMgNS4xLDIxLjIgMCwyNS4zIDAsMzAgMCwzNi42IDkuOCw0MS45IDIxLjksNDEuOSAzNCw0MS45IDQzLjgsMzYuNiA0My44LDMwIDQzLjksMjUuNSAzOC45LDIxLjQgMzEuNSwxOS41IFogbSAyMC43LDIwLjMgYyAwLjEsLTEuNyAwLjMsLTIuOCAwLjgsLTQuMiAyLjMsMS4xIDUuMywxLjYgNy41LDEuNiAzLjgsMCA2LC0xLjIgNiwtMy43IDAsLTIuNCAtMS42LC0zLjUgLTUuNCwtNS4yIEwgNTksMjcuNSBjIC0zLjksLTEuNyAtNi41LC0zLjkgLTYuNSwtOC4yIDAsLTQuNyAzLjMsLTcuNyA5LjksLTcuNyAyLjcsMCA1LjIsMC40IDcuNSwxLjIgLTAuMSwxLjYgLTAuNCwyLjkgLTAuOCw0LjEgLTIuMiwtMC44IC00LjksLTEuMiAtNi44LC0xLjIgLTMuNiwwIC01LjIsMS40IC01LjIsMy42IDAsMi4xIDEuNiwzLjQgNC41LDQuNiBsIDIuMiwwLjkgYyA1LjIsMi4yIDcuNCw0LjYgNy40LDguNiAwLDQuNyAtMy42LDggLTEwLjYsOCAtMy4zLDAgLTYuMSwtMC41IC04LjQsLTEuNiB6IE0gOTMuMywyMC4xIHYgMjAuNiBoIC00LjIgbCAtMC4yLC0yLjUgYyAtMS4yLDEuOCAtMi45LDMgLTUuOCwzIC01LjQsMCAtOS4xLC00IC05LjEsLTEwLjkgMCwtNy4yIDMuOSwtMTEuNCAxMS41LC0xMS40IDMsMC4xIDUuNSwwLjQgNy44LDEuMiB6IE0gODguOCwzNiBWIDIzLjEgYyAtMC45LC0wLjIgLTIsLTAuMiAtMy4zLC0wLjIgLTQuNywwIC02LjksMi45IC02LjksNy41IDAsNC4yIDEuNyw3LjIgNS43LDcuMiAxLjksLTAuMSAzLjMsLTAuNyA0LjUsLTEuNiB6IG0gMjcuNywtOS4xIFYgNDAuNyBIIDExMiB2IC0xMyBjIDAsLTMuMyAtMS4xLC00LjggLTUuNiwtNC44IC0xLjEsMCAtMi4zLDAuMSAtMy42LDAuMyBWIDQwLjcgSCA5OC4zIFYgMjAuMSBjIDIuOSwtMC43IDYuMSwtMS4yIDguMiwtMS4yIDcuNiwwLjEgMTAsMyAxMCw4IHogbSAxMi42LDEwLjUgYyAxLjMsMCAyLjYsLTAuMiAzLjUsLTAuNiAtMC4xLDEuMiAtMC4zLDIuNiAtMC41LDMuOCAtMS4yLDAuNSAtMi42LDAuNyAtMy44LDAuNyAtNC40LDAgLTcuMiwtMiAtNy4yLC03IFYgMTIuNiBjIDEuNCwtMC41IDMuMSwtMC43IDQuNSwtMC43IHYgNy44IGggNy4yIGMgLTAuMSwxLjQgLTAuMiwyLjcgLTAuNCwzLjkgaCAtNi44IHYgMTAuMSBjIDAsMi42IDEuMywzLjcgMy41LDMuNyB6IG0gMjQuMywtMTcuMyB2IDIwLjYgaCAtNC4yIEwgMTQ5LDM4LjIgYyAtMS4yLDEuOCAtMi45LDMgLTUuOCwzIC01LjQsMCAtOS4xLC00IC05LjEsLTEwLjkgMCwtNy4yIDMuOSwtMTEuNCAxMS41LC0xMS40IDMsMC4xIDUuNCwwLjQgNy44LDEuMiB6IE0gMTQ4LjgsMzYgViAyMy4xIGMgLTAuOSwtMC4yIC0yLC0wLjIgLTMuMywtMC4yIC00LjcsMCAtNi45LDIuOSAtNi45LDcuNSAwLDQuMiAxLjcsNy4yIDUuNyw3LjIgMS45LC0wLjEgMy40LC0wLjcgNC41LC0xLjYgeiBtIDI3LjgsLTkuMSBWIDQwLjcgSCAxNzIgdiAtMTMgYyAwLC0zLjMgLTEuMSwtNC44IC01LjYsLTQuOCAtMS4xLDAgLTIuMywwLjEgLTMuNiwwLjMgdiAxNy41IGggLTQuNSBWIDIwLjEgYyAyLjksLTAuNyA2LjEsLTEuMiA4LjIsLTEuMiA3LjYsMC4xIDEwLjEsMyAxMC4xLDggeiBtIDIyLjksLTE1IHYgMjguOCBoIC00LjIgbCAtMC4yLC0yLjYgYyAtMS4yLDEuOSAtMi45LDMuMSAtNS45LDMuMSAtNS40LDAgLTkuMSwtNCAtOS4xLC0xMC45IDAsLTcuMiAzLjksLTExLjQgMTEuNSwtMTEuNCAxLjIsMCAyLjMsMC4xIDMuNCwwLjMgdiAtNi44IGMgMS40LC0wLjQgMywtMC41IDQuNSwtMC41IHogTSAxOTUsMzYgViAyMy4zIGMgLTEuMiwtMC4yIC0yLjQsLTAuNCAtMy42LC0wLjQgLTQuNSwwIC02LjYsMi44IC02LjYsNy41IDAsNC4yIDEuNyw3LjIgNS43LDcuMiAxLjgsLTAuMSAzLjMsLTAuNyA0LjUsLTEuNiB6IG0gMjcuMywtNC4xIGggLTE0LjUgYyAwLjYsMy43IDIuNyw1LjQgNi44LDUuNCAyLjUsMCA1LC0wLjUgNy4yLC0xLjYgLTAuMiwxLjIgLTAuNCwyLjggLTAuNyw0LjEgLTIuMSwwLjkgLTQuMiwxLjMgLTYuNywxLjMgLTcuNiwwIC0xMS4yLC00LjIgLTExLjIsLTExLjIgMCwtNi4xIDIuOCwtMTEgMTAsLTExIDYuNSwwIDkuMyw0LjIgOS4zLDkuNCAwLDEuNCAwLDIuNCAtMC4yLDMuNiB6IE0gMjA3LjgsMjguMSBIIDIxOCBjIDAsLTMuNCAtMS44LC01LjQgLTQuOSwtNS40IC0zLjMsMC4xIC01LDEuOSAtNS4zLDUuNCB6IG0gMzAuNCwtOC45IGMgMCwxLjQgLTAuMiwzIC0wLjQsMy45IC0xLjEsLTAuMSAtMi4xLC0wLjIgLTMuNCwtMC4yIC0xLjEsMCAtMi4yLDAuMSAtMy4zLDAuMiB2IDE3LjYgaCAtNC41IFYgMjAuMSBjIDEuOSwtMC43IDUuMiwtMS4yIDcuNywtMS4yIDEuMywwLjEgMi45LDAuMSAzLjksMC4zIHoiCiAgIGlkPSJwYXRoNiIgLz4KPC9nPgo8bWV0YWRhdGEKICAgaWQ9Im1ldGFkYXRhODMwIj48cmRmOlJERj48Y2M6V29yawogICAgICAgcmRmOmFib3V0PSIiPjxkYzp0aXRsZT5TYW50YW5kZXI8L2RjOnRpdGxlPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48L3N2Zz4K" alt="Santander" style="height:30px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTIwIiBoZWlnaHQ9IjgzIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTMyLjMgMjAuNiAwIDUxLjhsMzIuMyAzMS4xaDM0LjNMMzQuMyA1MS44bDMyLjMtMzEuMUgzMi4zdi0uMXptNDU1LjUgMGgtMzQuNGwzMi4zIDMxLjEtMzIuMyAzMS4xaDM0LjRsMzIuMy0zMS4xLTMyLjMtMzEuMXoiIGZpbGw9IiNGRjE0NzgiLz48cGF0aCBkPSJNMTMzLjEgNTkuOWMtMyA1LjEtOC42IDguNC0xNSA4LjQtOS40IDAtMTcuMi03LjQtMTcuMi0xNi43IDAtOS4zIDcuNy0xNi42IDE3LjItMTYuNiA2LjQgMCAxMiAzLjQgMTUgOC40bDE1LjQtNi41Yy01LjktOS44LTE3LjItMTYuNC0zMC4zLTE2LjQtMTkgMC0zNC40IDEzLjktMzQuNCAzMS4xIDAgMTcuMiAxNS40IDMxLjEgMzQuNCAzMS4xIDEzLjEgMCAyNC42LTYuNiAzMC4zLTE2LjRsLTE1LjQtNi40ek0zMjguOSAyMC44Yy02LjYgMC0xMi42IDIuNS0xNy4xIDYuM1YwaC0xNy4zdjgzaDE3LjNWNDkuN2MwLTYuOSA1LjctMTIuNCAxMi45LTEyLjQgNy4xIDAgMTIuOSA1LjUgMTIuOSAxMi40VjgzaDE3LjJWNDUuN2MtLjEtMTMuOC0xMS42LTI0LjktMjUuOS0yNC45ek00MDEuOSAyMC42Yy0xOSAwLTM0LjQgMTMuOS0zNC40IDMxLjEgMCAxNy4yIDE1LjQgMzEuMSAzNC40IDMxLjFzMzQuNC0xMy45IDM0LjQtMzEuMWMwLTE3LjItMTUuNC0zMS4xLTM0LjQtMzEuMXptMCA0Ny43Yy05LjQgMC0xNy4yLTcuNC0xNy4yLTE2LjVzNy43LTE2LjUgMTcuMi0xNi41YzkuNCAwIDE3LjEgNy40IDE3LjEgMTYuNXMtNy41IDE2LjUtMTcuMSAxNi41ek0yMDguNCAyMC42djYuMWMtNS40LTMuOS0xMi02LjEtMTkuMi02LjEtMTcuOSAwLTMyLjMgMTMuOS0zMi4zIDMxLjEgMCAxNy4yIDE0LjQgMzEuMSAzMi4zIDMxLjEgNy4xIDAgMTMuOS0yLjMgMTkuMi02LjF2Ni4xaDE3LjNWMjAuNmgtMTcuM3ptLTE3LjIgNDcuN2MtOS40IDAtMTcuMi03LjQtMTcuMi0xNi41czcuNy0xNi41IDE3LjItMTYuNWM5LjQgMCAxNy4yIDcuNCAxNy4yIDE2LjUuMSA5LTcuNiAxNi41LTE3LjIgMTYuNXpNMjc3LjEgNjYuMWMtMS45IDEuNC00IDIuMi02LjQgMi4yLTUuOSAwLTEwLjctNC43LTEwLjctMTAuM1YzNy4yaDE3LjFWMjIuN0gyNjBWOC4zaC0xNy4xVjU4YzAgMTMuOCAxMS42IDI0LjkgMjUuOSAyNC45IDQuNyAwIDkuMS0xLjUgMTIuOS00LjFsLTQuNi0xMi43eiIgZmlsbD0iIzAwMjNBMCIvPjwvZz48L3N2Zz4=" alt="Catho" style="height:26px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDM2IiBoZWlnaHQ9IjU3IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik05NC4wMzUgMjcuMTVjNC41OS0yLjQyMiA3Ljk0Mi02LjU3IDcuOTQyLTEyLjA3OEMxMDEuOTc3IDUuNDkgOTQuNTc3IDAgODEuNjg2IDBINTcuMzA5djU2LjUwNGgyNi4zMTRjMTIuNjQzIDAgMjAuNTAyLTYuMTE5IDIwLjUwMi0xNS45NTQuMDEtNi42NDQtNC4zODgtMTEuMDU1LTEwLjA5LTEzLjR6bS0xMi4xMzgtMi4xNEg2Ni43NFY0LjY5MmgxNC4yODZjOC4wNDMgMCAxMS40NjggMy4xMDcgMTEuNDY4IDEwLjM4IDAgNy4wMi0zLjE2OCA5LjkzOC0xMC41OTYgOS45Mzh6bS0xNS4xNSAyNi44MDJ2LTIyLjExSDgxLjc2YzQuNzQ3IDAgMTIuNzE3IDEuNDI2IDEyLjcxNyAxMC45OCAwIDcuODA4LTMuNDUzIDExLjEzLTExLjU1IDExLjEzaC0xNi4xOHptLTY2LjczLTE5LjVjMC0xMy40NjggMTAuMjczLTI0LjQgMjIuOTUzLTI0LjQgMTIuNjUyIDAgMjIuOTUzIDEwLjkzMiAyMi45NTMgMjQuNCAwIDEzLjQ2Ni0xMC4zMSAyNC4zOTktMjIuOTUzIDI0LjM5OUMxMC4zMjcgNTYuNzEuMDE2IDQ1Ljc3OC4wMTYgMzIuMzF6bTguODk2IDBjMCAxMi4zMyA1LjI1MiAxOS43MDYgMTQuMDU3IDE5LjcwNlY1MmM4Ljc2OCAwIDE0LjAwMi03LjM1OCAxNC4wMDItMTkuNjg5UzMxLjc3NSAxMi42MDQgMjIuOTcgMTIuNjA0IDguOTEzIDE5Ljk4IDguOTEzIDMyLjMxem0xMDMuMTcyIDBjMC0xMy40NjggMTAuMjc0LTI0LjQgMjIuOTU0LTI0LjQgMTIuNjUyIDAgMjIuOTU0IDEwLjkzMiAyMi45NTQgMjQuNCAwIDEzLjQ2Ni0xMC4zMTEgMjQuMzk5LTIyLjk1NCAyNC4zOTlzLTIyLjk1NC0xMC45MzMtMjIuOTU0LTI0LjR6bTguODk3IDBjMCAxMi4zMyA1LjI1MiAxOS43MDYgMTQuMDU3IDE5LjcwNlY1MmM4Ljc2OCAwIDE0LjAwMi03LjM1OCAxNC4wMDItMTkuNjg5cy01LjE5Ny0xOS43MDctMTQuMDAyLTE5LjcwNy0xNC4wNTcgNy4zNzYtMTQuMDU3IDE5LjcwN3ptNTUuNzY5LTE5LjE0NWgtMTYuODAyVjguNTNoNDIuMTM0djQuNjM2aC0xNi44NzZ2NDIuODU5aC04LjQ1NnYtNDIuODZ6bTQyLjM3Mi00LjYzNmgtOC41MTF2NDcuNDk1aDguNTExVjguNTN6bTMyLjM3NSA0My4zNjVjMy43NzMgMCAxMC41MzEtMS4xOTIgMTMuNDE0LTkuMTZsLjgxOC0yLjMwOCA0LjEyMSAyLjA1NS0uNjcxIDEuODc3Yy0yLjg1NSA3Ljc5LTkuNDI4IDEyLjI2Ni0xOC4wNCAxMi4yNjYtMTIuOTM4IDAtMjIuNjk2LTEwLjQ1NS0yMi42OTYtMjQuMzA2IDAtMTMuNjczIDkuOTY5LTI0LjQgMjIuNjk2LTI0LjQgOC41NjUgMCAxNS4wOTMgNC41MTQgMTcuOTIyIDEyLjM5N2wuNjYgMS44NzctNC4xMjIgMi4xMDItLjgxOC0yLjMyN2MtMi4wODQtNS44ODQtNi45MjItOS4yNjMtMTMuMjg0LTkuMjYzLTguODQzIDAtMTQuMTIzIDcuMzEtMTQuMTIzIDE5LjU4NiAwIDEyLjI3NSA1LjI4IDE5LjYwNCAxNC4xMjMgMTkuNjA0em0xMDcuNjk4LTQuNDY2LTIuNDctNy4yMDhhMTIuMjEgMTIuMjEgMCAwIDAtNS4yNzktNi4zMTVjNC40MjUtMS45OCA4LjI2My01LjY5NyA4LjI2My0xMS42NDYgMC04LjU4Ny02Ljg1OS0xMy43MTEtMTguMzYyLTEzLjcxMWgtMTcuMjk5djQ3LjQ5NWg4LjUyMVYzNS44M2g3LjQyOGM1LjQ0NCAwIDcuMTk4IDIuMTc4IDguNzA1IDYuNDg1bDIuMzk1IDYuODVhMjMuMzQ5IDIzLjM0OSAwIDAgMCAyLjY4IDUuOTEzbC42NDQuOTM4aDExLjQ0OWwtNC4wNDktMy44MWExMS41NzMgMTEuNTczIDAgMCAxLTIuNjI2LTQuNzc2ek0zMzIuNTcgMTMuMTU4aDguMjA3YzcuMTUzIDAgMTAuMjEyIDIuNzMgMTAuMjEyIDkuMTMgMCA2LjE0Ny0zLjEzMSA4Ljg4OC0xMC4xNDYgOC44ODhoLTguMjY0bC0uMDA5LTE4LjAxOHptMzkuNTYzLTQuNjI3aDguNTExdjQ3LjQ5NWgtOC41MTFWOC41M3ptNDAuODIxLS42MmMtMTIuNjcxIDAtMjIuOTU1IDEwLjkzMy0yMi45NTUgMjQuNCAwIDEzLjQ2NyAxMC4zMjEgMjQuNCAyMi45NTUgMjQuNCAxMi42MzQgMCAyMi45NTItMTAuOTMzIDIyLjk1Mi0yNC40IDAtMTMuNDY3LTEwLjMtMjQuNC0yMi45NTItMjQuNHptMCA0LjYzNmM4Ljc2OCAwIDE0IDcuMzc3IDE0IDE5LjcwOHMtNS4yMzIgMTkuNzA3LTE0IDE5LjcwN2MtOC43NjkgMC0xNC4wOTQtNy4zNDgtMTQuMDk0LTE5LjY4OSAwLTEyLjM0IDUuMjk4LTE5LjcyNiAxNC4wOTQtMTkuNzI2ek0yOTUuNjIyLjk4Nmg0Ljk5NmwtMy44NjUgOS4yMDYgMjAuMzQ2IDQ1Ljg2MmgtOS4wNTRsLTcuMTcxLTE2LjEzMmgtMTYuNzgzbC02Ljk1MSAxNi4xMDRoLTQuOTg1TDI5NS42MjIuOTg2em0tMy4zNiAxOS41NjYtNi4yMjQgMTQuNjc4aDEyLjc0M2wtNi41MTktMTQuNjc4eiIvPjwvc3ZnPg==" alt="O Boticário" style="height:24px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMTIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTIuODk3MSAwLjEzMTAwOEw3LjMyODE2IDIuNDE2NzFDNy4xODIwOCAyLjQ3MzU1IDcuMDU2OTYgMi41NzM4MiA2Ljk2OTY2IDIuNzA0MDFDNi44ODIzNyAyLjgzNDIgNi44MzcxIDIuOTg4MDIgNi44Mzk5NyAzLjE0NDc0VjkuMzgyNDNMMTEuMjQ2MyA3LjYxMzE0QzExLjkzMzcgNy4zNTA2OSAxMi41MjM0IDYuODgyNzMgMTIuOTM1MiA2LjI3Mjk5QzEzLjM0NyA1LjY2MzI2IDEzLjU2MDggNC45NDE0IDEzLjU0NzUgNC4yMDU3NlYwLjU3NDA0QzEzLjU1MzkgMC40OTQzNjMgMTMuNTM5MSAwLjQxNDQxNyAxMy41MDQ2IDAuMzQyMzE5QzEzLjQ3MDEgMC4yNzAyMjEgMTMuNDE3MSAwLjIwODU0IDEzLjM1MSAwLjE2MzU0MkMxMy4yODQ5IDAuMTE4NTQ1IDEzLjIwODIgMC4wOTE4MzM5IDEzLjEyODQgMC4wODYxMTk5QzEzLjA0ODcgMC4wODA0MDU5IDEyLjk2ODkgMC4wOTU4OTExIDEyLjg5NzEgMC4xMzEwMDhaIiBmaWxsPSIjNzhERTFGIi8+CjxwYXRoIGQ9Ik0wLjA3NDQ2MTUgMTIuNjYxNlYxNi4wMjFDMC4wNzQ0NjE1IDIwLjU5OTUgMy4zOTE1NCAyMy45MTUyIDcuOTc1NjMgMjMuOTE1MkgxMi45NDA3QzEzLjAyMTggMjMuOTE3OSAxMy4xMDI3IDIzLjkwNCAxMy4xNzgyIDIzLjg3NDJDMTMuMjUzOCAyMy44NDQ0IDEzLjMyMjQgMjMuNzk5NCAxMy4zNzk4IDIzLjc0MTlDMTMuNDM3MiAyMy42ODQ1IDEzLjQ4MjIgMjMuNjE1OSAxMy41MTIgMjMuNTQwNEMxMy41NDE4IDIzLjQ2NDggMTMuNTU1OCAyMy4zODQgMTMuNTUzIDIzLjMwMjhWMTcuNzg3NUMxMy41NTU4IDE3LjcwNjMgMTMuNTQxOCAxNy42MjU0IDEzLjUxMiAxNy41NDk4QzEzLjQ4MjIgMTcuNDc0MiAxMy40MzczIDE3LjQwNTUgMTMuMzc5OSAxNy4zNDc5QzEzLjMyMjUgMTcuMjkwNCAxMy4yNTM5IDE3LjI0NTMgMTMuMTc4MyAxNy4yMTUzQzEzLjEwMjggMTcuMTg1MyAxMy4wMjE5IDE3LjE3MTIgMTIuOTQwNyAxNy4xNzM4SDcuODYyNzVDNy43MjcwOSAxNy4xNzg3IDcuNTkxODggMTcuMTU1NiA3LjQ2NTUzIDE3LjEwNkM3LjMzOTE5IDE3LjA1NjMgNy4yMjQ0NSAxNi45ODExIDcuMTI4NDYgMTYuODg1MUM3LjAzMjQ3IDE2Ljc4OTIgNi45NTczIDE2LjY3NDQgNi45MDc2NCAxNi41NDgxQzYuODU3OTggMTYuNDIxNyA2LjgzNDkgMTYuMjg2NSA2LjgzOTgzIDE2LjE1MDlWOS4zNzg0MkwwLjU2NTQ2IDExLjkzMjJDMC40MTgwMzUgMTEuOTg3OCAwLjI5MTU2NCAxMi4wODc5IDAuMjAzNTg0IDEyLjIxODZDMC4xMTU2MDQgMTIuMzQ5MyAwLjA3MDQ3OCAxMi41MDQxIDAuMDc0NDYxNSAxMi42NjE2WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQwLjcyMzIgNS42MjY0NkMzNi40ODA2IDUuNjI2NDYgMzMuMjEyOSA4LjkyMzggMzMuMjEyOSAxMy4wODA0QzMzLjIxMjkgMTcuMjM3IDM2LjQ4MDYgMjAuNTMyOSA0MC43MjMyIDIwLjUzMjlDNDQuOTY1OSAyMC41MzI5IDQ4LjIzMzYgMTcuMjM3IDQ4LjIzMzYgMTMuMDgwNEM0OC4yMzM2IDguOTIzOCA0NC45NjU5IDUuNjI2NDYgNDAuNzIzMiA1LjYyNjQ2Wk00MC43MjMyIDE3LjYwOTRDMzguMTcyMyAxNy42MDk0IDM2LjM5NDUgMTUuNjM0MSAzNi4zOTQ1IDEzLjA4MDRDMzYuMzk0NSAxMC41MjY2IDM4LjE3MjMgOC41NTEzMSA0MC43MjMyIDguNTUxMzFDNDMuMjQ2IDguNTUxMzEgNDUuMDIyMyAxMC41MjY2IDQ1LjAyMjMgMTMuMDgwNEM0NS4wMjIzIDE1LjYzNDEgNDMuMjQ2IDE3LjYwOTQgNDAuNzIzMiAxNy42MDk0WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTYzLjI4MjEgMTYuNDYyNEw2MC45MzE1IDE1LjIwMUM2MC45MDM5IDE1LjE4NDggNjAuODczMSAxNS4xNzQ5IDYwLjg0MTMgMTUuMTcyQzYwLjgwOTQgMTUuMTY5MSA2MC43NzczIDE1LjE3MzIgNjAuNzQ3MyAxNS4xODQxQzYwLjcxNzIgMTUuMTk1MSA2MC42ODk5IDE1LjIxMjUgNjAuNjY3NCAxNS4yMzUxQzYwLjY0NDkgMTUuMjU3OCA2MC42Mjc2IDE1LjI4NTIgNjAuNjE2OCAxNS4zMTUzQzYwLjI1NzIgMTYuMDEzNCA1OS43MTA0IDE2LjU5NzggNTkuMDM3NiAxNy4wMDI5QzU4LjM2NDkgMTcuNDA4MSA1Ny41OTI2IDE3LjYxODEgNTYuODA3MyAxNy42MDk0QzU0LjI1NSAxNy42MDk0IDUyLjQ0OSAxNS42MzQxIDUyLjQ0OSAxMy4wODA0QzUyLjQ0OSAxMC41MjY2IDU0LjI1NSA4LjU1MTMxIDU2LjgwNzMgOC41NTEzMUM1Ny41OTI3IDguNTQxNTUgNTguMzY1MiA4Ljc1MDkzIDU5LjAzODEgOS4xNTU5NEM1OS43MTExIDkuNTYwOTQgNjAuMjU3OCAxMC4xNDU1IDYwLjYxNjggMTAuODQ0MUM2MC42Mjc0IDEwLjg3NDMgNjAuNjQ0NSAxMC45MDE5IDYwLjY2NyAxMC45MjQ3QzYwLjY4OTYgMTAuOTQ3NSA2MC43MTY5IDEwLjk2NSA2MC43NDcgMTAuOTc2QzYwLjc3NzEgMTAuOTg2OSA2MC44MDkzIDEwLjk5MSA2MC44NDEyIDEwLjk4OEM2MC44NzMxIDEwLjk4NDkgNjAuOTA0IDEwLjk3NDggNjAuOTMxNSAxMC45NTgzTDYzLjI4MjEgOS42OTY5OEM2My4zMTA2IDkuNjg0MzYgNjMuMzM2MSA5LjY2NTUzIDYzLjM1NjQgOS42NDE4NkM2My4zNzY4IDkuNjE4MTkgNjMuMzkxNyA5LjU5MDI2IDYzLjM5OTkgOS41NjAxM0M2My40MDgyIDkuNTI5OTkgNjMuNDA5NiA5LjQ5ODQgNjMuNDA0MSA5LjQ2NzY1QzYzLjM5ODYgOS40MzY4OSA2My4zODYzIDkuNDA3NzUgNjMuMzY4MSA5LjM4MjM0QzYyLjEwNjggNy4wODgxOCA1OS42OTk3IDUuNjI2NDYgNTYuODA0NSA1LjYyNjQ2QzUyLjUwNCA1LjYyNjQ2IDQ5LjIzNjMgOC44Mzc3MyA0OS4yMzYzIDEzLjA4MDRDNDkuMjM2MyAxNy4zMjMgNTIuNTA0IDIwLjUzMjkgNTYuODA0NSAyMC41MzI5QzU5LjY5OTcgMjAuNTMyOSA2Mi4xMzY0IDE5LjA3MTIgNjMuMzk3OCAxNi43NDg4QzYzLjQxOTYgMTYuNjk1NCA2My40MTk3IDE2LjYzNTYgNjMuMzk4MSAxNi41ODIxQzYzLjM3NjUgMTYuNTI4NiA2My4zMzQ5IDE2LjQ4NTYgNjMuMjgyMSAxNi40NjI0WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTMyLjgzOTggMTcuMzc5N0gyNS41MDNWNi4xNDMwN0MyNS40OTg4IDYuMDgzNDggMjUuNDczMiA2LjAyNzQzIDI1LjQzMDkgNS45ODUxOUMyNS4zODg3IDUuOTQyOTUgMjUuMzMyNiA1LjkxNzM1IDI1LjI3MyA1LjkxMzA5SDIyLjU3ODJDMjIuNTE4NyA1LjkxNzM4IDIyLjQ2MjkgNS45NDMwMyAyMi40MjA5IDUuOTg1M0MyMi4zNzg4IDYuMDI3NTcgMjIuMzUzNSA2LjA4MzYgMjIuMzQ5NiA2LjE0MzA3VjE3LjYwOTZDMjIuMzQ5NiAxOS4yNDM1IDIzLjM1MjggMjAuMjQ2NyAyNC45ODY2IDIwLjI0NjdIMzIuODM5OEMzMi44OTk0IDIwLjI0MjcgMzIuOTU1NCAyMC4yMTcxIDMyLjk5NzUgMjAuMTc0OEMzMy4wMzk1IDIwLjEzMjQgMzMuMDY0OCAyMC4wNzYyIDMzLjA2ODQgMjAuMDE2N1YxNy42MDk2QzMzLjA2NDggMTcuNTUwMSAzMy4wMzk1IDE3LjQ5MzkgMzIuOTk3NSAxNy40NTE1QzMyLjk1NTQgMTcuNDA5MiAzMi44OTk0IDE3LjM4MzcgMzIuODM5OCAxNy4zNzk3WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTEwNC4yMTggMTcuMzc5M0g5Ni42OTY1TDEwNC4xMDQgOC41Nzk0QzEwNC4xNzkgOC40OTEyOCAxMDQuMjE5IDguMzc5MDQgMTA0LjIxOCA4LjI2MzM2VjYuMTQ2OTdDMTA0LjIxNCA2LjA4NzI4IDEwNC4xODkgNi4wMzEwNyAxMDQuMTQ2IDUuOTg4NzdDMTA0LjEwNCA1Ljk0NjQ3IDEwNC4wNDggNS45MjA5NiAxMDMuOTg4IDUuOTE2OTlIOTIuOTgzQzkyLjkyMzMgNS45MjA5NiA5Mi44NjcgNS45NDY0NyA5Mi44MjQ3IDUuOTg4NzdDOTIuNzgyNCA2LjAzMTA3IDkyLjc1NjkgNi4wODcyOCA5Mi43NTMgNi4xNDY5N1Y4LjU1NTQyQzkyLjc1NyA4LjYxNDk2IDkyLjc4MjUgOC42NzEwMSA5Mi44MjQ5IDguNzEzMDdDOTIuODY3MiA4Ljc1NTE0IDkyLjkyMzQgOC43ODAzNSA5Mi45ODMgOC43ODM5OUgxMDAuMTQxTDkyLjc1MyAxNy42MTM2QzkyLjY3ODcgMTcuNzAxNSA5Mi42MzgxIDE3LjgxMzEgOTIuNjM4NyAxNy45MjgyVjIwLjAxNjNDOTIuNjQyMyAyMC4wNzU5IDkyLjY2NzUgMjAuMTMyMSA5Mi43MDk2IDIwLjE3NDRDOTIuNzUxNyAyMC4yMTY4IDkyLjgwNzcgMjAuMjQyMyA5Mi44NjcyIDIwLjI0NjNIMTA0LjIyQzEwNC4yNzkgMjAuMjQyMyAxMDQuMzM1IDIwLjIxNjggMTA0LjM3NyAyMC4xNzQ0QzEwNC40MTkgMjAuMTMyMSAxMDQuNDQ0IDIwLjA3NTkgMTA0LjQ0OCAyMC4wMTYzVjE3LjYwOTNDMTA0LjQ0NCAxNy41NDk1IDEwNC40MTkgMTcuNDkzMSAxMDQuMzc3IDE3LjQ1MDhDMTA0LjMzNCAxNy40MDg0IDEwNC4yNzggMTcuMzgzIDEwNC4yMTggMTcuMzc5M1oiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik05MC4yODY3IDAuNzgyNzE1SDg3LjU5MTlDODcuNTMyNSAwLjc4NjY4MiA4Ny40NzY3IDAuODEyMDM1IDg3LjQzNDYgMC44NTQwN0M4Ny4zOTI2IDAuODk2MTA2IDg3LjM2NzIgMC45NTE5NjkgODcuMzYzMyAxLjAxMTI4VjMuNzYzOTlDODcuMzY3MiAzLjgyMzMxIDg3LjM5MjYgMy44NzkxNyA4Ny40MzQ2IDMuOTIxMjFDODcuNDc2NyAzLjk2MzI0IDg3LjUzMjUgMy45ODg2IDg3LjU5MTkgMy45OTI1N0g4OC42MjMyQzg4Ljg3MzkgNC4wMDA2IDg5LjEyMzUgMy45NTcxNiA4OS4zNTY3IDMuODY0OTJDODkuNTg5OSAzLjc3MjY4IDg5LjgwMTcgMy42MzM2IDg5Ljk3OSAzLjQ1NjI4QzkwLjE1NjMgMy4yNzg5NiA5MC4yOTU0IDMuMDY3MTYgOTAuMzg3NiAyLjgzMzk3QzkwLjQ3OTkgMi42MDA3OSA5MC41MjMzIDIuMzUxMTYgOTAuNTE1MyAyLjEwMDUyVjEuMDExMjhDOTAuNTExMyAwLjk1MTk2OSA5MC40ODYgMC44OTYxMDYgOTAuNDQzOSAwLjg1NDA3QzkwLjQwMTkgMC44MTIwMzUgOTAuMzQ2IDAuNzg2NjgyIDkwLjI4NjcgMC43ODI3MTVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTE5LjY5NiA1LjkxMjg4SDExNy4wMDFDMTE2Ljk0MiA1LjkxNzE4IDExNi44ODYgNS45NDI4MyAxMTYuODQ0IDUuOTg1MDlDMTE2LjgwMiA2LjAyNzM2IDExNi43NzcgNi4wODM0IDExNi43NzMgNi4xNDI4NlY3Ljg0NTg1QzExNS45NzEgNi42OTAzIDExNC4yNiA1LjYyNjQ2IDExMi4xODYgNS42MjY0NkMxMDguMjU5IDUuNjI2NDYgMTA1LjI3MiA4Ljk4MDIzIDEwNS4yNzIgMTMuMDgwNEMxMDUuMjcyIDE3LjE4MDUgMTA4LjI1NCAyMC41MzI5IDExMi4xODYgMjAuNTMyOUMxMTQuMjYgMjAuNTMyOSAxMTUuOTcxIDE5LjQ3MDQgMTE2Ljc3MyAxOC4zMTQ5VjIwLjAxNjVDMTE2Ljc3NyAyMC4wNzYgMTE2LjgwMiAyMC4xMzIyIDExNi44NDQgMjAuMTc0NkMxMTYuODg2IDIwLjIxNjkgMTE2Ljk0MiAyMC4yNDI0IDExNy4wMDEgMjAuMjQ2NUgxMTkuNjk2QzExOS43NTYgMjAuMjQyNSAxMTkuODEyIDIwLjIxNyAxMTkuODU1IDIwLjE3NDdDMTE5Ljg5NyAyMC4xMzI0IDExOS45MjIgMjAuMDc2MiAxMTkuOTI2IDIwLjAxNjVWNi4xNDI4NkMxMTkuOTIyIDYuMDgzMjggMTE5Ljg5NiA2LjAyNzIyIDExOS44NTQgNS45ODQ5OEMxMTkuODEyIDUuOTQyNzQgMTE5Ljc1NiA1LjkxNzE0IDExOS42OTYgNS45MTI4OFpNMTEyLjc1OSAxNy42NjU5QzExMC4yMzggMTcuNjY1OSAxMDguNDg4IDE1LjY1OTUgMTA4LjQ4OCAxMy4wODA0QzEwOC40ODggMTAuNTAxMiAxMTAuMjM4IDguNDkzNDYgMTEyLjc1OSA4LjQ5MzQ2QzExNS4yOCA4LjQ5MzQ2IDExNy4wMzEgMTAuNDk5OCAxMTcuMDMxIDEzLjA4MDRDMTE3LjAzMSAxNS42NjEgMTE1LjI4MiAxNy42NjU5IDExMi43NTkgMTcuNjY1OVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik03OC42MjUgNS45MTI4OEg3NS45MzAyQzc1Ljg3MDcgNS45MTcxOCA3NS44MTQ5IDUuOTQyODMgNzUuNzcyOCA1Ljk4NTA5Qzc1LjczMDggNi4wMjczNiA3NS43MDU1IDYuMDgzNCA3NS43MDE2IDYuMTQyODZWNy44NDU4NUM3NC44OTg4IDYuNjkwMyA3My4xODczIDUuNjI2NDYgNzEuMTE0NyA1LjYyNjQ2QzY3LjE4NjcgNS42MjY0NiA2NC4yMDEyIDguOTgwMjMgNjQuMjAxMiAxMy4wODA0QzY0LjIwMTIgMTcuMTgwNSA2Ny4xODI1IDIwLjUzMjkgNzEuMTE0NyAyMC41MzI5QzczLjE4NzMgMjAuNTMyOSA3NC44OTg4IDE5LjQ3MDQgNzUuNzAxNiAxOC4zMTQ5VjIwLjAxNjVDNzUuNzA1MiAyMC4wNzYgNzUuNzMwNCAyMC4xMzIyIDc1Ljc3MjUgMjAuMTc0NkM3NS44MTQ2IDIwLjIxNjkgNzUuODcwNiAyMC4yNDI0IDc1LjkzMDIgMjAuMjQ2NUg3OC42MjVDNzguNjg0NiAyMC4yNDI0IDc4Ljc0MDYgMjAuMjE2OSA3OC43ODI3IDIwLjE3NDZDNzguODI0OCAyMC4xMzIyIDc4Ljg1IDIwLjA3NiA3OC44NTM2IDIwLjAxNjVWNi4xNDI4NkM3OC44NDk3IDYuMDgzNCA3OC44MjQ0IDYuMDI3MzYgNzguNzgyNCA1Ljk4NTA5Qzc4Ljc0MDMgNS45NDI4MyA3OC42ODQ1IDUuOTE3MTggNzguNjI1IDUuOTEyODhaTTcxLjY4NzUgMTcuNjY1OUM2OS4xNjQ4IDE3LjY2NTkgNjcuNDE2NyAxNS42NTk1IDY3LjQxNjcgMTMuMDgwNEM2Ny40MTY3IDEwLjUwMTIgNjkuMTY0OCA4LjQ5MzQ2IDcxLjY4NzUgOC40OTM0NkM3NC4yMTAzIDguNDkzNDYgNzUuOTU4NCAxMC40OTk4IDc1Ljk1ODQgMTMuMDgwNEM3NS45NTg0IDE1LjY2MSA3NC4yMDQ2IDE3LjY2NTkgNzEuNjgxOSAxNy42NjU5SDcxLjY4NzVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNOTAuMjg2NyA1LjkxMzA5SDg3LjU5MzNDODcuNDY2MiA1LjkxMzA5IDg3LjM2MzMgNi4wMTYwNSA4Ny4zNjMzIDYuMTQzMDdWMjAuMDE1M0M4Ny4zNjMzIDIwLjE0MjMgODcuNDY2MiAyMC4yNDUyIDg3LjU5MzMgMjAuMjQ1Mkg5MC4yODY3QzkwLjQxMzcgMjAuMjQ1MiA5MC41MTY3IDIwLjE0MjMgOTAuNTE2NyAyMC4wMTUzVjYuMTQzMDdDOTAuNTE2NyA2LjAxNjA1IDkwLjQxMzcgNS45MTMwOSA5MC4yODY3IDUuOTEzMDlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNODQuNDY1NCAwLjc4MjcxNUg4MS43NzJDODEuNjQ1IDAuNzgyNzE1IDgxLjU0MiAwLjg4NTY3NyA4MS41NDIgMS4wMTI2OVYyMC4wMTY0QzgxLjU0MiAyMC4xNDM0IDgxLjY0NSAyMC4yNDY0IDgxLjc3MiAyMC4yNDY0SDg0LjQ2NTRDODQuNTkyNCAyMC4yNDY0IDg0LjY5NTQgMjAuMTQzNCA4NC42OTU0IDIwLjAxNjRWMS4wMTI2OUM4NC42OTU0IDAuODg1Njc3IDg0LjU5MjQgMC43ODI3MTUgODQuNDY1NCAwLjc4MjcxNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Localiza" style="height:28px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMxIiBoZWlnaHQ9IjI4IiB2aWV3Qm94PSIwIDAgMTMxIDI4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTA2LjkyNyA0LjExNjAyQzEwNC4xNDcgNi44MjkyNyAxMDIuNzc4IDEwLjE2MzkgMTAyLjc3OCAxNC4wMjc3QzEwMi43NzggMjEuODQxNCAxMDkuMDkxIDI4IDExNi44ODkgMjhDMTI0LjY4NyAyOCAxMzEgMjEuODcyMSAxMzEgMTQuMDI3N0MxMzEgMTAuMTk0NyAxMjkuNTk0IDYuOTE1NCAxMjYuODc2IDQuMTQ2NzhDMTI0LjEyNiAxLjM3MjAxIDEyMC43OTEgMC4wMDYxNTI0OSAxMTYuODg5IDAuMDA2MTUyNDlDMTEyLjk4NyAwLjAwNjE1MjQ5IDEwOS42ODIgMS4zNzgxNiAxMDYuOTMzIDQuMTIyMTdNOTAuNjAyNyAxNC45MTk4SDEwMC4xMDlWMTAuNjYyM0g5MC42MDI3VjQuNzMxMjdIMTAwLjk1M1YwLjQ0OTEzMkg4Ni4xNDU2VjI3LjU3NTVIMTAwLjk4NFYyMy4yOTMzSDkwLjYwODhWMTQuOTE5OEg5MC42MDI3Wk0yNS4yNDQ1IDI3LjU3NTVIMjkuNzAxNlYwLjQ0OTEzMkgyNS4yNDQ1VjI3LjU3NTVaTTUuNzUxNjcgMjcuNTc1NUMxMC43NDUxIDI3LjU3NTUgMTQuNTg1NyAyNi40NTU3IDE3LjE2ODcgMjQuMTMwMUMyMC4xMTU0IDIxLjQ5NjggMjEuNjAxMSAxOC4xMzc2IDIxLjYwMTEgMTQuMDIxNUMyMS42MDExIDkuOTA1NTIgMjAuMDg0NiA2LjI5NCAxNy4wNTc3IDMuNzIyMjZDMTQuNDk5NCAxLjUzODEyIDEwLjcxNDMgMC40NDkxMzIgNS44MDcxNSAwLjQ0OTEzMkgwVjI3LjU3NTVINS43NTE2N1pNNDkuNzYxNSAyMS42MzgzTDUyLjI1ODIgMjcuNTc1NUg1Ny4xOTYxTDQ1LjYwNjUgMC4zNjI5OTdINDMuMzYyNUwzMS40NzA4IDI3LjU3NTVIMzYuMzc3OUwzOC45ODU2IDIxLjUyNzZDMzkuMDQxMSAyMS4zNjE1IDM5LjA3MTkgMjEuMjQ0NiAzOS4wOTY2IDIxLjEzMzhDMzkuMjA3NSAyMS4xODkyIDM5LjM4MDEgMjEuMjQ0NiAzOS41NzEyIDIxLjMzMDdDNDEuMDMyMyAyMS44OTA2IDQyLjc3MDcgMjIuMTk4MiA0NC40Nzg0IDIyLjE5ODJDNDYuMTg2IDIyLjE5ODIgNDcuODE5NiAyMS44NTk4IDQ4Ljc5OTggMjEuNTI3NkM0OS4zMDUzIDIxLjM2MTUgNDkuNDcxOCAyMS4yNzUzIDQ5LjYxMzYgMjEuMTg5MkM0OS42MzgyIDIxLjI5OTkgNDkuNzI0NSAyMS41NTIyIDQ5Ljc1NTMgMjEuNjM4M003OC41MTM3IDguNzM2NTRMODEuOTEwNCA1LjgyNjQxQzc4Ljk5NDUgMS45MzE4OCA3NS4wOTIzIDAgNzAuNDkzNCAwQzYyLjY2NDIgMCA1Ni4zNTc3IDYuMjQ0NzggNTYuMzU3NyAxNC4wNTIzQzU2LjM1NzcgMjEuODU5OCA2Mi42Mzk2IDI3Ljk5MzggNzAuMjk2MSAyNy45OTM4QzcyLjIzMTkgMjcuOTkzOCA3NC4wODEzIDI3LjU3NTUgNzUuODc1MiAyNi43NjMzQzc3LjYxMzYgMjUuOTgyIDc5LjEzMDIgMjQuODg2OCA4MC4zNjMxIDIzLjQ1OTVDODEuNTQwNiAyMi4xNDI4IDgyLjI5ODggMjAuNjI5MyA4Mi43NDg4IDE4Ljk4MDRDODMuMTEyNiAxNy42MDg0IDgzLjM0MDcgMTUuOTI4OCA4My4yMjk3IDEzLjkxMDhMODMuMTc0MiAxMy4wOTg3SDcwLjk0MzRWMTcuMzgwOEg3OC40NjQ0Qzc4LjI2NzEgMTkuMDYwNCA3Ny4zOTc5IDIwLjUxODYgNzUuODgxNCAyMS43MTgzQzc0LjIyOTIgMjMuMDU5NSA3Mi4zNDkgMjMuNzA1NiA3MC4yNDA3IDIzLjcwNTZDNjcuNzk5NCAyMy43MDU2IDY1LjYxMSAyMi42OTY2IDYzLjU5NTEgMjAuNzA5M0M2MS43NzA0IDE4Ljg2MzUgNjAuODQ1NiAxNi42NDg2IDYwLjg0NTYgMTQuMDc2OUM2MC44NDU2IDExLjM2MzcgNjEuODAxMiA5LjAwNzI1IDYzLjc2MTYgNy4wNTA3NkM2NS42MTEgNS4xNzQyNSA2Ny44NTQ5IDQuMjc1OTggNzAuNDM3OSA0LjI3NTk4QzczLjc0ODQgNC4yNzU5OCA3Ni4zNTYgNS43ODk1IDc4LjUxMzcgOC43MzAzOU0xMjMuNzAxIDcuMTEyMjhDMTI1LjYwNiA4Ljk1ODAzIDEyNi41MzcgMTEuMjgzNyAxMjYuNTM3IDEzLjk5NjlDMTI2LjUzNyAxNi43MTAyIDEyNS41ODEgMTguOTgwNCAxMjMuNzAxIDIwLjg4MTZDMTIxLjgyMSAyMi43NTgxIDExOS41NTIgMjMuNzExNyAxMTYuODgzIDIzLjcxMTdDMTExLjUyNiAyMy43MTE3IDEwNy4yNiAxOS4zMTg4IDEwNy4yNiAxMy45OTY5QzEwNy4yNiAxMS4zMDgzIDEwOC4yMTUgOC45ODI2NCAxMTAuMDk1IDcuMDgxNTJDMTExLjk0NSA1LjIwNTAxIDExNC4yNDQgNC4yODIxNCAxMTYuODgzIDQuMjgyMTRDMTE5LjUyMSA0LjI4MjE0IDEyMS43OSA1LjIzNTc3IDEyMy43MDEgNy4xMTIyOFpNNS44OTM0NiA0LjczMTI3QzkuNzA5NDEgNC43MzEyNyAxMi40MDM0IDUuNTEyNjMgMTQuMDg2NCA3LjAwMTU0QzE2LjEwODQgOC43NjczIDE3LjExMzIgMTEuMDg2OCAxNy4xMTMyIDE0LjAwMzFDMTcuMTEzMiAxNi45MTk0IDE2LjEzMyAxOS4wNjY2IDE0LjE5NzMgMjAuODYzMUMxMi41MTQ0IDIyLjQ2MjggOS43NjQ4OSAyMy4yOTk1IDUuODkzNDYgMjMuMjk5NUg0LjY2MDUyVjQuNzMxMjdINS44OTM0NlpNNDAuNjk5NCAxNy4zNTYyQzQwLjc4NTcgMTcuMTkwMSA0MC45MjEzIDE2LjkwNzEgNDAuOTc2OCAxNi43NzE3TDQ0LjM5ODIgOC40ODQyOUw0Ny43NjQxIDE2Ljg1MTdDNDcuODE5NiAxNi45OTMyIDQ3LjkzMDYgMTcuMjE0NyA0OC4wMTY5IDE3LjQxMTZMNDcuNTk3NyAxNy40OTc3QzQ2LjY0MjIgMTcuNzQ5OSA0NS41NzU3IDE3LjkxNjEgNDQuNDg0NSAxNy45MTYxQzQzLjM5MzQgMTcuOTE2MSA0Mi4zODI0IDE3Ljc3NDYgNDEuMzE1OSAxNy40OTc3QzQxLjExODYgMTcuNDQyMyA0MC44NDEyIDE3LjM1NjIgNDAuNjk5NCAxNy4zNTYyWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==" alt="Diageo" style="height:30px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAAAeCAMAAADXeTb3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABCUExURQAAAP///////////////////////////////////////////////////////////////////////////////////whf0oYAAAAVdFJOUwAQIDBAUGBwf4CPkJ+gr7/Az9/g7+mx/hsAAAG+SURBVHjarZbtbsIwDEVv3DTFDMjIct//VSd1H16ZU3XD5xcKVTk6uEmRdcEORVXc5YKfLLqLYIDqDCi54zCRr/iNNFIA4427ZAwgL6tCTxhhP7XhRPISqcAzBpxI9SKQNLcnMAVOcJHO5hW6kleyhipUuFzJ4kdoqGSOU2jkDIdCXoZmmaxxCoVs6fgsCvkKWIYIBbmR6s/iIEL+MKlxCtLZxf3H/QgXU4lSgJI3PHAjyyCCfD0vNU4hNTIfm0WxdSVzmAIyeXe2YIebrafOGqeA+nBUnAezmC3CXzLM1eengnT2NJxFo1qENUPDIZQjTAG6OSp2divd3rngCMubz0bBJtKbRVNrAiM1trBZAGay2iw22Y9gC0ucAup3/KvdOJNlE+FXlp68reN/ChPZ0tcHeAqFLE6XOAW8kPo5i5OjYBGcDEEK6eOoOK3rjoJFcDLEKGAhK6Sziavgj/+dPcUpoJLZXpVMwY1gV2igQiY72eAqtOGG2VOEgk0kKa7CyWScDHEKqa+LjoJYBC9DnAIWNnEULIKf4RyogHuBpyB7h2Il5QmFrLqpKNggqhOwXpYxYnr4clbFMVRnvAPTdjTHlb8U2wAAAABJRU5ErkJggg==" alt="MATH" style="height:30px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTQiIGhlaWdodD0iMzMiIHZpZXdCb3g9IjAgMCA5NCAzMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBhcmlhLWxhYmVsPSJKw7xzc2kiPjxwYXRoIGQ9Ik05My4wMTgzIDIuOTIwMDZDOTMuMDE4MyAxLjMwNzEzIDkxLjU2NTkgMCA4OS43NzM4IDBDODcuOTgxNyAwIDg2LjUyOTMgMS4zMDcxMyA4Ni41MjkzIDIuOTIwMDZDODYuNTI5MyA0LjUzMjk4IDg3Ljk4MTcgNS44NDAxMiA4OS43NzM4IDUuODQwMTJDOTEuNTY1OSA1Ljg0MDEyIDkzLjAxODMgNC41MzI5OCA5My4wMTgzIDIuOTIwMDZaIiBmaWxsPSJ3aGl0ZSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNC41MjY1IDUuODQwMTJDMzYuMzE4NiA1Ljg0MDEyIDM3Ljc3MSA0LjUzMjk4IDM3Ljc3MSAyLjkyMDA2QzM3Ljc3MSAxLjMwNzEzIDM2LjMxODYgMCAzNC41MjY1IDBDMzIuNzM0NCAwIDMxLjI4MiAxLjMwNzEzIDMxLjI4MiAyLjkyMDA2QzMxLjI4MzEgNC41MzI5OCAzMi43MzU1IDUuODQwMTIgMzQuNTI2NSA1Ljg0MDEyWiIgZmlsbD0id2hpdGUiPjwvcGF0aD48cGF0aCBkPSJNMjYuNDM2MSA1Ljg0MDEyQzI4LjIyODIgNS44NDAxMiAyOS42ODA2IDQuNTMyOTggMjkuNjgwNiAyLjkyMDA2QzI5LjY4MDYgMS4zMDcxMyAyOC4yMjgyIDAgMjYuNDM2MSAwQzI0LjY0NCAwIDIzLjE5MTYgMS4zMDcxMyAyMy4xOTE2IDIuOTIwMDZDMjMuMTkxNiA0LjUzMjk4IDI0LjY0NCA1Ljg0MDEyIDI2LjQzNjEgNS44NDAxMloiIGZpbGw9IndoaXRlIj48L3BhdGg+PHBhdGggZD0iTTg5Ljc3NDMgNy41MDI5M0M4OC4zMTczIDcuNTAyOTMgODcuMTM1NiA4LjU2NTQzIDg3LjEzNTYgOS44NzY3MVYyOS45NzcxQzg3LjEzNTYgMzEuMjg4NCA4OC4zMTczIDMyLjM1MTkgODkuNzc0MyAzMi4zNTE5QzkxLjIzMTMgMzIuMzUxOSA5Mi40MTMgMzEuMjg4NCA5Mi40MTMgMjkuOTc3MVY5Ljg3NjcxQzkyLjQxMyA4LjU2NTQzIDkxLjIzMTMgNy41MDI5MyA4OS43NzQzIDcuNTAyOTNaIiBmaWxsPSJ3aGl0ZSI+PC9wYXRoPjxwYXRoIGQ9Ik03Ljk5MjA2IDEwLjExNDFDNy45OTIwNiAxMS40MjU0IDkuMTczNzcgMTIuNDg3OSAxMC42MzA3IDEyLjQ4NzlIMTMuMjY5NFYxNi41MDk4VjI0LjA0MTZDMTMuMjY5NCAyNi4wMjQ2IDExLjQ3NjEgMjcuNjM4NiA5LjI3MjgyIDI3LjYzODZDNy4wNjk1IDI3LjYzODYgNS4yNzYyMSAyNi4wMjQ2IDUuMjc2MjEgMjQuMDQxNlYyMS45MjA4QzUuMjc2MjEgMjAuNjA5NSA0LjA5NDUgMTkuNTQ1OSAyLjYzNzUzIDE5LjU0NTlDMS4xODA1NSAxOS41NDU5IDAgMjAuNjA5NSAwIDIxLjkyMDhWMjQuMDQxNkMwIDI3LjI5MDMgMi4wNjM5NSAzMC4xMDQ2IDUuMDc1ODEgMzEuNDgyMkM2LjMzNTgzIDMyLjA1OTYgNy43NjE3MSAzMi4zODYxIDkuMjcyODIgMzIuMzg2MUMxMC43ODM5IDMyLjM4NjEgMTIuMjA4NyAzMi4wNTg2IDEzLjQ2OTggMzEuNDgyMkMxNi40ODE3IDMwLjEwMzYgMTguNTQ1NiAyNy4yOTAzIDE4LjU0NTYgMjQuMDQxNlYxMi40ODc5VjkuNjI3OTJDMTguNTQ1NiA4LjU4NTExIDE3LjYwNTggNy43MzkyNiAxNi40NDcxIDcuNzM5MjZIMTMuMjY5NEgxMC42Mjk2QzkuMTcyNjEgNy43MzkyNiA3Ljk5MjA2IDguODAyOCA3Ljk5MjA2IDEwLjExNDFaIiBmaWxsPSJ3aGl0ZSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNy4wMTA3IDcuMzQ5NjFDMzUuNTUzOCA3LjM0OTYxIDM0LjM3MjEgOC40MTIxIDM0LjM3MjEgOS43MjMzOFYxNi41MzI3VjIzLjY2NjVWMjQuMDQxN1YyNC40MTdDMzQuMTYyNCAyNi4yMTU0IDMyLjQ2ODIgMjcuNjIzMSAzMC40MTQ2IDI3LjYyMzFDMjguMzYxIDI3LjYyMzEgMjYuNjY2OCAyNi4yMTY1IDI2LjQ1NzIgMjQuNDE3VjI0LjA0MTdWMjMuNjY2NVYxNi41MzI3VjkuNzIzMzhDMjYuNDU3MiA4LjQxMjEgMjUuMjc1NSA3LjM0OTYxIDIzLjgxODUgNy4zNDk2MUMyMi4zNjE1IDcuMzQ5NjEgMjEuMTc5OCA4LjQxMjEgMjEuMTc5OCA5LjcyMzM4VjI0LjA0MTdDMjEuMTc5OCAyNy4zMDE4IDIzLjI2NjggMzAuMTIxMyAyNi4zMDI4IDMxLjQ4MjNDMjcuNTQxIDMyLjAzNjkgMjguOTM1OCAzMi4zNTEgMzAuNDEzNSAzMi4zNTFDMzEuODkxMiAzMi4zNTEgMzMuMjg2IDMyLjAzNjkgMzQuNTI0MSAzMS40ODIzQzM3LjU2MDEgMzAuMTIxMyAzOS42NDcxIDI3LjMwMDcgMzkuNjQ3MSAyNC4wNDE3VjkuNzIzMzhDMzkuNjQ5NCA4LjQxMjEgMzguNDY3NyA3LjM0OTYxIDM3LjAxMDcgNy4zNDk2MVoiIGZpbGw9IndoaXRlIj48L3BhdGg+PHBhdGggZD0iTTY0LjQ0NjcgMTcuMTg1N0M2NC40MTU2IDExLjI5MzcgNTguOTY1NCA2LjU1NDQ1IDUyLjM1MiA2Ljc5ODA1QzQ2LjQxNyA3LjAxNjc3IDQxLjU2ODEgMTEuMzIyNyA0MS4yNTAyIDE2LjY2MTFDNDEuMDQyOSAyMC4xNDQxIDQyLjczMjUgMjMuMjc5NyA0NS40NzM3IDI1LjMwODNDNDcuNDc3OCAyNi43OTE3IDUwLjA0MzkgMjcuNjgyMSA1Mi44NDE1IDI3LjY4MjFDNTUuMTAxMyAyNy42ODIxIDU3LjA4ODEgMjguNzUzOSA1OC4yMDg3IDMwLjM2MTdDNTguNjg1NiAzMS4wNDY5IDU5LjUwMSAzMS40ODEyIDYwLjM5OTQgMzEuNDgxMkg2MC41MTQ2QzYyLjU1MiAzMS40ODEyIDYzLjc5NzEgMjkuNDY5MiA2Mi43MjgyIDI3LjkwN0M2Mi4wNTMzIDI2LjkyMDIgNjEuMTk5OSAyNi4wNDEyIDYwLjIwOTMgMjUuMzA4M0M1OC4yMzc1IDIzLjg0ODggNTUuNzIzMiAyMi45NjM2IDUyLjk3ODYgMjIuOTM0NkM0OS43MjE0IDIyLjkwMDMgNDYuODk2MiAyMC43Nzk1IDQ2LjU0NzIgMTcuODYzNkM0Ni4xMzgzIDE0LjQ0MDggNDkuMTIwMiAxMS41MzczIDUyLjg0MTUgMTEuNTM3M0M1Ni4zMTQxIDExLjUzNzMgNTkuMTQwNSAxNC4wNjY2IDU5LjE3MTYgMTcuMTg0NkM1OS4xNzE2IDE3LjMwNjkgNTkuMTkxMiAxNy40MjUxIDU5LjIyMzQgMTcuNTM5MUM1OS4zNDkgMTguNzM1MyA2MC40NjczIDE5LjY3MjQgNjEuODI5OSAxOS42NzI0QzYzLjI3NjUgMTkuNjcyNCA2NC40NDkgMTguNjE3MiA2NC40NDkgMTcuMzE1MkM2NC40NDkgMTcuMjkzNSA2NC40NDU1IDE3LjI3MTcgNjQuNDQ1NSAxNy4yNDk5QzY0LjQ0NDQgMTcuMjI5MiA2NC40NDY3IDE3LjIwODUgNjQuNDQ2NyAxNy4xODU3WiIgZmlsbD0id2hpdGUiPjwvcGF0aD48cGF0aCBkPSJNODEuMjYyMyAxMy44NjcyQzc5LjI1ODIgMTIuMzgzOCA3Ni42OTIxIDExLjQ5MzQgNzMuODk0NSAxMS40OTM0QzcxLjYzNDcgMTEuNDkzNCA2OS42NDc5IDEwLjQyMTYgNjguNTI3MyA4LjgxMzg1QzY4LjA1MDQgOC4xMjg2NyA2Ny4yMzUgNy42OTQzNCA2Ni4zMzU1IDcuNjk0MzRINjYuMjIwM0M2NC4xODE3IDcuNjk0MzQgNjIuOTM3OCA5LjcwNjM1IDY0LjAwNjYgMTEuMjY4NUM2NC42ODE1IDEyLjI1NjMgNjUuNTM1IDEzLjEzNDMgNjYuNTI1NSAxMy44NjcyQzY4LjQ5NzMgMTUuMzI2NyA3MS4wMTE2IDE2LjIxMTkgNzMuNzU2MyAxNi4yNDFDNzcuMDEzNCAxNi4yNzUyIDc5LjgzODcgMTguMzk2IDgwLjE4NzcgMjEuMzExOUM4MC41OTY2IDI0LjczNDcgNzcuNjE0NyAyNy42MzkyIDczLjg5MzMgMjcuNjM5MkM3MC40MjA4IDI3LjYzOTIgNjcuNTkzMiAyNS4xMSA2Ny41NjMzIDIxLjk5MTlDNjcuNTYzMyAyMS44Mzk2IDY3LjUzNTYgMjEuNjkzNCA2Ny40ODYxIDIxLjU1NTVDNjcuMjc4OCAyMC40NDAyIDY2LjIwNDIgMTkuNTkwMiA2NC45MDYxIDE5LjU5MDJDNjMuNDU5NSAxOS41OTAyIDYyLjI4NyAyMC42NDU0IDYyLjI4NyAyMS45NDc0QzYyLjI4NyAyMS45NTQ2IDYyLjI4ODIgMjEuOTYxOSA2Mi4yODgyIDIxLjk2OTFDNjIuMjg4MiAyMS45NzY0IDYyLjI4NyAyMS45ODM2IDYyLjI4NyAyMS45OTE5VjIyLjAxMTZINjIuMjg4MkM2Mi4zMzIgMjcuODk2MyA2Ny43Nzg2IDMyLjYyNTIgNzQuMzg3NCAzMi4zNzg1QzgwLjMyMDEgMzIuMTU3NyA4NS4xNjY3IDI3Ljg1MjggODUuNDg0NiAyMi41MTU0Qzg1LjY5MzEgMTkuMDMxNSA4NC4wMDIzIDE1Ljg5NTggODEuMjYyMyAxMy44NjcyWiIgZmlsbD0id2hpdGUiPjwvcGF0aD48L3N2Zz4=" alt="Jüssi" style="height:30px"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjMiIGhlaWdodD0iMjMuMSIgdmlld0JveD0iMCAwIDEyMyAyMy4xIj4NCiAgPHRpdGxlPmxvZ29zQXRpdm8gMjM8L3RpdGxlPg0KICA8cGF0aCBkPSJNMzQuNiw5LjhhNi4yLDYuMiwwLDAsMC0yLjYuNlY0LjFhMTEuOCwxMS44LDAsMCwwLTIuOSwxLjZBMS42LDEuNiwwLDAsMCwyOC41LDdWMjIuNGExMy45LDEzLjksMCwwLDAsNC42LjdjNC42LDAsNy4yLTIuOCw3LjItNi44UzM4LjUsOS44LDM0LjYsOS44Wk0zMy4zLDIwLjNhMy4yLDMuMiwwLDAsMS0xLjMtLjJ2LTdhNS40LDUuNCwwLDAsMSwyLS40YzEuOCwwLDIuNywxLjIsMi43LDMuNVMzNS42LDIwLjMsMzMuMywyMC4zWk0xMS42LDE2LjRsLTEuNC44Yy0uMi4xLS4yLjItLjIuNHY1LjFjMCwuMi4xLjMuMi4zaDEuNFYxNi40Wk00OS4yLDkuOWE0LjIsNC4yLDAsMCwwLTMuNSwxLjgsMTIuNCwxMi40LDAsMCwwLS40LTEuNmwtMS40LS4yLTEuNC4yVjIyLjhhNC40LDQuNCwwLDAsMCwxLjcuMmwxLjgtLjJWMTYuNmMwLTIuNSwxLjMtMy44LDMtMy44aDEuMmE4LjgsOC44LDAsMCwwLDAtMi44Wm0tMzUsNS0xLjgsMWgtLjF2Ni45aDJhLjQuNCwwLDAsMCwuNC0uNFYxNS4yQS4zLjMsMCwwLDAsMTQuMiwxNC45Wm0tMi44LTEwQTIyLjUsMjIuNSwwLDAsMCw3LDUuM2E4LjIsOC4yLDAsMCwxLDYuNi0zLjJBOSw5LDAsMCwxLDE5LDMuOWMuMi4yLjQuMy42LjFhLjQuNCwwLDAsMCwwLS42QTkuMyw5LjMsMCwwLDAsMTIuMiwwLDkuNSw5LjUsMCwwLDAsMy41LDYuMUwuMyw3LjRxLS40LjMtLjMuNmEuNC40LDAsMCwwLC42LjIsMTguMywxOC4zLDAsMCwxLDIuNS0uNkE2LjEsNi4xLDAsMCwwLDMsOWE5LjMsOS4zLDAsMCwwLDQuMyw4Yy4yLjEuNS4xLjYtLjFzLjEtLjQtLjEtLjZhNy45LDcuOSwwLDAsMS0yLjYtNiw2LjQsNi40LDAsMCwxLC43LTMuMUw4LjcsN2M2LjgsMCwxMi42LDIuMywxMi42LDUuMnMtMS45LDMtNC4yLDRjLS41LjItLjUuNC0uNS42cy4zLjMuNi4yYzQtMS4yLDYuOS0zLjQsNi45LTUuOVMxOC41LDQuOSwxMS40LDQuOVpNNzEuMyw3djNsLTEuOC0uMmMtMy45LDAtNi41LDIuNi02LjUsNi44czIuNSw2LjUsNi41LDYuNWExNS4xLDE1LjEsMCwwLDAsNS4zLS44VjQuMWExMS44LDExLjgsMCwwLDAtMi45LDEuNkExLjQsMS40LDAsMCwwLDcxLjMsN1ptMCwxMy4xYTQuMSw0LjEsMCwwLDEtMS41LjJjLTIuMywwLTMuMi0xLjUtMy4yLTMuN3MuOS00LDMuMi00bDEuNS4yWm0zNS44LjJjLTEuNywwLTIuOS0xLjQtMi45LTMuOHMxLTMuOCwyLjktMy44YTUuOSw1LjksMCwwLDEsMi4zLjQsNiw2LDAsMCwxLDEuMi0yLjQsNy41LDcuNSwwLDAsMC0zLjktLjljLTMuOSwwLTYuMSwyLjctNi4xLDYuN3MyLjMsNi42LDYuMiw2LjZhOCw4LDAsMCwwLDMuOS0uOCw5LjcsOS43LDAsMCwxLTEuNC0yLjVBNC43LDQuNywwLDAsMSwxMDcuMSwyMC4zWk01NS43LDkuOGExNS4zLDE1LjMsMCwwLDAtMy44LjQsNi42LDYuNiwwLDAsMCwwLDIuOCwxMC42LDEwLjYsMCwwLDEsMy4yLS40YzEuOCwwLDIuNy43LDIuNywyLjJWMTVsLTEuNy0uMmMtMi45LDAtNS41LDEuMS01LjUsNHMyLjMsNC4zLDUuNyw0LjNhMTkuOSwxOS45LDAsMCwwLDQuOC0uN1YxNS4xQzYxLjEsMTEuNiw1OS4yLDkuOSw1NS43LDkuOFptMi4xLDEwLjVINTYuM2MtMS42LDAtMi41LS41LTIuNS0xLjZzLjktMS42LDIuNS0xLjZoMS41Wk0xMTYuOSw5LjhjLTMuOSwwLTYuMSwyLjctNi4xLDYuN3MyLjMsNi42LDYuMSw2LjYsNi4xLTIuNiw2LjEtNi42UzEyMC44LDkuOCwxMTYuOSw5LjhabTAsMTAuNWMtMiwwLTIuNS0xLjYtMi41LTMuOHMuNS0zLjksMi41LTMuOSwyLjYsMS42LDIuNiwzLjlTMTE4LjgsMjAuMywxMTYuOSwyMC4zWk04Mi44LDkuOGMtMy43LDAtNiwyLjUtNiw2LjdzMi40LDYuNiw2LjYsNi42YTkuOSw5LjksMCwwLDAsNC0uNyw2LjIsNi4yLDAsMCwwLDAtMi43LDExLjgsMTEuOCwwLDAsMS0zLjYuNmMtMiwwLTMuMy0uOC0zLjYtMi44aDcuOWE5LjksOS45LDAsMCwwLC4yLTEuOEM4OC4zLDExLjksODYuMSw5LjgsODIuOCw5LjhabS0yLjYsNS4xYTIuNSwyLjUsMCwwLDEsMi42LTIuNGMxLjYsMCwyLjIsMSwyLjIsMi40Wm0xNi4xLjQtMS41LS42Yy0uOC0uNC0xLjItLjYtMS4yLTEuMnMuNy0xLDEuNi0xYTExLDExLDAsMCwxLDMuMy42LDUuNyw1LjcsMCwwLDAsMC0yLjYsOC4zLDguMywwLDAsMC0zLjgtLjdDOTIsOS44LDkwLDExLjIsOTAsMTMuNHMuOCwzLDMuMiw0bDEuMS40YzEsLjQsMS4zLjcsMS4zLDEuNHMtMSwxLjEtMS44LDEuMWE5LjksOS45LDAsMCwxLTMuOC0uNyw0LjIsNC4yLDAsMCwwLDAsMi43LDkuNCw5LjQsMCwwLDAsNC4zLjhjMi43LDAsNC45LTEuNCw0LjktMy45Uzk4LjMsMTYuMSw5Ni4zLDE1LjNaIiBmaWxsPSIjRTUxNzNGIi8+DQo8L3N2Zz4NCg==" alt="Bradesco" style="height:30px"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4KCjxzdmcKICAgdmVyc2lvbj0iMS4xIgogICBpZD0iU2FudGFuZGVyIgogICB4PSIwcHgiCiAgIHk9IjBweCIKICAgdmlld0JveD0iMCAwIDIzOC4yIDQxLjUiCiAgIHhtbDpzcGFjZT0icHJlc2VydmUiCiAgIHNvZGlwb2RpOmRvY25hbWU9IkJhbmNvX1NhbnRhbmRlcl9Mb2dvdGlwby5zdmciCiAgIHdpZHRoPSIyMzguMiIKICAgaGVpZ2h0PSI0MS41IgogICBpbmtzY2FwZTp2ZXJzaW9uPSIxLjEgKGM2OGUyMmMzODcsIDIwMjEtMDUtMjMpIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6Y2M9Imh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL25zIyIKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj48ZGVmcwogICBpZD0iZGVmczEzIiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcKICAgaWQ9Im5hbWVkdmlldzExIgogICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IgogICBib3JkZXJvcGFjaXR5PSIxLjAiCiAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiCiAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgIGlua3NjYXBlOnBhZ2VjaGVja2VyYm9hcmQ9IjAiCiAgIHNob3dncmlkPSJmYWxzZSIKICAgZml0LW1hcmdpbi10b3A9IjAiCiAgIGZpdC1tYXJnaW4tbGVmdD0iMCIKICAgZml0LW1hcmdpbi1yaWdodD0iMCIKICAgZml0LW1hcmdpbi1ib3R0b209IjAiCiAgIGlua3NjYXBlOnpvb209IjIuMzU3NTg4NCIKICAgaW5rc2NhcGU6Y3g9IjEwNS44Mjg0OCIKICAgaW5rc2NhcGU6Y3k9IjQ2LjQ0NTc2NyIKICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSIxOTIwIgogICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSIxMDE3IgogICBpbmtzY2FwZTp3aW5kb3cteD0iMTkxMiIKICAgaW5rc2NhcGU6d2luZG93LXk9Ii04IgogICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIgogICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJTYW50YW5kZXIiIC8+CjxzdHlsZQogICB0eXBlPSJ0ZXh0L2NzcyIKICAgaWQ9InN0eWxlMiI+Cgkuc3Qwe2ZpbGw6I0VBMUQyNTt9Cjwvc3R5bGU+Cjx0aXRsZQogICBpZD0idGl0bGU0Ij5TYW50YW5kZXI8L3RpdGxlPiAgICAKPGcKICAgaWQ9Imc4IgogICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC0wLjQpIj4KCTxwYXRoCiAgCiAgIGQ9Ik0gMzEuNSwxOS41IEMgMzEuNCwxOCAzMSwxNi41IDMwLjIsMTUuMiBMIDIzLjQsMy4zIEMgMjIuOSwyLjQgMjIuNSwxLjQgMjIuMywwLjQgTCAyMiwwLjkgYyAtMS43LDIuOSAtMS43LDYuNiAwLDkuNSBsIDUuNSw5LjUgYyAxLjcsMi45IDEuNyw2LjYgMCw5LjUgbCAtMC4zLDAuNSBjIC0wLjIsLTEgLTAuNiwtMiAtMS4xLC0yLjkgbCAtNSwtOC43IC0zLjIsLTUuNiBDIDE3LjQsMTEuOCAxNywxMC44IDE2LjgsOS44IGwgLTAuMywwLjUgYyAtMS43LDIuOSAtMS43LDYuNSAwLDkuNSB2IDAgbCA1LjUsOS41IGMgMS43LDIuOSAxLjcsNi42IDAsOS41IGwgLTAuMywwLjUgYyAtMC4yLC0xIC0wLjYsLTIgLTEuMSwtMi45IEwgMTMuNywyNC41IEMgMTIuOCwyMi45IDEyLjQsMjEuMSAxMi40LDE5LjMgNS4xLDIxLjIgMCwyNS4zIDAsMzAgMCwzNi42IDkuOCw0MS45IDIxLjksNDEuOSAzNCw0MS45IDQzLjgsMzYuNiA0My44LDMwIDQzLjksMjUuNSAzOC45LDIxLjQgMzEuNSwxOS41IFogbSAyMC43LDIwLjMgYyAwLjEsLTEuNyAwLjMsLTIuOCAwLjgsLTQuMiAyLjMsMS4xIDUuMywxLjYgNy41LDEuNiAzLjgsMCA2LC0xLjIgNiwtMy43IDAsLTIuNCAtMS42LC0zLjUgLTUuNCwtNS4yIEwgNTksMjcuNSBjIC0zLjksLTEuNyAtNi41LC0zLjkgLTYuNSwtOC4yIDAsLTQuNyAzLjMsLTcuNyA5LjksLTcuNyAyLjcsMCA1LjIsMC40IDcuNSwxLjIgLTAuMSwxLjYgLTAuNCwyLjkgLTAuOCw0LjEgLTIuMiwtMC44IC00LjksLTEuMiAtNi44LC0xLjIgLTMuNiwwIC01LjIsMS40IC01LjIsMy42IDAsMi4xIDEuNiwzLjQgNC41LDQuNiBsIDIuMiwwLjkgYyA1LjIsMi4yIDcuNCw0LjYgNy40LDguNiAwLDQuNyAtMy42LDggLTEwLjYsOCAtMy4zLDAgLTYuMSwtMC41IC04LjQsLTEuNiB6IE0gOTMuMywyMC4xIHYgMjAuNiBoIC00LjIgbCAtMC4yLC0yLjUgYyAtMS4yLDEuOCAtMi45LDMgLTUuOCwzIC01LjQsMCAtOS4xLC00IC05LjEsLTEwLjkgMCwtNy4yIDMuOSwtMTEuNCAxMS41LC0xMS40IDMsMC4xIDUuNSwwLjQgNy44LDEuMiB6IE0gODguOCwzNiBWIDIzLjEgYyAtMC45LC0wLjIgLTIsLTAuMiAtMy4zLC0wLjIgLTQuNywwIC02LjksMi45IC02LjksNy41IDAsNC4yIDEuNyw3LjIgNS43LDcuMiAxLjksLTAuMSAzLjMsLTAuNyA0LjUsLTEuNiB6IG0gMjcuNywtOS4xIFYgNDAuNyBIIDExMiB2IC0xMyBjIDAsLTMuMyAtMS4xLC00LjggLTUuNiwtNC44IC0xLjEsMCAtMi4zLDAuMSAtMy42LDAuMyBWIDQwLjcgSCA5OC4zIFYgMjAuMSBjIDIuOSwtMC43IDYuMSwtMS4yIDguMiwtMS4yIDcuNiwwLjEgMTAsMyAxMCw4IHogbSAxMi42LDEwLjUgYyAxLjMsMCAyLjYsLTAuMiAzLjUsLTAuNiAtMC4xLDEuMiAtMC4zLDIuNiAtMC41LDMuOCAtMS4yLDAuNSAtMi42LDAuNyAtMy44LDAuNyAtNC40LDAgLTcuMiwtMiAtNy4yLC03IFYgMTIuNiBjIDEuNCwtMC41IDMuMSwtMC43IDQuNSwtMC43IHYgNy44IGggNy4yIGMgLTAuMSwxLjQgLTAuMiwyLjcgLTAuNCwzLjkgaCAtNi44IHYgMTAuMSBjIDAsMi42IDEuMywzLjcgMy41LDMuNyB6IG0gMjQuMywtMTcuMyB2IDIwLjYgaCAtNC4yIEwgMTQ5LDM4LjIgYyAtMS4yLDEuOCAtMi45LDMgLTUuOCwzIC01LjQsMCAtOS4xLC00IC05LjEsLTEwLjkgMCwtNy4yIDMuOSwtMTEuNCAxMS41LC0xMS40IDMsMC4xIDUuNCwwLjQgNy44LDEuMiB6IE0gMTQ4LjgsMzYgViAyMy4xIGMgLTAuOSwtMC4yIC0yLC0wLjIgLTMuMywtMC4yIC00LjcsMCAtNi45LDIuOSAtNi45LDcuNSAwLDQuMiAxLjcsNy4yIDUuNyw3LjIgMS45LC0wLjEgMy40LC0wLjcgNC41LC0xLjYgeiBtIDI3LjgsLTkuMSBWIDQwLjcgSCAxNzIgdiAtMTMgYyAwLC0zLjMgLTEuMSwtNC44IC01LjYsLTQuOCAtMS4xLDAgLTIuMywwLjEgLTMuNiwwLjMgdiAxNy41IGggLTQuNSBWIDIwLjEgYyAyLjksLTAuNyA2LjEsLTEuMiA4LjIsLTEuMiA3LjYsMC4xIDEwLjEsMyAxMC4xLDggeiBtIDIyLjksLTE1IHYgMjguOCBoIC00LjIgbCAtMC4yLC0yLjYgYyAtMS4yLDEuOSAtMi45LDMuMSAtNS45LDMuMSAtNS40LDAgLTkuMSwtNCAtOS4xLC0xMC45IDAsLTcuMiAzLjksLTExLjQgMTEuNSwtMTEuNCAxLjIsMCAyLjMsMC4xIDMuNCwwLjMgdiAtNi44IGMgMS40LC0wLjQgMywtMC41IDQuNSwtMC41IHogTSAxOTUsMzYgViAyMy4zIGMgLTEuMiwtMC4yIC0yLjQsLTAuNCAtMy42LC0wLjQgLTQuNSwwIC02LjYsMi44IC02LjYsNy41IDAsNC4yIDEuNyw3LjIgNS43LDcuMiAxLjgsLTAuMSAzLjMsLTAuNyA0LjUsLTEuNiB6IG0gMjcuMywtNC4xIGggLTE0LjUgYyAwLjYsMy43IDIuNyw1LjQgNi44LDUuNCAyLjUsMCA1LC0wLjUgNy4yLC0xLjYgLTAuMiwxLjIgLTAuNCwyLjggLTAuNyw0LjEgLTIuMSwwLjkgLTQuMiwxLjMgLTYuNywxLjMgLTcuNiwwIC0xMS4yLC00LjIgLTExLjIsLTExLjIgMCwtNi4xIDIuOCwtMTEgMTAsLTExIDYuNSwwIDkuMyw0LjIgOS4zLDkuNCAwLDEuNCAwLDIuNCAtMC4yLDMuNiB6IE0gMjA3LjgsMjguMSBIIDIxOCBjIDAsLTMuNCAtMS44LC01LjQgLTQuOSwtNS40IC0zLjMsMC4xIC01LDEuOSAtNS4zLDUuNCB6IG0gMzAuNCwtOC45IGMgMCwxLjQgLTAuMiwzIC0wLjQsMy45IC0xLjEsLTAuMSAtMi4xLC0wLjIgLTMuNCwtMC4yIC0xLjEsMCAtMi4yLDAuMSAtMy4zLDAuMiB2IDE3LjYgaCAtNC41IFYgMjAuMSBjIDEuOSwtMC43IDUuMiwtMS4yIDcuNywtMS4yIDEuMywwLjEgMi45LDAuMSAzLjksMC4zIHoiCiAgIGlkPSJwYXRoNiIgLz4KPC9nPgo8bWV0YWRhdGEKICAgaWQ9Im1ldGFkYXRhODMwIj48cmRmOlJERj48Y2M6V29yawogICAgICAgcmRmOmFib3V0PSIiPjxkYzp0aXRsZT5TYW50YW5kZXI8L2RjOnRpdGxlPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48L3N2Zz4K" alt="Santander" style="height:30px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTIwIiBoZWlnaHQ9IjgzIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTMyLjMgMjAuNiAwIDUxLjhsMzIuMyAzMS4xaDM0LjNMMzQuMyA1MS44bDMyLjMtMzEuMUgzMi4zdi0uMXptNDU1LjUgMGgtMzQuNGwzMi4zIDMxLjEtMzIuMyAzMS4xaDM0LjRsMzIuMy0zMS4xLTMyLjMtMzEuMXoiIGZpbGw9IiNGRjE0NzgiLz48cGF0aCBkPSJNMTMzLjEgNTkuOWMtMyA1LjEtOC42IDguNC0xNSA4LjQtOS40IDAtMTcuMi03LjQtMTcuMi0xNi43IDAtOS4zIDcuNy0xNi42IDE3LjItMTYuNiA2LjQgMCAxMiAzLjQgMTUgOC40bDE1LjQtNi41Yy01LjktOS44LTE3LjItMTYuNC0zMC4zLTE2LjQtMTkgMC0zNC40IDEzLjktMzQuNCAzMS4xIDAgMTcuMiAxNS40IDMxLjEgMzQuNCAzMS4xIDEzLjEgMCAyNC42LTYuNiAzMC4zLTE2LjRsLTE1LjQtNi40ek0zMjguOSAyMC44Yy02LjYgMC0xMi42IDIuNS0xNy4xIDYuM1YwaC0xNy4zdjgzaDE3LjNWNDkuN2MwLTYuOSA1LjctMTIuNCAxMi45LTEyLjQgNy4xIDAgMTIuOSA1LjUgMTIuOSAxMi40VjgzaDE3LjJWNDUuN2MtLjEtMTMuOC0xMS42LTI0LjktMjUuOS0yNC45ek00MDEuOSAyMC42Yy0xOSAwLTM0LjQgMTMuOS0zNC40IDMxLjEgMCAxNy4yIDE1LjQgMzEuMSAzNC40IDMxLjFzMzQuNC0xMy45IDM0LjQtMzEuMWMwLTE3LjItMTUuNC0zMS4xLTM0LjQtMzEuMXptMCA0Ny43Yy05LjQgMC0xNy4yLTcuNC0xNy4yLTE2LjVzNy43LTE2LjUgMTcuMi0xNi41YzkuNCAwIDE3LjEgNy40IDE3LjEgMTYuNXMtNy41IDE2LjUtMTcuMSAxNi41ek0yMDguNCAyMC42djYuMWMtNS40LTMuOS0xMi02LjEtMTkuMi02LjEtMTcuOSAwLTMyLjMgMTMuOS0zMi4zIDMxLjEgMCAxNy4yIDE0LjQgMzEuMSAzMi4zIDMxLjEgNy4xIDAgMTMuOS0yLjMgMTkuMi02LjF2Ni4xaDE3LjNWMjAuNmgtMTcuM3ptLTE3LjIgNDcuN2MtOS40IDAtMTcuMi03LjQtMTcuMi0xNi41czcuNy0xNi41IDE3LjItMTYuNWM5LjQgMCAxNy4yIDcuNCAxNy4yIDE2LjUuMSA5LTcuNiAxNi41LTE3LjIgMTYuNXpNMjc3LjEgNjYuMWMtMS45IDEuNC00IDIuMi02LjQgMi4yLTUuOSAwLTEwLjctNC43LTEwLjctMTAuM1YzNy4yaDE3LjFWMjIuN0gyNjBWOC4zaC0xNy4xVjU4YzAgMTMuOCAxMS42IDI0LjkgMjUuOSAyNC45IDQuNyAwIDkuMS0xLjUgMTIuOS00LjFsLTQuNi0xMi43eiIgZmlsbD0iIzAwMjNBMCIvPjwvZz48L3N2Zz4=" alt="Catho" style="height:26px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDM2IiBoZWlnaHQ9IjU3IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik05NC4wMzUgMjcuMTVjNC41OS0yLjQyMiA3Ljk0Mi02LjU3IDcuOTQyLTEyLjA3OEMxMDEuOTc3IDUuNDkgOTQuNTc3IDAgODEuNjg2IDBINTcuMzA5djU2LjUwNGgyNi4zMTRjMTIuNjQzIDAgMjAuNTAyLTYuMTE5IDIwLjUwMi0xNS45NTQuMDEtNi42NDQtNC4zODgtMTEuMDU1LTEwLjA5LTEzLjR6bS0xMi4xMzgtMi4xNEg2Ni43NFY0LjY5MmgxNC4yODZjOC4wNDMgMCAxMS40NjggMy4xMDcgMTEuNDY4IDEwLjM4IDAgNy4wMi0zLjE2OCA5LjkzOC0xMC41OTYgOS45Mzh6bS0xNS4xNSAyNi44MDJ2LTIyLjExSDgxLjc2YzQuNzQ3IDAgMTIuNzE3IDEuNDI2IDEyLjcxNyAxMC45OCAwIDcuODA4LTMuNDUzIDExLjEzLTExLjU1IDExLjEzaC0xNi4xOHptLTY2LjczLTE5LjVjMC0xMy40NjggMTAuMjczLTI0LjQgMjIuOTUzLTI0LjQgMTIuNjUyIDAgMjIuOTUzIDEwLjkzMiAyMi45NTMgMjQuNCAwIDEzLjQ2Ni0xMC4zMSAyNC4zOTktMjIuOTUzIDI0LjM5OUMxMC4zMjcgNTYuNzEuMDE2IDQ1Ljc3OC4wMTYgMzIuMzF6bTguODk2IDBjMCAxMi4zMyA1LjI1MiAxOS43MDYgMTQuMDU3IDE5LjcwNlY1MmM4Ljc2OCAwIDE0LjAwMi03LjM1OCAxNC4wMDItMTkuNjg5UzMxLjc3NSAxMi42MDQgMjIuOTcgMTIuNjA0IDguOTEzIDE5Ljk4IDguOTEzIDMyLjMxem0xMDMuMTcyIDBjMC0xMy40NjggMTAuMjc0LTI0LjQgMjIuOTU0LTI0LjQgMTIuNjUyIDAgMjIuOTU0IDEwLjkzMiAyMi45NTQgMjQuNCAwIDEzLjQ2Ni0xMC4zMTEgMjQuMzk5LTIyLjk1NCAyNC4zOTlzLTIyLjk1NC0xMC45MzMtMjIuOTU0LTI0LjR6bTguODk3IDBjMCAxMi4zMyA1LjI1MiAxOS43MDYgMTQuMDU3IDE5LjcwNlY1MmM4Ljc2OCAwIDE0LjAwMi03LjM1OCAxNC4wMDItMTkuNjg5cy01LjE5Ny0xOS43MDctMTQuMDAyLTE5LjcwNy0xNC4wNTcgNy4zNzYtMTQuMDU3IDE5LjcwN3ptNTUuNzY5LTE5LjE0NWgtMTYuODAyVjguNTNoNDIuMTM0djQuNjM2aC0xNi44NzZ2NDIuODU5aC04LjQ1NnYtNDIuODZ6bTQyLjM3Mi00LjYzNmgtOC41MTF2NDcuNDk1aDguNTExVjguNTN6bTMyLjM3NSA0My4zNjVjMy43NzMgMCAxMC41MzEtMS4xOTIgMTMuNDE0LTkuMTZsLjgxOC0yLjMwOCA0LjEyMSAyLjA1NS0uNjcxIDEuODc3Yy0yLjg1NSA3Ljc5LTkuNDI4IDEyLjI2Ni0xOC4wNCAxMi4yNjYtMTIuOTM4IDAtMjIuNjk2LTEwLjQ1NS0yMi42OTYtMjQuMzA2IDAtMTMuNjczIDkuOTY5LTI0LjQgMjIuNjk2LTI0LjQgOC41NjUgMCAxNS4wOTMgNC41MTQgMTcuOTIyIDEyLjM5N2wuNjYgMS44NzctNC4xMjIgMi4xMDItLjgxOC0yLjMyN2MtMi4wODQtNS44ODQtNi45MjItOS4yNjMtMTMuMjg0LTkuMjYzLTguODQzIDAtMTQuMTIzIDcuMzEtMTQuMTIzIDE5LjU4NiAwIDEyLjI3NSA1LjI4IDE5LjYwNCAxNC4xMjMgMTkuNjA0em0xMDcuNjk4LTQuNDY2LTIuNDctNy4yMDhhMTIuMjEgMTIuMjEgMCAwIDAtNS4yNzktNi4zMTVjNC40MjUtMS45OCA4LjI2My01LjY5NyA4LjI2My0xMS42NDYgMC04LjU4Ny02Ljg1OS0xMy43MTEtMTguMzYyLTEzLjcxMWgtMTcuMjk5djQ3LjQ5NWg4LjUyMVYzNS44M2g3LjQyOGM1LjQ0NCAwIDcuMTk4IDIuMTc4IDguNzA1IDYuNDg1bDIuMzk1IDYuODVhMjMuMzQ5IDIzLjM0OSAwIDAgMCAyLjY4IDUuOTEzbC42NDQuOTM4aDExLjQ0OWwtNC4wNDktMy44MWExMS41NzMgMTEuNTczIDAgMCAxLTIuNjI2LTQuNzc2ek0zMzIuNTcgMTMuMTU4aDguMjA3YzcuMTUzIDAgMTAuMjEyIDIuNzMgMTAuMjEyIDkuMTMgMCA2LjE0Ny0zLjEzMSA4Ljg4OC0xMC4xNDYgOC44ODhoLTguMjY0bC0uMDA5LTE4LjAxOHptMzkuNTYzLTQuNjI3aDguNTExdjQ3LjQ5NWgtOC41MTFWOC41M3ptNDAuODIxLS42MmMtMTIuNjcxIDAtMjIuOTU1IDEwLjkzMy0yMi45NTUgMjQuNCAwIDEzLjQ2NyAxMC4zMjEgMjQuNCAyMi45NTUgMjQuNCAxMi42MzQgMCAyMi45NTItMTAuOTMzIDIyLjk1Mi0yNC40IDAtMTMuNDY3LTEwLjMtMjQuNC0yMi45NTItMjQuNHptMCA0LjYzNmM4Ljc2OCAwIDE0IDcuMzc3IDE0IDE5LjcwOHMtNS4yMzIgMTkuNzA3LTE0IDE5LjcwN2MtOC43NjkgMC0xNC4wOTQtNy4zNDgtMTQuMDk0LTE5LjY4OSAwLTEyLjM0IDUuMjk4LTE5LjcyNiAxNC4wOTQtMTkuNzI2ek0yOTUuNjIyLjk4Nmg0Ljk5NmwtMy44NjUgOS4yMDYgMjAuMzQ2IDQ1Ljg2MmgtOS4wNTRsLTcuMTcxLTE2LjEzMmgtMTYuNzgzbC02Ljk1MSAxNi4xMDRoLTQuOTg1TDI5NS42MjIuOTg2em0tMy4zNiAxOS41NjYtNi4yMjQgMTQuNjc4aDEyLjc0M2wtNi41MTktMTQuNjc4eiIvPjwvc3ZnPg==" alt="O Boticário" style="height:24px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMTIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTIuODk3MSAwLjEzMTAwOEw3LjMyODE2IDIuNDE2NzFDNy4xODIwOCAyLjQ3MzU1IDcuMDU2OTYgMi41NzM4MiA2Ljk2OTY2IDIuNzA0MDFDNi44ODIzNyAyLjgzNDIgNi44MzcxIDIuOTg4MDIgNi44Mzk5NyAzLjE0NDc0VjkuMzgyNDNMMTEuMjQ2MyA3LjYxMzE0QzExLjkzMzcgNy4zNTA2OSAxMi41MjM0IDYuODgyNzMgMTIuOTM1MiA2LjI3Mjk5QzEzLjM0NyA1LjY2MzI2IDEzLjU2MDggNC45NDE0IDEzLjU0NzUgNC4yMDU3NlYwLjU3NDA0QzEzLjU1MzkgMC40OTQzNjMgMTMuNTM5MSAwLjQxNDQxNyAxMy41MDQ2IDAuMzQyMzE5QzEzLjQ3MDEgMC4yNzAyMjEgMTMuNDE3MSAwLjIwODU0IDEzLjM1MSAwLjE2MzU0MkMxMy4yODQ5IDAuMTE4NTQ1IDEzLjIwODIgMC4wOTE4MzM5IDEzLjEyODQgMC4wODYxMTk5QzEzLjA0ODcgMC4wODA0MDU5IDEyLjk2ODkgMC4wOTU4OTExIDEyLjg5NzEgMC4xMzEwMDhaIiBmaWxsPSIjNzhERTFGIi8+CjxwYXRoIGQ9Ik0wLjA3NDQ2MTUgMTIuNjYxNlYxNi4wMjFDMC4wNzQ0NjE1IDIwLjU5OTUgMy4zOTE1NCAyMy45MTUyIDcuOTc1NjMgMjMuOTE1MkgxMi45NDA3QzEzLjAyMTggMjMuOTE3OSAxMy4xMDI3IDIzLjkwNCAxMy4xNzgyIDIzLjg3NDJDMTMuMjUzOCAyMy44NDQ0IDEzLjMyMjQgMjMuNzk5NCAxMy4zNzk4IDIzLjc0MTlDMTMuNDM3MiAyMy42ODQ1IDEzLjQ4MjIgMjMuNjE1OSAxMy41MTIgMjMuNTQwNEMxMy41NDE4IDIzLjQ2NDggMTMuNTU1OCAyMy4zODQgMTMuNTUzIDIzLjMwMjhWMTcuNzg3NUMxMy41NTU4IDE3LjcwNjMgMTMuNTQxOCAxNy42MjU0IDEzLjUxMiAxNy41NDk4QzEzLjQ4MjIgMTcuNDc0MiAxMy40MzczIDE3LjQwNTUgMTMuMzc5OSAxNy4zNDc5QzEzLjMyMjUgMTcuMjkwNCAxMy4yNTM5IDE3LjI0NTMgMTMuMTc4MyAxNy4yMTUzQzEzLjEwMjggMTcuMTg1MyAxMy4wMjE5IDE3LjE3MTIgMTIuOTQwNyAxNy4xNzM4SDcuODYyNzVDNy43MjcwOSAxNy4xNzg3IDcuNTkxODggMTcuMTU1NiA3LjQ2NTUzIDE3LjEwNkM3LjMzOTE5IDE3LjA1NjMgNy4yMjQ0NSAxNi45ODExIDcuMTI4NDYgMTYuODg1MUM3LjAzMjQ3IDE2Ljc4OTIgNi45NTczIDE2LjY3NDQgNi45MDc2NCAxNi41NDgxQzYuODU3OTggMTYuNDIxNyA2LjgzNDkgMTYuMjg2NSA2LjgzOTgzIDE2LjE1MDlWOS4zNzg0MkwwLjU2NTQ2IDExLjkzMjJDMC40MTgwMzUgMTEuOTg3OCAwLjI5MTU2NCAxMi4wODc5IDAuMjAzNTg0IDEyLjIxODZDMC4xMTU2MDQgMTIuMzQ5MyAwLjA3MDQ3OCAxMi41MDQxIDAuMDc0NDYxNSAxMi42NjE2WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQwLjcyMzIgNS42MjY0NkMzNi40ODA2IDUuNjI2NDYgMzMuMjEyOSA4LjkyMzggMzMuMjEyOSAxMy4wODA0QzMzLjIxMjkgMTcuMjM3IDM2LjQ4MDYgMjAuNTMyOSA0MC43MjMyIDIwLjUzMjlDNDQuOTY1OSAyMC41MzI5IDQ4LjIzMzYgMTcuMjM3IDQ4LjIzMzYgMTMuMDgwNEM0OC4yMzM2IDguOTIzOCA0NC45NjU5IDUuNjI2NDYgNDAuNzIzMiA1LjYyNjQ2Wk00MC43MjMyIDE3LjYwOTRDMzguMTcyMyAxNy42MDk0IDM2LjM5NDUgMTUuNjM0MSAzNi4zOTQ1IDEzLjA4MDRDMzYuMzk0NSAxMC41MjY2IDM4LjE3MjMgOC41NTEzMSA0MC43MjMyIDguNTUxMzFDNDMuMjQ2IDguNTUxMzEgNDUuMDIyMyAxMC41MjY2IDQ1LjAyMjMgMTMuMDgwNEM0NS4wMjIzIDE1LjYzNDEgNDMuMjQ2IDE3LjYwOTQgNDAuNzIzMiAxNy42MDk0WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTYzLjI4MjEgMTYuNDYyNEw2MC45MzE1IDE1LjIwMUM2MC45MDM5IDE1LjE4NDggNjAuODczMSAxNS4xNzQ5IDYwLjg0MTMgMTUuMTcyQzYwLjgwOTQgMTUuMTY5MSA2MC43NzczIDE1LjE3MzIgNjAuNzQ3MyAxNS4xODQxQzYwLjcxNzIgMTUuMTk1MSA2MC42ODk5IDE1LjIxMjUgNjAuNjY3NCAxNS4yMzUxQzYwLjY0NDkgMTUuMjU3OCA2MC42Mjc2IDE1LjI4NTIgNjAuNjE2OCAxNS4zMTUzQzYwLjI1NzIgMTYuMDEzNCA1OS43MTA0IDE2LjU5NzggNTkuMDM3NiAxNy4wMDI5QzU4LjM2NDkgMTcuNDA4MSA1Ny41OTI2IDE3LjYxODEgNTYuODA3MyAxNy42MDk0QzU0LjI1NSAxNy42MDk0IDUyLjQ0OSAxNS42MzQxIDUyLjQ0OSAxMy4wODA0QzUyLjQ0OSAxMC41MjY2IDU0LjI1NSA4LjU1MTMxIDU2LjgwNzMgOC41NTEzMUM1Ny41OTI3IDguNTQxNTUgNTguMzY1MiA4Ljc1MDkzIDU5LjAzODEgOS4xNTU5NEM1OS43MTExIDkuNTYwOTQgNjAuMjU3OCAxMC4xNDU1IDYwLjYxNjggMTAuODQ0MUM2MC42Mjc0IDEwLjg3NDMgNjAuNjQ0NSAxMC45MDE5IDYwLjY2NyAxMC45MjQ3QzYwLjY4OTYgMTAuOTQ3NSA2MC43MTY5IDEwLjk2NSA2MC43NDcgMTAuOTc2QzYwLjc3NzEgMTAuOTg2OSA2MC44MDkzIDEwLjk5MSA2MC44NDEyIDEwLjk4OEM2MC44NzMxIDEwLjk4NDkgNjAuOTA0IDEwLjk3NDggNjAuOTMxNSAxMC45NTgzTDYzLjI4MjEgOS42OTY5OEM2My4zMTA2IDkuNjg0MzYgNjMuMzM2MSA5LjY2NTUzIDYzLjM1NjQgOS42NDE4NkM2My4zNzY4IDkuNjE4MTkgNjMuMzkxNyA5LjU5MDI2IDYzLjM5OTkgOS41NjAxM0M2My40MDgyIDkuNTI5OTkgNjMuNDA5NiA5LjQ5ODQgNjMuNDA0MSA5LjQ2NzY1QzYzLjM5ODYgOS40MzY4OSA2My4zODYzIDkuNDA3NzUgNjMuMzY4MSA5LjM4MjM0QzYyLjEwNjggNy4wODgxOCA1OS42OTk3IDUuNjI2NDYgNTYuODA0NSA1LjYyNjQ2QzUyLjUwNCA1LjYyNjQ2IDQ5LjIzNjMgOC44Mzc3MyA0OS4yMzYzIDEzLjA4MDRDNDkuMjM2MyAxNy4zMjMgNTIuNTA0IDIwLjUzMjkgNTYuODA0NSAyMC41MzI5QzU5LjY5OTcgMjAuNTMyOSA2Mi4xMzY0IDE5LjA3MTIgNjMuMzk3OCAxNi43NDg4QzYzLjQxOTYgMTYuNjk1NCA2My40MTk3IDE2LjYzNTYgNjMuMzk4MSAxNi41ODIxQzYzLjM3NjUgMTYuNTI4NiA2My4zMzQ5IDE2LjQ4NTYgNjMuMjgyMSAxNi40NjI0WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTMyLjgzOTggMTcuMzc5N0gyNS41MDNWNi4xNDMwN0MyNS40OTg4IDYuMDgzNDggMjUuNDczMiA2LjAyNzQzIDI1LjQzMDkgNS45ODUxOUMyNS4zODg3IDUuOTQyOTUgMjUuMzMyNiA1LjkxNzM1IDI1LjI3MyA1LjkxMzA5SDIyLjU3ODJDMjIuNTE4NyA1LjkxNzM4IDIyLjQ2MjkgNS45NDMwMyAyMi40MjA5IDUuOTg1M0MyMi4zNzg4IDYuMDI3NTcgMjIuMzUzNSA2LjA4MzYgMjIuMzQ5NiA2LjE0MzA3VjE3LjYwOTZDMjIuMzQ5NiAxOS4yNDM1IDIzLjM1MjggMjAuMjQ2NyAyNC45ODY2IDIwLjI0NjdIMzIuODM5OEMzMi44OTk0IDIwLjI0MjcgMzIuOTU1NCAyMC4yMTcxIDMyLjk5NzUgMjAuMTc0OEMzMy4wMzk1IDIwLjEzMjQgMzMuMDY0OCAyMC4wNzYyIDMzLjA2ODQgMjAuMDE2N1YxNy42MDk2QzMzLjA2NDggMTcuNTUwMSAzMy4wMzk1IDE3LjQ5MzkgMzIuOTk3NSAxNy40NTE1QzMyLjk1NTQgMTcuNDA5MiAzMi44OTk0IDE3LjM4MzcgMzIuODM5OCAxNy4zNzk3WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTEwNC4yMTggMTcuMzc5M0g5Ni42OTY1TDEwNC4xMDQgOC41Nzk0QzEwNC4xNzkgOC40OTEyOCAxMDQuMjE5IDguMzc5MDQgMTA0LjIxOCA4LjI2MzM2VjYuMTQ2OTdDMTA0LjIxNCA2LjA4NzI4IDEwNC4xODkgNi4wMzEwNyAxMDQuMTQ2IDUuOTg4NzdDMTA0LjEwNCA1Ljk0NjQ3IDEwNC4wNDggNS45MjA5NiAxMDMuOTg4IDUuOTE2OTlIOTIuOTgzQzkyLjkyMzMgNS45MjA5NiA5Mi44NjcgNS45NDY0NyA5Mi44MjQ3IDUuOTg4NzdDOTIuNzgyNCA2LjAzMTA3IDkyLjc1NjkgNi4wODcyOCA5Mi43NTMgNi4xNDY5N1Y4LjU1NTQyQzkyLjc1NyA4LjYxNDk2IDkyLjc4MjUgOC42NzEwMSA5Mi44MjQ5IDguNzEzMDdDOTIuODY3MiA4Ljc1NTE0IDkyLjkyMzQgOC43ODAzNSA5Mi45ODMgOC43ODM5OUgxMDAuMTQxTDkyLjc1MyAxNy42MTM2QzkyLjY3ODcgMTcuNzAxNSA5Mi42MzgxIDE3LjgxMzEgOTIuNjM4NyAxNy45MjgyVjIwLjAxNjNDOTIuNjQyMyAyMC4wNzU5IDkyLjY2NzUgMjAuMTMyMSA5Mi43MDk2IDIwLjE3NDRDOTIuNzUxNyAyMC4yMTY4IDkyLjgwNzcgMjAuMjQyMyA5Mi44NjcyIDIwLjI0NjNIMTA0LjIyQzEwNC4yNzkgMjAuMjQyMyAxMDQuMzM1IDIwLjIxNjggMTA0LjM3NyAyMC4xNzQ0QzEwNC40MTkgMjAuMTMyMSAxMDQuNDQ0IDIwLjA3NTkgMTA0LjQ0OCAyMC4wMTYzVjE3LjYwOTNDMTA0LjQ0NCAxNy41NDk1IDEwNC40MTkgMTcuNDkzMSAxMDQuMzc3IDE3LjQ1MDhDMTA0LjMzNCAxNy40MDg0IDEwNC4yNzggMTcuMzgzIDEwNC4yMTggMTcuMzc5M1oiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik05MC4yODY3IDAuNzgyNzE1SDg3LjU5MTlDODcuNTMyNSAwLjc4NjY4MiA4Ny40NzY3IDAuODEyMDM1IDg3LjQzNDYgMC44NTQwN0M4Ny4zOTI2IDAuODk2MTA2IDg3LjM2NzIgMC45NTE5NjkgODcuMzYzMyAxLjAxMTI4VjMuNzYzOTlDODcuMzY3MiAzLjgyMzMxIDg3LjM5MjYgMy44NzkxNyA4Ny40MzQ2IDMuOTIxMjFDODcuNDc2NyAzLjk2MzI0IDg3LjUzMjUgMy45ODg2IDg3LjU5MTkgMy45OTI1N0g4OC42MjMyQzg4Ljg3MzkgNC4wMDA2IDg5LjEyMzUgMy45NTcxNiA4OS4zNTY3IDMuODY0OTJDODkuNTg5OSAzLjc3MjY4IDg5LjgwMTcgMy42MzM2IDg5Ljk3OSAzLjQ1NjI4QzkwLjE1NjMgMy4yNzg5NiA5MC4yOTU0IDMuMDY3MTYgOTAuMzg3NiAyLjgzMzk3QzkwLjQ3OTkgMi42MDA3OSA5MC41MjMzIDIuMzUxMTYgOTAuNTE1MyAyLjEwMDUyVjEuMDExMjhDOTAuNTExMyAwLjk1MTk2OSA5MC40ODYgMC44OTYxMDYgOTAuNDQzOSAwLjg1NDA3QzkwLjQwMTkgMC44MTIwMzUgOTAuMzQ2IDAuNzg2NjgyIDkwLjI4NjcgMC43ODI3MTVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTE5LjY5NiA1LjkxMjg4SDExNy4wMDFDMTE2Ljk0MiA1LjkxNzE4IDExNi44ODYgNS45NDI4MyAxMTYuODQ0IDUuOTg1MDlDMTE2LjgwMiA2LjAyNzM2IDExNi43NzcgNi4wODM0IDExNi43NzMgNi4xNDI4NlY3Ljg0NTg1QzExNS45NzEgNi42OTAzIDExNC4yNiA1LjYyNjQ2IDExMi4xODYgNS42MjY0NkMxMDguMjU5IDUuNjI2NDYgMTA1LjI3MiA4Ljk4MDIzIDEwNS4yNzIgMTMuMDgwNEMxMDUuMjcyIDE3LjE4MDUgMTA4LjI1NCAyMC41MzI5IDExMi4xODYgMjAuNTMyOUMxMTQuMjYgMjAuNTMyOSAxMTUuOTcxIDE5LjQ3MDQgMTE2Ljc3MyAxOC4zMTQ5VjIwLjAxNjVDMTE2Ljc3NyAyMC4wNzYgMTE2LjgwMiAyMC4xMzIyIDExNi44NDQgMjAuMTc0NkMxMTYuODg2IDIwLjIxNjkgMTE2Ljk0MiAyMC4yNDI0IDExNy4wMDEgMjAuMjQ2NUgxMTkuNjk2QzExOS43NTYgMjAuMjQyNSAxMTkuODEyIDIwLjIxNyAxMTkuODU1IDIwLjE3NDdDMTE5Ljg5NyAyMC4xMzI0IDExOS45MjIgMjAuMDc2MiAxMTkuOTI2IDIwLjAxNjVWNi4xNDI4NkMxMTkuOTIyIDYuMDgzMjggMTE5Ljg5NiA2LjAyNzIyIDExOS44NTQgNS45ODQ5OEMxMTkuODEyIDUuOTQyNzQgMTE5Ljc1NiA1LjkxNzE0IDExOS42OTYgNS45MTI4OFpNMTEyLjc1OSAxNy42NjU5QzExMC4yMzggMTcuNjY1OSAxMDguNDg4IDE1LjY1OTUgMTA4LjQ4OCAxMy4wODA0QzEwOC40ODggMTAuNTAxMiAxMTAuMjM4IDguNDkzNDYgMTEyLjc1OSA4LjQ5MzQ2QzExNS4yOCA4LjQ5MzQ2IDExNy4wMzEgMTAuNDk5OCAxMTcuMDMxIDEzLjA4MDRDMTE3LjAzMSAxNS42NjEgMTE1LjI4MiAxNy42NjU5IDExMi43NTkgMTcuNjY1OVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik03OC42MjUgNS45MTI4OEg3NS45MzAyQzc1Ljg3MDcgNS45MTcxOCA3NS44MTQ5IDUuOTQyODMgNzUuNzcyOCA1Ljk4NTA5Qzc1LjczMDggNi4wMjczNiA3NS43MDU1IDYuMDgzNCA3NS43MDE2IDYuMTQyODZWNy44NDU4NUM3NC44OTg4IDYuNjkwMyA3My4xODczIDUuNjI2NDYgNzEuMTE0NyA1LjYyNjQ2QzY3LjE4NjcgNS42MjY0NiA2NC4yMDEyIDguOTgwMjMgNjQuMjAxMiAxMy4wODA0QzY0LjIwMTIgMTcuMTgwNSA2Ny4xODI1IDIwLjUzMjkgNzEuMTE0NyAyMC41MzI5QzczLjE4NzMgMjAuNTMyOSA3NC44OTg4IDE5LjQ3MDQgNzUuNzAxNiAxOC4zMTQ5VjIwLjAxNjVDNzUuNzA1MiAyMC4wNzYgNzUuNzMwNCAyMC4xMzIyIDc1Ljc3MjUgMjAuMTc0NkM3NS44MTQ2IDIwLjIxNjkgNzUuODcwNiAyMC4yNDI0IDc1LjkzMDIgMjAuMjQ2NUg3OC42MjVDNzguNjg0NiAyMC4yNDI0IDc4Ljc0MDYgMjAuMjE2OSA3OC43ODI3IDIwLjE3NDZDNzguODI0OCAyMC4xMzIyIDc4Ljg1IDIwLjA3NiA3OC44NTM2IDIwLjAxNjVWNi4xNDI4NkM3OC44NDk3IDYuMDgzNCA3OC44MjQ0IDYuMDI3MzYgNzguNzgyNCA1Ljk4NTA5Qzc4Ljc0MDMgNS45NDI4MyA3OC42ODQ1IDUuOTE3MTggNzguNjI1IDUuOTEyODhaTTcxLjY4NzUgMTcuNjY1OUM2OS4xNjQ4IDE3LjY2NTkgNjcuNDE2NyAxNS42NTk1IDY3LjQxNjcgMTMuMDgwNEM2Ny40MTY3IDEwLjUwMTIgNjkuMTY0OCA4LjQ5MzQ2IDcxLjY4NzUgOC40OTM0NkM3NC4yMTAzIDguNDkzNDYgNzUuOTU4NCAxMC40OTk4IDc1Ljk1ODQgMTMuMDgwNEM3NS45NTg0IDE1LjY2MSA3NC4yMDQ2IDE3LjY2NTkgNzEuNjgxOSAxNy42NjU5SDcxLjY4NzVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNOTAuMjg2NyA1LjkxMzA5SDg3LjU5MzNDODcuNDY2MiA1LjkxMzA5IDg3LjM2MzMgNi4wMTYwNSA4Ny4zNjMzIDYuMTQzMDdWMjAuMDE1M0M4Ny4zNjMzIDIwLjE0MjMgODcuNDY2MiAyMC4yNDUyIDg3LjU5MzMgMjAuMjQ1Mkg5MC4yODY3QzkwLjQxMzcgMjAuMjQ1MiA5MC41MTY3IDIwLjE0MjMgOTAuNTE2NyAyMC4wMTUzVjYuMTQzMDdDOTAuNTE2NyA2LjAxNjA1IDkwLjQxMzcgNS45MTMwOSA5MC4yODY3IDUuOTEzMDlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNODQuNDY1NCAwLjc4MjcxNUg4MS43NzJDODEuNjQ1IDAuNzgyNzE1IDgxLjU0MiAwLjg4NTY3NyA4MS41NDIgMS4wMTI2OVYyMC4wMTY0QzgxLjU0MiAyMC4xNDM0IDgxLjY0NSAyMC4yNDY0IDgxLjc3MiAyMC4yNDY0SDg0LjQ2NTRDODQuNTkyNCAyMC4yNDY0IDg0LjY5NTQgMjAuMTQzNCA4NC42OTU0IDIwLjAxNjRWMS4wMTI2OUM4NC42OTU0IDAuODg1Njc3IDg0LjU5MjQgMC43ODI3MTUgODQuNDY1NCAwLjc4MjcxNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Localiza" style="height:28px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMxIiBoZWlnaHQ9IjI4IiB2aWV3Qm94PSIwIDAgMTMxIDI4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTA2LjkyNyA0LjExNjAyQzEwNC4xNDcgNi44MjkyNyAxMDIuNzc4IDEwLjE2MzkgMTAyLjc3OCAxNC4wMjc3QzEwMi43NzggMjEuODQxNCAxMDkuMDkxIDI4IDExNi44ODkgMjhDMTI0LjY4NyAyOCAxMzEgMjEuODcyMSAxMzEgMTQuMDI3N0MxMzEgMTAuMTk0NyAxMjkuNTk0IDYuOTE1NCAxMjYuODc2IDQuMTQ2NzhDMTI0LjEyNiAxLjM3MjAxIDEyMC43OTEgMC4wMDYxNTI0OSAxMTYuODg5IDAuMDA2MTUyNDlDMTEyLjk4NyAwLjAwNjE1MjQ5IDEwOS42ODIgMS4zNzgxNiAxMDYuOTMzIDQuMTIyMTdNOTAuNjAyNyAxNC45MTk4SDEwMC4xMDlWMTAuNjYyM0g5MC42MDI3VjQuNzMxMjdIMTAwLjk1M1YwLjQ0OTEzMkg4Ni4xNDU2VjI3LjU3NTVIMTAwLjk4NFYyMy4yOTMzSDkwLjYwODhWMTQuOTE5OEg5MC42MDI3Wk0yNS4yNDQ1IDI3LjU3NTVIMjkuNzAxNlYwLjQ0OTEzMkgyNS4yNDQ1VjI3LjU3NTVaTTUuNzUxNjcgMjcuNTc1NUMxMC43NDUxIDI3LjU3NTUgMTQuNTg1NyAyNi40NTU3IDE3LjE2ODcgMjQuMTMwMUMyMC4xMTU0IDIxLjQ5NjggMjEuNjAxMSAxOC4xMzc2IDIxLjYwMTEgMTQuMDIxNUMyMS42MDExIDkuOTA1NTIgMjAuMDg0NiA2LjI5NCAxNy4wNTc3IDMuNzIyMjZDMTQuNDk5NCAxLjUzODEyIDEwLjcxNDMgMC40NDkxMzIgNS44MDcxNSAwLjQ0OTEzMkgwVjI3LjU3NTVINS43NTE2N1pNNDkuNzYxNSAyMS42MzgzTDUyLjI1ODIgMjcuNTc1NUg1Ny4xOTYxTDQ1LjYwNjUgMC4zNjI5OTdINDMuMzYyNUwzMS40NzA4IDI3LjU3NTVIMzYuMzc3OUwzOC45ODU2IDIxLjUyNzZDMzkuMDQxMSAyMS4zNjE1IDM5LjA3MTkgMjEuMjQ0NiAzOS4wOTY2IDIxLjEzMzhDMzkuMjA3NSAyMS4xODkyIDM5LjM4MDEgMjEuMjQ0NiAzOS41NzEyIDIxLjMzMDdDNDEuMDMyMyAyMS44OTA2IDQyLjc3MDcgMjIuMTk4MiA0NC40Nzg0IDIyLjE5ODJDNDYuMTg2IDIyLjE5ODIgNDcuODE5NiAyMS44NTk4IDQ4Ljc5OTggMjEuNTI3NkM0OS4zMDUzIDIxLjM2MTUgNDkuNDcxOCAyMS4yNzUzIDQ5LjYxMzYgMjEuMTg5MkM0OS42MzgyIDIxLjI5OTkgNDkuNzI0NSAyMS41NTIyIDQ5Ljc1NTMgMjEuNjM4M003OC41MTM3IDguNzM2NTRMODEuOTEwNCA1LjgyNjQxQzc4Ljk5NDUgMS45MzE4OCA3NS4wOTIzIDAgNzAuNDkzNCAwQzYyLjY2NDIgMCA1Ni4zNTc3IDYuMjQ0NzggNTYuMzU3NyAxNC4wNTIzQzU2LjM1NzcgMjEuODU5OCA2Mi42Mzk2IDI3Ljk5MzggNzAuMjk2MSAyNy45OTM4QzcyLjIzMTkgMjcuOTkzOCA3NC4wODEzIDI3LjU3NTUgNzUuODc1MiAyNi43NjMzQzc3LjYxMzYgMjUuOTgyIDc5LjEzMDIgMjQuODg2OCA4MC4zNjMxIDIzLjQ1OTVDODEuNTQwNiAyMi4xNDI4IDgyLjI5ODggMjAuNjI5MyA4Mi43NDg4IDE4Ljk4MDRDODMuMTEyNiAxNy42MDg0IDgzLjM0MDcgMTUuOTI4OCA4My4yMjk3IDEzLjkxMDhMODMuMTc0MiAxMy4wOTg3SDcwLjk0MzRWMTcuMzgwOEg3OC40NjQ0Qzc4LjI2NzEgMTkuMDYwNCA3Ny4zOTc5IDIwLjUxODYgNzUuODgxNCAyMS43MTgzQzc0LjIyOTIgMjMuMDU5NSA3Mi4zNDkgMjMuNzA1NiA3MC4yNDA3IDIzLjcwNTZDNjcuNzk5NCAyMy43MDU2IDY1LjYxMSAyMi42OTY2IDYzLjU5NTEgMjAuNzA5M0M2MS43NzA0IDE4Ljg2MzUgNjAuODQ1NiAxNi42NDg2IDYwLjg0NTYgMTQuMDc2OUM2MC44NDU2IDExLjM2MzcgNjEuODAxMiA5LjAwNzI1IDYzLjc2MTYgNy4wNTA3NkM2NS42MTEgNS4xNzQyNSA2Ny44NTQ5IDQuMjc1OTggNzAuNDM3OSA0LjI3NTk4QzczLjc0ODQgNC4yNzU5OCA3Ni4zNTYgNS43ODk1IDc4LjUxMzcgOC43MzAzOU0xMjMuNzAxIDcuMTEyMjhDMTI1LjYwNiA4Ljk1ODAzIDEyNi41MzcgMTEuMjgzNyAxMjYuNTM3IDEzLjk5NjlDMTI2LjUzNyAxNi43MTAyIDEyNS41ODEgMTguOTgwNCAxMjMuNzAxIDIwLjg4MTZDMTIxLjgyMSAyMi43NTgxIDExOS41NTIgMjMuNzExNyAxMTYuODgzIDIzLjcxMTdDMTExLjUyNiAyMy43MTE3IDEwNy4yNiAxOS4zMTg4IDEwNy4yNiAxMy45OTY5QzEwNy4yNiAxMS4zMDgzIDEwOC4yMTUgOC45ODI2NCAxMTAuMDk1IDcuMDgxNTJDMTExLjk0NSA1LjIwNTAxIDExNC4yNDQgNC4yODIxNCAxMTYuODgzIDQuMjgyMTRDMTE5LjUyMSA0LjI4MjE0IDEyMS43OSA1LjIzNTc3IDEyMy43MDEgNy4xMTIyOFpNNS44OTM0NiA0LjczMTI3QzkuNzA5NDEgNC43MzEyNyAxMi40MDM0IDUuNTEyNjMgMTQuMDg2NCA3LjAwMTU0QzE2LjEwODQgOC43NjczIDE3LjExMzIgMTEuMDg2OCAxNy4xMTMyIDE0LjAwMzFDMTcuMTEzMiAxNi45MTk0IDE2LjEzMyAxOS4wNjY2IDE0LjE5NzMgMjAuODYzMUMxMi41MTQ0IDIyLjQ2MjggOS43NjQ4OSAyMy4yOTk1IDUuODkzNDYgMjMuMjk5NUg0LjY2MDUyVjQuNzMxMjdINS44OTM0NlpNNDAuNjk5NCAxNy4zNTYyQzQwLjc4NTcgMTcuMTkwMSA0MC45MjEzIDE2LjkwNzEgNDAuOTc2OCAxNi43NzE3TDQ0LjM5ODIgOC40ODQyOUw0Ny43NjQxIDE2Ljg1MTdDNDcuODE5NiAxNi45OTMyIDQ3LjkzMDYgMTcuMjE0NyA0OC4wMTY5IDE3LjQxMTZMNDcuNTk3NyAxNy40OTc3QzQ2LjY0MjIgMTcuNzQ5OSA0NS41NzU3IDE3LjkxNjEgNDQuNDg0NSAxNy45MTYxQzQzLjM5MzQgMTcuOTE2MSA0Mi4zODI0IDE3Ljc3NDYgNDEuMzE1OSAxNy40OTc3QzQxLjExODYgMTcuNDQyMyA0MC44NDEyIDE3LjM1NjIgNDAuNjk5NCAxNy4zNTYyWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==" alt="Diageo" style="height:30px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAAAeCAMAAADXeTb3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABCUExURQAAAP///////////////////////////////////////////////////////////////////////////////////whf0oYAAAAVdFJOUwAQIDBAUGBwf4CPkJ+gr7/Az9/g7+mx/hsAAAG+SURBVHjarZbtbsIwDEVv3DTFDMjIct//VSd1H16ZU3XD5xcKVTk6uEmRdcEORVXc5YKfLLqLYIDqDCi54zCRr/iNNFIA4427ZAwgL6tCTxhhP7XhRPISqcAzBpxI9SKQNLcnMAVOcJHO5hW6kleyhipUuFzJ4kdoqGSOU2jkDIdCXoZmmaxxCoVs6fgsCvkKWIYIBbmR6s/iIEL+MKlxCtLZxf3H/QgXU4lSgJI3PHAjyyCCfD0vNU4hNTIfm0WxdSVzmAIyeXe2YIebrafOGqeA+nBUnAezmC3CXzLM1eengnT2NJxFo1qENUPDIZQjTAG6OSp2divd3rngCMubz0bBJtKbRVNrAiM1trBZAGay2iw22Y9gC0ucAup3/KvdOJNlE+FXlp68reN/ChPZ0tcHeAqFLE6XOAW8kPo5i5OjYBGcDEEK6eOoOK3rjoJFcDLEKGAhK6Sziavgj/+dPcUpoJLZXpVMwY1gV2igQiY72eAqtOGG2VOEgk0kKa7CyWScDHEKqa+LjoJYBC9DnAIWNnEULIKf4RyogHuBpyB7h2Il5QmFrLqpKNggqhOwXpYxYnr4clbFMVRnvAPTdjTHlb8U2wAAAABJRU5ErkJggg==" alt="MATH" style="height:30px"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTQiIGhlaWdodD0iMzMiIHZpZXdCb3g9IjAgMCA5NCAzMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBhcmlhLWxhYmVsPSJKw7xzc2kiPjxwYXRoIGQ9Ik05My4wMTgzIDIuOTIwMDZDOTMuMDE4MyAxLjMwNzEzIDkxLjU2NTkgMCA4OS43NzM4IDBDODcuOTgxNyAwIDg2LjUyOTMgMS4zMDcxMyA4Ni41MjkzIDIuOTIwMDZDODYuNTI5MyA0LjUzMjk4IDg3Ljk4MTcgNS44NDAxMiA4OS43NzM4IDUuODQwMTJDOTEuNTY1OSA1Ljg0MDEyIDkzLjAxODMgNC41MzI5OCA5My4wMTgzIDIuOTIwMDZaIiBmaWxsPSJ3aGl0ZSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNC41MjY1IDUuODQwMTJDMzYuMzE4NiA1Ljg0MDEyIDM3Ljc3MSA0LjUzMjk4IDM3Ljc3MSAyLjkyMDA2QzM3Ljc3MSAxLjMwNzEzIDM2LjMxODYgMCAzNC41MjY1IDBDMzIuNzM0NCAwIDMxLjI4MiAxLjMwNzEzIDMxLjI4MiAyLjkyMDA2QzMxLjI4MzEgNC41MzI5OCAzMi43MzU1IDUuODQwMTIgMzQuNTI2NSA1Ljg0MDEyWiIgZmlsbD0id2hpdGUiPjwvcGF0aD48cGF0aCBkPSJNMjYuNDM2MSA1Ljg0MDEyQzI4LjIyODIgNS44NDAxMiAyOS42ODA2IDQuNTMyOTggMjkuNjgwNiAyLjkyMDA2QzI5LjY4MDYgMS4zMDcxMyAyOC4yMjgyIDAgMjYuNDM2MSAwQzI0LjY0NCAwIDIzLjE5MTYgMS4zMDcxMyAyMy4xOTE2IDIuOTIwMDZDMjMuMTkxNiA0LjUzMjk4IDI0LjY0NCA1Ljg0MDEyIDI2LjQzNjEgNS44NDAxMloiIGZpbGw9IndoaXRlIj48L3BhdGg+PHBhdGggZD0iTTg5Ljc3NDMgNy41MDI5M0M4OC4zMTczIDcuNTAyOTMgODcuMTM1NiA4LjU2NTQzIDg3LjEzNTYgOS44NzY3MVYyOS45NzcxQzg3LjEzNTYgMzEuMjg4NCA4OC4zMTczIDMyLjM1MTkgODkuNzc0MyAzMi4zNTE5QzkxLjIzMTMgMzIuMzUxOSA5Mi40MTMgMzEuMjg4NCA5Mi40MTMgMjkuOTc3MVY5Ljg3NjcxQzkyLjQxMyA4LjU2NTQzIDkxLjIzMTMgNy41MDI5MyA4OS43NzQzIDcuNTAyOTNaIiBmaWxsPSJ3aGl0ZSI+PC9wYXRoPjxwYXRoIGQ9Ik03Ljk5MjA2IDEwLjExNDFDNy45OTIwNiAxMS40MjU0IDkuMTczNzcgMTIuNDg3OSAxMC42MzA3IDEyLjQ4NzlIMTMuMjY5NFYxNi41MDk4VjI0LjA0MTZDMTMuMjY5NCAyNi4wMjQ2IDExLjQ3NjEgMjcuNjM4NiA5LjI3MjgyIDI3LjYzODZDNy4wNjk1IDI3LjYzODYgNS4yNzYyMSAyNi4wMjQ2IDUuMjc2MjEgMjQuMDQxNlYyMS45MjA4QzUuMjc2MjEgMjAuNjA5NSA0LjA5NDUgMTkuNTQ1OSAyLjYzNzUzIDE5LjU0NTlDMS4xODA1NSAxOS41NDU5IDAgMjAuNjA5NSAwIDIxLjkyMDhWMjQuMDQxNkMwIDI3LjI5MDMgMi4wNjM5NSAzMC4xMDQ2IDUuMDc1ODEgMzEuNDgyMkM2LjMzNTgzIDMyLjA1OTYgNy43NjE3MSAzMi4zODYxIDkuMjcyODIgMzIuMzg2MUMxMC43ODM5IDMyLjM4NjEgMTIuMjA4NyAzMi4wNTg2IDEzLjQ2OTggMzEuNDgyMkMxNi40ODE3IDMwLjEwMzYgMTguNTQ1NiAyNy4yOTAzIDE4LjU0NTYgMjQuMDQxNlYxMi40ODc5VjkuNjI3OTJDMTguNTQ1NiA4LjU4NTExIDE3LjYwNTggNy43MzkyNiAxNi40NDcxIDcuNzM5MjZIMTMuMjY5NEgxMC42Mjk2QzkuMTcyNjEgNy43MzkyNiA3Ljk5MjA2IDguODAyOCA3Ljk5MjA2IDEwLjExNDFaIiBmaWxsPSJ3aGl0ZSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNy4wMTA3IDcuMzQ5NjFDMzUuNTUzOCA3LjM0OTYxIDM0LjM3MjEgOC40MTIxIDM0LjM3MjEgOS43MjMzOFYxNi41MzI3VjIzLjY2NjVWMjQuMDQxN1YyNC40MTdDMzQuMTYyNCAyNi4yMTU0IDMyLjQ2ODIgMjcuNjIzMSAzMC40MTQ2IDI3LjYyMzFDMjguMzYxIDI3LjYyMzEgMjYuNjY2OCAyNi4yMTY1IDI2LjQ1NzIgMjQuNDE3VjI0LjA0MTdWMjMuNjY2NVYxNi41MzI3VjkuNzIzMzhDMjYuNDU3MiA4LjQxMjEgMjUuMjc1NSA3LjM0OTYxIDIzLjgxODUgNy4zNDk2MUMyMi4zNjE1IDcuMzQ5NjEgMjEuMTc5OCA4LjQxMjEgMjEuMTc5OCA5LjcyMzM4VjI0LjA0MTdDMjEuMTc5OCAyNy4zMDE4IDIzLjI2NjggMzAuMTIxMyAyNi4zMDI4IDMxLjQ4MjNDMjcuNTQxIDMyLjAzNjkgMjguOTM1OCAzMi4zNTEgMzAuNDEzNSAzMi4zNTFDMzEuODkxMiAzMi4zNTEgMzMuMjg2IDMyLjAzNjkgMzQuNTI0MSAzMS40ODIzQzM3LjU2MDEgMzAuMTIxMyAzOS42NDcxIDI3LjMwMDcgMzkuNjQ3MSAyNC4wNDE3VjkuNzIzMzhDMzkuNjQ5NCA4LjQxMjEgMzguNDY3NyA3LjM0OTYxIDM3LjAxMDcgNy4zNDk2MVoiIGZpbGw9IndoaXRlIj48L3BhdGg+PHBhdGggZD0iTTY0LjQ0NjcgMTcuMTg1N0M2NC40MTU2IDExLjI5MzcgNTguOTY1NCA2LjU1NDQ1IDUyLjM1MiA2Ljc5ODA1QzQ2LjQxNyA3LjAxNjc3IDQxLjU2ODEgMTEuMzIyNyA0MS4yNTAyIDE2LjY2MTFDNDEuMDQyOSAyMC4xNDQxIDQyLjczMjUgMjMuMjc5NyA0NS40NzM3IDI1LjMwODNDNDcuNDc3OCAyNi43OTE3IDUwLjA0MzkgMjcuNjgyMSA1Mi44NDE1IDI3LjY4MjFDNTUuMTAxMyAyNy42ODIxIDU3LjA4ODEgMjguNzUzOSA1OC4yMDg3IDMwLjM2MTdDNTguNjg1NiAzMS4wNDY5IDU5LjUwMSAzMS40ODEyIDYwLjM5OTQgMzEuNDgxMkg2MC41MTQ2QzYyLjU1MiAzMS40ODEyIDYzLjc5NzEgMjkuNDY5MiA2Mi43MjgyIDI3LjkwN0M2Mi4wNTMzIDI2LjkyMDIgNjEuMTk5OSAyNi4wNDEyIDYwLjIwOTMgMjUuMzA4M0M1OC4yMzc1IDIzLjg0ODggNTUuNzIzMiAyMi45NjM2IDUyLjk3ODYgMjIuOTM0NkM0OS43MjE0IDIyLjkwMDMgNDYuODk2MiAyMC43Nzk1IDQ2LjU0NzIgMTcuODYzNkM0Ni4xMzgzIDE0LjQ0MDggNDkuMTIwMiAxMS41MzczIDUyLjg0MTUgMTEuNTM3M0M1Ni4zMTQxIDExLjUzNzMgNTkuMTQwNSAxNC4wNjY2IDU5LjE3MTYgMTcuMTg0NkM1OS4xNzE2IDE3LjMwNjkgNTkuMTkxMiAxNy40MjUxIDU5LjIyMzQgMTcuNTM5MUM1OS4zNDkgMTguNzM1MyA2MC40NjczIDE5LjY3MjQgNjEuODI5OSAxOS42NzI0QzYzLjI3NjUgMTkuNjcyNCA2NC40NDkgMTguNjE3MiA2NC40NDkgMTcuMzE1MkM2NC40NDkgMTcuMjkzNSA2NC40NDU1IDE3LjI3MTcgNjQuNDQ1NSAxNy4yNDk5QzY0LjQ0NDQgMTcuMjI5MiA2NC40NDY3IDE3LjIwODUgNjQuNDQ2NyAxNy4xODU3WiIgZmlsbD0id2hpdGUiPjwvcGF0aD48cGF0aCBkPSJNODEuMjYyMyAxMy44NjcyQzc5LjI1ODIgMTIuMzgzOCA3Ni42OTIxIDExLjQ5MzQgNzMuODk0NSAxMS40OTM0QzcxLjYzNDcgMTEuNDkzNCA2OS42NDc5IDEwLjQyMTYgNjguNTI3MyA4LjgxMzg1QzY4LjA1MDQgOC4xMjg2NyA2Ny4yMzUgNy42OTQzNCA2Ni4zMzU1IDcuNjk0MzRINjYuMjIwM0M2NC4xODE3IDcuNjk0MzQgNjIuOTM3OCA5LjcwNjM1IDY0LjAwNjYgMTEuMjY4NUM2NC42ODE1IDEyLjI1NjMgNjUuNTM1IDEzLjEzNDMgNjYuNTI1NSAxMy44NjcyQzY4LjQ5NzMgMTUuMzI2NyA3MS4wMTE2IDE2LjIxMTkgNzMuNzU2MyAxNi4yNDFDNzcuMDEzNCAxNi4yNzUyIDc5LjgzODcgMTguMzk2IDgwLjE4NzcgMjEuMzExOUM4MC41OTY2IDI0LjczNDcgNzcuNjE0NyAyNy42MzkyIDczLjg5MzMgMjcuNjM5MkM3MC40MjA4IDI3LjYzOTIgNjcuNTkzMiAyNS4xMSA2Ny41NjMzIDIxLjk5MTlDNjcuNTYzMyAyMS44Mzk2IDY3LjUzNTYgMjEuNjkzNCA2Ny40ODYxIDIxLjU1NTVDNjcuMjc4OCAyMC40NDAyIDY2LjIwNDIgMTkuNTkwMiA2NC45MDYxIDE5LjU5MDJDNjMuNDU5NSAxOS41OTAyIDYyLjI4NyAyMC42NDU0IDYyLjI4NyAyMS45NDc0QzYyLjI4NyAyMS45NTQ2IDYyLjI4ODIgMjEuOTYxOSA2Mi4yODgyIDIxLjk2OTFDNjIuMjg4MiAyMS45NzY0IDYyLjI4NyAyMS45ODM2IDYyLjI4NyAyMS45OTE5VjIyLjAxMTZINjIuMjg4MkM2Mi4zMzIgMjcuODk2MyA2Ny43Nzg2IDMyLjYyNTIgNzQuMzg3NCAzMi4zNzg1QzgwLjMyMDEgMzIuMTU3NyA4NS4xNjY3IDI3Ljg1MjggODUuNDg0NiAyMi41MTU0Qzg1LjY5MzEgMTkuMDMxNSA4NC4wMDIzIDE1Ljg5NTggODEuMjYyMyAxMy44NjcyWiIgZmlsbD0id2hpdGUiPjwvcGF0aD48L3N2Zz4=" alt="Jüssi" style="height:30px">
+  </div></div>
+</section>
+
+<section class="kind" id="areas">
+  <h2 class="h-lg reveal">Quatro áreas,<br>uma mesma pessoa</h2>
+  <div class="trio four-up reveal" id="trio">
+    <div class="c"><h3>Design</h3><div class="yrs">desde 2006</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><rect x="30" y="30" width="90" height="70" rx="6"/><path d="M30 46h90"/><circle cx="40" cy="38" r="2"/><circle cx="48" cy="38" r="2"/><rect x="42" y="58" width="30" height="30" rx="3"/><path d="M80 60h28M80 70h20M80 80h24"/><path d="M96 104l14 22 4-10 10-4Z"/></svg></div><p>Comecei como web designer. Ficou o olho para hierarquia, tipografia e para o detalhe que faz uma tela ser fácil de ler.</p><div class="tools"><span>Web design</span><span>UI</span><span>Design de publicidade</span></div></div>
+    <div class="c"><h3>Desenvolvimento</h3><div class="yrs">front-end e back-end</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><path d="M44 40 22 62l22 22M90 40l22 22-22 22M76 32 58 92"/><ellipse cx="104" cy="104" rx="24" ry="8"/><path d="M80 104v18c0 4 11 8 24 8s24-4 24-8v-18"/></svg></div><p>Liderei um time de desenvolvimento na Catho. Da tela à API: a interface que funciona e o que roda por trás dela.</p><div class="tools"><span>HTML/CSS</span><span>JavaScript</span><span>React</span><span>APIs</span><span>Cloud Functions</span></div></div>
+    <div class="c on"><h3>Dados</h3><div class="yrs">desde 2018 · o meu trabalho hoje</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><path d="M25 115V35M25 115h100"/><path d="M35 100l22-20 18 10 22-30 22-14"/><circle cx="119" cy="46" r="4"/><rect x="38" y="104" width="8" height="11"/><rect x="58" y="96" width="8" height="19"/><rect x="78" y="100" width="8" height="15"/><rect x="98" y="88" width="8" height="27"/></svg></div><p>Digital analytics, BI e insights: coleta, pipelines, modelagem, painéis e testes A/B, do dado bruto à decisão.</p><div class="tools"><span>SQL</span><span>Python</span><span>BigQuery</span><span>Databricks</span><span>Power BI</span><span>GA / GTM</span></div></div>
+    <div class="c"><h3>IA</h3><div class="yrs">no dia a dia</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><path d="M75 25l8 22 22 8-22 8-8 22-8-22-22-8 22-8Z"/><path d="M110 85l4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/><path d="M40 95l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"/></svg></div><p>Agentes, automações, análises que respondem perguntas e dashboards interativos com motion graphics. A IA entra para acelerar o trabalho com dados.</p><div class="tools"><span>Genie Code</span><span>Agents Databricks</span><span>Claude Code</span><span>ChatGPT Codex</span><span>GitHub Copilot</span></div></div>
+  </div>
+</section>
+
+<section class="band" id="trajetoria">
+  <div class="wrap">
+    <div class="head reveal">
+      <a class="crumb" href="#">Trajetória</a>
+      <h2 class="h-lg">Do pixel ao insight</h2>
+      <p>Vinte e um anos passando por cada etapa de um produto digital, do layout ao pipeline. Cada fase deixou uma ferramenta que eu uso até hoje.</p>
+      <a class="btn soft" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">Ver no LinkedIn <span class="arr"><i>→</i></span></a>
+    </div>
+    <div class="tabs-wrap reveal">
+      <div class="tabs" role="tablist" data-tabs="traj">
+        <button role="tab" aria-selected="true"><b>Bradesco · 2022–hoje</b><span>Dados do atendimento: a jornada do cliente entre canais, experiência e IA.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>MATH · 2021–2022</b><span>Engenharia de dados no Google Cloud para o Santander.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>Jüssi · 2018–2021</b><span>CRO e digital analytics para O Boticário, Localiza e Diageo.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>Catho · 2012–2018</b><span>Da agência interna ao time de growth, com a cultura de experimentos.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>Catho · 2005–2012</b><span>Do marketing digital ao web design, até liderar o time de desenvolvimento.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>Agora · IA</b><span>IA no dia a dia do trabalho com dados.</span><i></i></button>
+      </div>
+      <div class="window">
+        <div class="side"><div class="dots3"><i></i><i></i><i></i></div><div class="ws"><b></b>Trajetória ⌄</div><a class="on">Linha do tempo</a><a>Ferramentas</a><a>Formação</a></div>
+        <div class="pane" data-panes="traj">
+          <div class="on"><div class="tl">
+            <span class="when">maio de 2022 – hoje · Osasco</span><h4>Bradesco</h4>
+            <div class="role"><div class="rh"><b>Digital Analytics · BI · Insights</b><em>mai 2022 – hoje</em></div>
+            <p class="lead-in">Trabalho com os dados do atendimento de um dos maiores bancos do país: entender por onde o cliente passa, onde a experiência quebra e o que fazer antes que o problema vire reclamação.</p>
+            <ul><li>Jornada do cliente entre os canais de atendimento (chat com IA generativa, voz e app), agrupada por perfil de comportamento.</li><li>Métricas de experiência por canal (NPS, CSAT e resolutividade) para mostrar onde cada jornada trava.</li><li>Mapas de jornada visuais e interativos, gerados a partir dos dados e exibidos dentro do Databricks.</li><li>IA aplicada ao atendimento: similaridade semântica para comparar diálogos, com Genie Code e agentes no dia a dia.</li></ul></div>
+            <div class="chipsrow"><span>Databricks</span><span>SQL</span><span>Python</span><span>AI Functions</span><span>Genie Code</span><span>Jornada do cliente</span><span>NPS · CSAT</span></div></div></div>
+          <div><div class="tl">
+            <span class="when">maio de 2021 – abril de 2022 · cliente Santander</span><h4>MATH</h4>
+            <div class="role"><div class="rh"><b>Digital Analytics</b><em>mai 2021 – abr 2022</em></div>
+            <ul><li>Construção e gestão de pipelines de dados, bases e APIs para extrair, ingerir e transportar dados.</li><li>Ingestão, transformação e disponibilização dos dados de engajamento dos ambientes digitais e de mídia no Google Cloud, com BigQuery, Cloud Functions, Storage e Dataprep.</li><li>Dashboards no Data Studio sobre o BigQuery.</li><li>Python para automatizar e otimizar os processos de dados.</li></ul></div>
+            <div class="chipsrow"><span>GCP</span><span>BigQuery</span><span>Cloud Functions</span><span>Dataprep</span><span>Python</span><span>Data Studio</span></div></div></div>
+          <div><div class="tl">
+            <span class="when">julho de 2018 – abril de 2021 · clientes O Boticário, Localiza e Diageo</span><h4>Jüssi</h4>
+            <div class="role"><div class="rh"><b>Especialista em CRO e Digital Analytics</b><em>jul 2018 – abr 2021</em></div>
+            <p class="lead-in">Garantir que as decisões de negócio dos clientes fossem guiadas por dados, levando insights para os times de marketing, desenvolvimento e UX.</p>
+            <ul><li>Planejamento de data layer e eventos de web analytics.</li><li>Criação e manutenção do Solution Design Reference (SDR).</li><li>Estudo da jornada de compra: pontos de abandono e de interação dos usuários mais engajados.</li><li>Mapas de calor, de clique e de rolagem, e insights a partir de gravações de navegação.</li><li>Implementação de tags no Google Tag Manager e de testes A/B.</li></ul></div>
+            <div class="chipsrow"><span>CRO</span><span>Testes A/B</span><span>GTM</span><span>Data layer</span><span>SDR</span><span>Mapas de calor</span></div></div></div>
+          <div><div class="tl">
+            <span class="when">Catho · 13 anos de casa · Barueri</span><h4>Catho</h4>
+            <div class="role"><div class="rh"><b>Coordenador de Growth Marketing</b><em>jan 2017 – jul 2018</em></div>
+            <p class="lead-in">O time de growth não nasceu do dia para a noite. Começamos como uma agência interna que atendia demandas; com o tempo, rotinas e métodos evoluíram e passamos a propor. A maior conquista dessa virada foi o método de experimentos, que melhorou os canais de marketing, principalmente a aquisição, e também produto e atendimento.</p>
+            <ul><li>Coordenação de um time multidisciplinar: UX, front-end, back-end, SEO e conteúdo.</li></ul>
+            <div class="chipsrow" style="margin-top:2px"><span>Projeto · Otimização de landing pages</span><span>Projeto · Gerador de currículo</span><span>Projeto · Push</span></div></div>
+            <div class="role"><div class="rh"><b>Coordenador da Agência Interna</b><em>set 2012 – dez 2016</em></div>
+            <ul><li>Coordenação dos projetos de marketing digital da empresa: B2C, B2B e institucional.</li><li>Negociação com os clientes internos, cronogramas e controle do fluxo de jobs.</li><li>Acompanhamento de campanhas on-line (CPM, CPC, CPA, retargeting) e de e-mail marketing.</li><li>Métricas e monitoramento de resultados, além de apoio na gestão do time de desenvolvimento.</li></ul></div>
+            <div class="chipsrow"><span>Growth</span><span>Experimentos</span><span>Gestão de times</span><span>Mídia on-line</span><span>E-mail marketing</span></div></div></div>
+          <div><div class="tl">
+            <span class="when">Catho · agosto de 2005 – agosto de 2012</span><h4>Catho</h4>
+            <div class="role"><div class="rh"><b>Líder da Equipe de Desenvolvimento</b><em>out 2009 – ago 2012</em></div>
+            <ul><li>Coordenação dos projetos de front-end e, junto com o time de UX, dos projetos de web design.</li><li>Criação e manutenção da padronização do site.</li><li>Direcionamento e desenvolvimento das pessoas do time.</li></ul></div>
+            <div class="role"><div class="rh"><b>Web Designer, de júnior a especialista</b><em>nov 2006 – set 2009</em></div>
+            <ul><li>Usabilidade e experiência do usuário.</li><li>Layouts do site e de novos produtos, landing pages, banners e e-mails marketing, da criação ao disparo.</li><li>Logotipos de produtos, materiais de comunicação e manutenção do site.</li></ul></div>
+            <div class="role"><div class="rh"><b>Analista de Marketing Digital</b><em>ago 2005 – nov 2006</em></div>
+            <ul><li>Planejamento e compra de mídia on-line (MSN, UOL, BOL, AOL, Yahoo! e iG) pelo adserver RealMedia.</li><li>Gestão do programa de afiliados, com suporte técnico aos parceiros.</li><li>Briefings de banners, landing pages e e-mails, métricas e relatórios diários.</li><li>Participação na implantação do Google Analytics e do RealMedia no site.</li></ul></div>
+            <div class="chipsrow"><span>Web design</span><span>Front-end</span><span>UX</span><span>Liderança</span><span>Mídia on-line</span><span>Google Analytics</span></div></div></div>
+          <div><div class="tl">
+            <span class="when">2024 – hoje</span><h4>Dados com IA</h4>
+            <div class="roles"><span><b>IA aplicada a dados</b><em>no dia a dia</em></span></div>
+            <ul><li>Agentes e rotinas automáticas que fazem coleta, triagem e relatórios sozinhos.</li><li>Análises públicas em Python, como a de juro real deste site.</li><li>No Databricks, Genie Code e agentes para explorar dados, escrever SQL e montar pipelines.</li><li>Claude Code, ChatGPT Codex e GitHub Copilot para programar e automatizar.</li><li>Este site: design, Next.js, Python e IA trabalhando juntos.</li></ul>
+            <div class="chipsrow"><span>Genie Code</span><span>Agents Databricks</span><span>Claude Code</span><span>ChatGPT Codex</span><span>GitHub Copilot</span></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="story">
+  <div class="wrap">
+    <div class="reveal">
+      <a class="crumb" href="#">Por que isso importa</a>
+      <blockquote class="h-md" style="margin-inline:0">“Um dado só vale alguma coisa<br>quando alguém entende e usa.”</blockquote>
+      <p class="by">Quem já desenhou a tela, escreveu o código e montou o pipeline sabe onde a informação se perde.</p>
+      <div class="ctas"><a class="btn dark" href="#como">Como eu trabalho <span class="arr"><i>→</i></span></a></div>
+      <div class="logos"><span class="on">design</span><span>dev</span><span>dados</span><span>IA</span></div>
+    </div>
+    <div class="photo me reveal"></div>
+  </div>
+</section>
+
+<section class="night on-dark" id="como">
+  <div class="wrap">
+    <div class="head reveal">
+      <a class="crumb" href="#">Como eu trabalho</a>
+      <h2 class="h-lg">Do dado bruto<br>à decisão</h2>
+      <p>Cuido do caminho inteiro: da coleta até a tela que alguém abre para decidir. Sem trocar de mão no meio do caminho.</p>
+    </div>
+    <div class="tabs-wrap reveal">
+      <div class="tabs" role="tablist" data-tabs="como">
+        <button role="tab" aria-selected="true"><b>Coleta</b><span>Data layer, tags e eventos bem definidos desde a origem.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>Engenharia</b><span>Pipelines em BigQuery, Databricks e Python, com dado confiável.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>Visualização</b><span>Painéis com hierarquia de designer: o que importa aparece primeiro.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>IA</b><span>Agentes e automações que respondem perguntas sobre os dados.</span><i></i></button>
+      </div>
+      <div class="diagram">
+        <svg class="wires" viewBox="0 0 800 470" preserveAspectRatio="none" aria-hidden="true">
+          <g fill="none" stroke="rgba(255,255,255,.14)">
+            <path id="w1" d="M150 104 C220 104 220 180 272 180"/><path id="w2" d="M150 146 C220 146 220 190 272 190"/><path d="M150 188 C220 188 220 200 272 200"/><path d="M150 230 C220 230 220 210 272 210"/><path d="M150 272 C220 272 220 220 272 220"/><path d="M150 314 C220 314 220 230 272 230"/>
+            <path id="w3" d="M528 170 C580 170 580 110 632 110"/><path d="M528 200 C580 200 580 190 632 190"/><path d="M528 230 C580 230 580 260 632 260"/>
+          </g>
+          <circle r="3" class="pulse-dot"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#w1"/></animateMotion></circle>
+          <circle r="3" class="pulse-dot"><animateMotion dur="3s" begin="1s" repeatCount="indefinite"><mpath href="#w2"/></animateMotion></circle>
+          <circle r="3" class="pulse-dot"><animateMotion dur="2.2s" begin=".5s" repeatCount="indefinite"><mpath href="#w3"/></animateMotion></circle>
+        </svg>
+        <div class="src"><span><i style="background:#4a8af4"></i>BigQuery</span><span><i style="background:#ff3621"></i>Databricks</span><span><i style="background:#fbbc04"></i>Google Ads</span><span><i style="background:#0866ff"></i>Meta Ads</span><span><i style="background:#3776ab"></i>APIs públicas</span><span><i style="background:#9aa0a6"></i>Planilhas</span></div>
+        <div class="core"><b>Modelo de dados</b><span>Python · SQL</span><div class="model">Métricas confiáveis</div><div class="three"><span>Tratar</span><span>Validar</span><span>Documentar</span></div></div>
+        <div class="outs"><b style="font-weight:500;padding:0 6px 4px">Entregas</b><span>▢ Painéis</span><span>▢ Relatórios</span><span>▢ Testes A/B</span><span>▢ Agentes de IA</span><span>▢ Sites e apps</span></div>
+      </div>
+    </div>
+    <div class="four reveal">
+      <div><b>Testes A/B e CRO</b><span>Decisão baseada em experimento, não em opinião.</span></div>
+      <div><b>Storytelling com dados</b><span>O número certo, na ordem certa, para a pessoa certa.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="deep" id="analises">
+  <div class="wrap" style="position:relative">
+    <div class="head reveal">
+      <a class="crumb" href="#">Análises</a>
+      <h2 class="h-lg">Pergunte aos dados</h2>
+      <p>Análises públicas feitas em Python, com dados abertos. A primeira: quanto o brasileiro ganha de juro de verdade, já descontada a inflação.</p>
+    </div>
+    <div style="position:relative" class="reveal" id="chatwrap">
+      <div class="chatwin">
+        <div class="tb"><i></i><i></i><i></i><span style="margin-left:14px">‹ › Análise 01 · Juro real ⌄</span><span class="nc">Banco Central · SGS 4390 e 433</span></div>
+        <div class="q">O juro real está alto ou baixo hoje?</div>
+        <div class="ans">
+          <span class="rs">Raciocínio ›</span>
+          <span>Em 12 meses até set/2026, a <b style="font-weight:600">Selic</b> rendeu <b>14,5%</b> e o IPCA foi <b>4,6%</b>. O juro real ficou em <b>9,5% ao ano</b>, mais que o dobro da média dos últimos 10 anos (4,2%).</span>
+          <div class="chart"><h5>Selic, IPCA e juro real</h5><span style="font-size:12px;color:var(--slate)">Acumulado em 12 meses, últimos 10 anos</span>
+            <div class="legend"><span><i style="background:#8a8a8a"></i>Selic</span><span><i style="background:#cdcdcd"></i>IPCA</span><span><i style="background:#000"></i>Juro real</span></div>
+            <svg viewBox="0 0 700 170" width="100%" height="170" aria-hidden="true">
+              <g stroke="#f0f0f2"><path d="M0 20H700M0 70H700M0 120H700M0 168H700"/></g>
+              <path d="M0 115.2H700" stroke="#d9d9de" stroke-dasharray="4 4"/>
+              <path class="draw" d="M0.0 62.0 L5.9 68.0 L11.8 72.7 L17.6 79.1 L23.5 83.1 L29.4 84.4 L35.3 87.7 L41.2 90.9 L47.1 95.0 L52.9 96.9 L58.8 98.6 L64.7 98.1 L70.6 97.0 L76.5 96.3 L82.4 95.3 L88.2 95.9 L94.1 96.1 L100.0 97.1 L105.9 96.6 L111.8 96.0 L117.6 85.6 L123.5 85.0 L129.4 86.9 L135.3 84.6 L141.2 84.4 L147.1 87.9 L152.9 89.9 L158.8 89.7 L164.7 89.0 L170.6 84.3 L176.5 81.9 L182.4 83.7 L188.2 92.5 L194.1 93.5 L200.0 92.1 L205.9 95.7 L211.8 98.1 L217.6 93.1 L223.5 86.1 L229.4 86.9 L235.3 88.2 L241.2 92.9 L247.1 99.0 L252.9 102.5 L258.8 100.9 L264.7 99.6 L270.6 98.8 L276.5 94.0 L282.4 88.8 L288.2 86.1 L294.1 84.7 L300.0 84.4 L305.9 80.1 L311.8 74.0 L317.6 69.6 L323.5 60.8 L329.4 58.8 L335.3 54.5 L341.2 49.8 L347.1 46.0 L352.9 43.1 L358.8 42.6 L364.7 47.2 L370.6 45.1 L376.5 44.0 L382.4 38.9 L388.2 33.3 L394.1 36.0 L400.0 34.9 L405.9 47.2 L411.8 56.2 L417.6 66.8 L423.5 71.5 L429.4 75.4 L435.3 76.2 L441.2 76.2 L447.1 77.4 L452.9 83.8 L458.8 87.0 L464.7 88.6 L470.6 93.9 L476.5 88.3 L482.4 84.1 L488.2 80.2 L494.1 82.7 L500.0 83.6 L505.9 84.0 L511.8 84.8 L517.6 84.8 L523.5 88.7 L529.4 90.3 L535.3 88.7 L541.2 86.7 L547.1 84.8 L552.9 86.6 L558.8 85.4 L564.7 83.1 L570.6 82.3 L576.5 82.6 L582.4 84.4 L588.2 81.0 L594.1 78.2 L600.0 77.9 L605.9 79.3 L611.8 79.1 L617.6 79.9 L623.5 80.6 L629.4 80.3 L635.3 83.6 L641.2 85.1 L647.1 86.5 L652.9 85.2 L658.8 89.5 L664.7 87.3 L670.6 85.6 L676.5 83.3 L682.4 83.9 L688.2 85.2 L694.1 86.7 L700.0 84.3" fill="none" stroke="#cdcdcd" stroke-width="2"/>
+              <path class="draw" d="M0.0 19.9 L5.9 20.1 L11.8 20.4 L17.6 20.2 L23.5 21.2 L29.4 22.0 L35.3 24.1 L41.2 25.4 L47.1 28.1 L52.9 30.4 L58.8 33.6 L64.7 37.1 L70.6 40.1 L76.5 43.7 L82.4 47.9 L88.2 51.7 L94.1 54.6 L100.0 58.4 L105.9 60.4 L111.8 63.3 L117.6 65.4 L123.5 67.3 L129.4 68.9 L135.3 70.2 L141.2 70.9 L147.1 71.5 L152.9 71.9 L158.8 72.1 L164.7 72.0 L170.6 72.4 L176.5 72.4 L182.4 72.3 L188.2 72.6 L194.1 72.4 L200.0 72.9 L205.9 73.0 L211.8 73.4 L217.6 74.2 L223.5 75.0 L229.4 76.2 L235.3 77.6 L241.2 78.5 L247.1 80.2 L252.9 82.4 L258.8 84.2 L264.7 86.9 L270.6 89.2 L276.5 91.3 L282.4 93.6 L288.2 95.2 L294.1 96.7 L300.0 98.2 L305.9 99.4 L311.8 100.3 L317.6 100.8 L323.5 100.6 L329.4 99.9 L335.3 98.7 L341.2 96.9 L347.1 94.9 L352.9 92.6 L358.8 89.6 L364.7 85.2 L370.6 81.2 L376.5 76.7 L382.4 71.5 L388.2 67.1 L394.1 61.6 L400.0 56.4 L405.9 51.5 L411.8 46.0 L417.6 41.4 L423.5 37.4 L429.4 34.2 L435.3 31.6 L441.2 28.6 L447.1 27.4 L452.9 25.6 L458.8 24.9 L464.7 24.2 L470.6 23.9 L476.5 23.5 L482.4 23.8 L488.2 24.5 L494.1 24.7 L500.0 25.4 L505.9 27.2 L511.8 28.3 L517.6 29.2 L523.5 31.8 L529.4 32.0 L535.3 34.2 L541.2 36.3 L547.1 37.5 L552.9 39.5 L558.8 40.5 L564.7 41.0 L570.6 42.0 L576.5 41.6 L582.4 41.4 L588.2 39.9 L594.1 39.0 L600.0 37.7 L605.9 35.4 L611.8 33.0 L617.6 30.3 L623.5 28.1 L629.4 25.2 L635.3 22.6 L641.2 20.5 L647.1 18.4 L652.9 17.2 L658.8 17.2 L664.7 15.2 L670.6 15.0 L676.5 15.5 L682.4 15.4 L688.2 15.8 L694.1 16.4 L700.0 17.4" fill="none" stroke="#8a8a8a" stroke-width="2"/>
+              <path class="draw" d="M0.0 76.2 L5.9 70.5 L11.8 66.0 L17.6 59.3 L23.5 56.2 L29.4 55.6 L35.3 54.1 L41.2 52.0 L47.1 50.3 L52.9 50.5 L58.8 51.8 L64.7 55.8 L70.6 60.0 L76.5 64.1 L82.4 69.2 L88.2 72.3 L94.1 75.0 L100.0 77.5 L105.9 80.0 L111.8 83.5 L117.6 96.0 L123.5 98.4 L129.4 98.0 L135.3 101.4 L141.2 102.3 L147.1 99.5 L152.9 97.8 L158.8 98.3 L164.7 98.9 L170.6 103.9 L176.5 106.3 L182.4 104.3 L188.2 96.1 L194.1 94.8 L200.0 96.7 L205.9 93.2 L211.8 91.2 L217.6 96.9 L223.5 104.6 L229.4 105.0 L235.3 105.1 L241.2 101.3 L247.1 96.9 L252.9 95.4 L258.8 99.0 L264.7 102.7 L270.6 106.0 L276.5 112.6 L282.4 119.9 L288.2 124.0 L294.1 126.7 L300.0 128.4 L305.9 133.5 L311.8 140.0 L317.6 144.5 L323.5 152.1 L329.4 153.2 L335.3 155.9 L341.2 158.1 L347.1 159.6 L352.9 160.0 L358.8 157.6 L364.7 149.8 L370.6 148.0 L376.5 144.9 L382.4 144.6 L388.2 145.4 L394.1 138.2 L400.0 134.4 L405.9 119.2 L411.8 105.9 L417.6 91.5 L423.5 83.2 L429.4 76.4 L435.3 73.1 L441.2 70.2 L447.1 67.9 L452.9 59.6 L458.8 55.7 L464.7 53.3 L470.6 47.4 L476.5 53.0 L482.4 57.6 L488.2 62.3 L494.1 60.0 L500.0 59.7 L505.9 60.9 L511.8 61.2 L517.6 62.0 L523.5 60.5 L529.4 59.0 L535.3 62.8 L541.2 66.9 L547.1 69.9 L552.9 70.0 L558.8 72.3 L564.7 75.0 L570.6 76.8 L576.5 76.2 L582.4 74.1 L588.2 76.1 L594.1 78.0 L600.0 77.2 L605.9 73.5 L611.8 71.6 L617.6 68.1 L623.5 65.4 L629.4 62.9 L635.3 56.9 L641.2 53.5 L647.1 49.9 L652.9 50.2 L658.8 45.6 L664.7 46.1 L670.6 47.7 L676.5 50.6 L682.4 49.8 L688.2 48.8 L694.1 47.8 L700.0 51.3" fill="none" stroke="#000" stroke-width="3"/>
+            </svg></div>
+        </div>
+        <div class="ask"><span style="color:var(--slate)">◷ Próxima análise</span><span>Quanto rende R$ 1.000 no Tesouro IPCA+ em 10 anos?</span><span class="send">↑</span></div>
+      </div>
+      <div class="person" style="left:0;top:130px"><span class="tag"><i style="background:linear-gradient(135deg,#d8b49c,#8a6b58)"></i><b>Recrutador(a)</b><em>RH</em></span><span class="bubble">O que ele já entregou com dados e IA?</span></div>
+      <div class="person" style="right:0;top:330px"><span class="tag"><i style="background:linear-gradient(135deg,#e9c6a8,#a07658)"></i><b>Gestor(a)</b><em>Dados</em></span><span class="bubble">Ele consegue cuidar do pipeline e do painel ao mesmo tempo?</span></div>
+      <div class="person" style="left:0;bottom:-40px"><span class="tag"><i style="background:linear-gradient(135deg,#9db0c7,#4d5f78)"></i><b>Time de produto</b><em>Design</em></span><span class="bubble">Dá para transformar essa métrica numa tela que o cliente entende?</span></div>
+    </div>
+    <div class="feats3 reveal">
+      <div><div class="shot"><div class="tile" style="width:70%"><h5>Juro real · 12m</h5><div class="rows"><div>Selic<b style="color:var(--ink)">14,5%</b></div><div>IPCA<b style="color:var(--ink)">4,6%</b></div><div>Juro real<b style="color:var(--ink)">9,5%</b></div></div></div></div><b>Análises em Python</b><p>Dados públicos, código aberto e atualização automática.</p></div>
+      <div><div class="shot"><div class="tile" style="width:72%"><div class="code"><span class="c"># pandas</span>
+df = sgs(<span class="s">4390</span>, <span class="s">433</span>)
+df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código que dá para ler</b><p>Cada número do site tem o script que o gerou, no GitHub.</p></div>
+      <div><div class="shot"><svg width="70%" viewBox="0 0 200 160" aria-hidden="true"><g fill="none" stroke="#d9d9de"><path d="M40 50 C40 100 100 90 100 120 M100 50V120 M160 50 C160 100 100 90 100 120"/></g><g><circle cx="40" cy="36" r="20" fill="#fff" stroke="#ececef"/><circle cx="100" cy="36" r="20" fill="#fff" stroke="#ececef"/><circle cx="160" cy="36" r="20" fill="#fff" stroke="#ececef"/><circle cx="100" cy="132" r="22" fill="#17191c"/></g><text x="40" y="41" text-anchor="middle" font-size="12" font-family="Inter">Aa</text><text x="100" y="41" text-anchor="middle" font-size="12" font-family="Inter">&lt;/&gt;</text><text x="160" y="41" text-anchor="middle" font-size="13" font-family="Inter">✦</text><text x="100" y="137" text-anchor="middle" font-size="12" fill="#fff" font-family="Inter">site</text></svg></div><b>Este site também é portfólio</b><p>Design, desenvolvimento, dados e IA trabalhando juntos, do jeito que eu gosto.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contato">
+  <div class="wrap">
+    <div class="reveal">
+      <h2 class="h-lg">Vamos conversar?</h2>
+      <p>Aberto a conversas sobre dados, IA e produtos digitais. O jeito mais rápido de me achar é pelo LinkedIn.</p>
+      <div class="ctas-contact"><a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn <span class="arr"><i>→</i></span></a><a class="btn ghost" href="https://github.com/adrianoarruda" target="_blank" rel="noopener">GitHub <span class="arr"><i>→</i></span></a></div>
+    </div>
+    <svg class="door reveal" viewBox="0 0 360 300" aria-hidden="true">
+      <g fill="none" stroke="#17191c" stroke-width="1.2">
+        <path d="M0 270H120 M240 270H360" stroke-dasharray="8 3"/>
+        <rect x="118" y="42" width="34" height="228" fill="#0d0e10"/>
+        <path d="M140 30 L220 50 L220 258 L140 290 Z" fill="#fff"/>
+        <path d="M150 168h10v-14h-6v30h6v-16 M160 160h10v8h-10"/>
+      </g>
+      <g fill="#ffe9b0"><circle class="twinkle" cx="128" cy="90" r="1.6"/><circle class="twinkle" cx="140" cy="120" r="1.2" style="animation-delay:.6s"/><circle class="twinkle" cx="126" cy="160" r="1.4" style="animation-delay:1.2s"/><circle class="twinkle" cx="132" cy="210" r="1.8" style="animation-delay:.3s"/><circle class="twinkle" cx="142" cy="240" r="1.2" style="animation-delay:1.7s"/></g>
+    </svg>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <span style="font:400 24px/1 var(--serif)">Adriano Arruda</span>
+      <div><h6>Site</h6><ul><li><a href="#areas">Áreas</a></li><li><a href="#trajetoria">Trajetória</a></li><li><a href="#como">Como trabalho</a></li><li><a href="#analises">Análises</a></li></ul></div>
+      <div><h6>Formação</h6><ul><li><a>Pós em E-commerce · BSP</a></li><li><a>Design de Publicidade · Panamericana</a></li><li><a>Propaganda e Marketing · UNIP</a></li></ul></div>
+      <div><h6>Certificações</h6><ul><li><a>Ciência de Dados · USP/Esalq</a></li><li><a>CSPO · Scrum Product Owner</a></li><li><a>Google Analytics (GAIQ)</a></li><li><a>Google Ads</a></li></ul></div>
+      <div><h6>Contato</h6><ul><li><a href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn ↗</a></li><li><a href="https://github.com/adrianoarruda" target="_blank" rel="noopener">GitHub ↗</a></li></ul></div>
+    </div>
+    <div class="bottom"><span></span><span>© 2026 Adriano Arruda</span><span>São Paulo, Brasil</span><span>Feito com Next.js, Python e IA</span><span></span></div>
+  </div>
+</footer>
+
+
+<script>
+  const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const hero = document.getElementById("hero"), stage = document.getElementById("stage"), dash = document.getElementById("dash"), copy = document.getElementById("copy");
+  const cards = [...document.querySelectorAll("[data-card]")];
+  const curs = [document.getElementById("curL"), document.getElementById("curR")];
+  const mq = matchMedia("(max-width: 900px)");
+
+  // Rolagem do hero: o texto sobe e some, o painel sobe, e cada cartão voa até o seu lugar no painel.
+  function onScroll() {
+    if (mq.matches) { [copy, dash, ...cards, ...curs].forEach(el => { el.style.transform = ""; el.style.opacity = ""; }); return; }
+    const vh = innerHeight, total = hero.offsetHeight - vh;
+    const p = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / total));
+    const e = ease(Math.min(1, p / .85));
+    copy.style.transform = `translateY(${-e * 220}px)`;
+    copy.style.opacity = 1 - Math.min(1, p * 2.2);
+    const startY = vh - 40, endY = Math.max(72, (vh - dash.offsetHeight) / 2 + 20);
+    const dy = lerp(startY, endY, e);
+    dash.style.transform = `translateY(${dy}px) scale(${lerp(.92, 1, e)})`;
+    const sr = stage.getBoundingClientRect();
+    cards.forEach(c => {
+      const slot = dash.querySelector(`[data-slot="${c.dataset.card}"]`);
+      // Posição final do slot com o painel já no lugar (sem a escala e o deslocamento atuais)
+      const s = slot.getBoundingClientRect(), d = dash.getBoundingClientRect();
+      const scale = lerp(.92, 1, e);
+      const fx = (s.left - d.left) / scale + dash.offsetLeft, fy = (s.top - d.top) / scale + endY;
+      const tx = (fx - c.offsetLeft) * e, ty = (fy - c.offsetTop) * e;
+      const k = lerp(1, slot.offsetWidth / c.offsetWidth, e);
+      c.style.transform = `translate(${tx}px, ${ty}px) scale(${k})`;
+      c.style.transformOrigin = "0 0";
+    });
+    curs.forEach((el, i) => { el.style.opacity = 1 - Math.min(1, p * 3); el.style.transform = `translateY(${-p * 300}px)`; });
+  }
+  addEventListener("scroll", onScroll, { passive: true }); addEventListener("resize", onScroll); onScroll();
+
+  // Cursores "humanos" passeando pelo hero
+  let t0 = performance.now();
+  (function wander(now) {
+    const t = (now - t0) / 1000;
+    if (!mq.matches && scrollY < 200) {
+      curs[0].style.translate = `${Math.sin(t * .7) * 40}px ${Math.cos(t * .5) * 24}px`;
+      curs[1].style.translate = `${Math.cos(t * .6) * 50}px ${Math.sin(t * .8) * 14}px`;
+    }
+    requestAnimationFrame(wander);
+  })(t0);
+
+  // Composer digitando sozinho
+  const phrases = ["Por que juntar design, código e dados?", "Qual a stack que você usa hoje?", "Mostre um projeto com IA"];
+  const typing = document.getElementById("typing"); let pi = 0;
+  async function typeLoop() {
+    while (true) {
+      const s = phrases[pi++ % phrases.length]; typing.classList.add("typed");
+      for (let i = 1; i <= s.length; i++) { typing.textContent = s.slice(0, i); await new Promise(r => setTimeout(r, 38)); }
+      await new Promise(r => setTimeout(r, 2200));
+      typing.textContent = "Pergunte sobre a minha carreira..."; typing.classList.remove("typed");
+      await new Promise(r => setTimeout(r, 900));
+    }
+  }
+  typeLoop();
+
+  // Cartões do trio: o que está sob o mouse vira o destaque cor de pêssego
+  document.querySelectorAll("#trio .c").forEach(c => c.addEventListener("mouseenter", () => document.querySelectorAll("#trio .c").forEach(x => x.classList.toggle("on", x === c))));
+
+  // Abas que avançam sozinhas, com barra de progresso (6s cada)
+  document.querySelectorAll("[data-tabs]").forEach(list => {
+    const btns = [...list.querySelectorAll("button")];
+    const panes = document.querySelectorAll(`[data-panes="${list.dataset.tabs}"] > div`);
+    let i = 0, timer, parado = false;
+    const go = n => {
+      i = n % btns.length;
+      btns.forEach((b, k) => { b.setAttribute("aria-selected", k === i); const bar = b.querySelector("i"); bar.style.animation = "none"; bar.offsetWidth; bar.style.animation = ""; });
+      panes.forEach((p, k) => p.classList.toggle("on", k === i));
+      clearTimeout(timer); if (!parado) timer = setTimeout(() => go(i + 1), 6000);
+    };
+    btns.forEach((b, k) => b.onclick = () => { parado = true; go(k); });  // clicou: para de avançar sozinho
+    go(0);
+  });
+
+  // Entrada das seções ao aparecer na tela
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .15 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+</script>
+<script>
+  // v3: a navegação fica clara sobre o hero preto e escura sobre as seções brancas
+  (function () {
+    const nav = document.querySelector("nav.top"), hero = document.getElementById("hero");
+    const upd = () => nav.classList.toggle("on-black", hero.getBoundingClientRect().bottom > 64);
+    addEventListener("scroll", upd, { passive: true }); upd();
+  })();
+</script>
+<script>
+  // Fundo do topo: linhas paralelas curvas que entram pelos cantos e deixam o centro livre (desenhadas em canvas, original).
+  (function () {
+    const cv = document.querySelector(".stage .malha"); if (!cv) return;
+    const ctx = cv.getContext("2d");
+    function desenha() {
+      const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = r.width * dpr; cv.height = r.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, r.width, r.height);
+      ctx.strokeStyle = "rgba(255,255,255,.24)"; ctx.lineWidth = .9;
+      const gap = 9, W = r.width, H = r.height;
+      for (let k = -60; k * gap < H + 300; k++) {
+        ctx.beginPath();
+        for (let x = -20; x <= W + 20; x += 6) {
+          const u = x / W;
+          // cada linha é uma onda larga; o deslocamento cresce devagar com k, então as linhas ficam quase paralelas
+          const y = k * gap + 260 * Math.sin(u * 3.3 + 1.9 + k * .009) - 200 * u + 60 * Math.sin(u * 6.5 + k * .02);
+          x === -20 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+    desenha(); let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(desenha, 150); });
+  })();
+</script>
+</body>
+</html>
