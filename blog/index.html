@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog · Adriano Arruda</title>
+<meta name="description" content="O que eu estou lendo sobre dados, design, desenvolvimento e IA, com a minha leitura de cada assunto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
+<style>
+  /* Mesma identidade da v3: preto e branco, laranja de destaque e azul como cor alternativa */
+  :root {
+    --ink: #000; --slate: #8a8a8a; --soft: #5c5c5c; --line: #e5e5e5; --card: #f3f3f3; --paper: #fff;
+    --orange: #ff3b1f; --orange-h: #e5301a; --blue: #4686ac;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, Consolas, monospace;
+    --cond: "Archivo", "Arial Narrow", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body { font: 16px/1.5 var(--sans); letter-spacing: -.01em; color: var(--ink); background: var(--paper); }
+  a { color: inherit; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: 24px; }
+  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+  .cond { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; }
+
+  nav.top { height: 72px; background: #000; }
+  nav.top .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { color: #fff; text-decoration: none; font-size: 26px; letter-spacing: -.02em; }
+  .voltar { color: #979797; font-size: 14px; text-decoration: none; }
+  .voltar:hover { color: #fff; }
+
+  header.hero { background: #000; color: #fff; padding: 56px 0 104px; }
+  .crumb { font-size: 12px; color: #979797; }
+  .crumb::before { content: "— "; }
+  .crumb a { text-decoration: none; } .crumb a:hover { color: #fff; }
+  h1 { margin: 16px 0 0; font-size: clamp(56px, 10vw, 120px); line-height: .92; letter-spacing: -.04em; }
+  h1 .dim { color: #5c5c5c; }
+  .hero p.sub { margin: 22px 0 0; max-width: 60ch; color: #cdcdcd; font-size: 18px; letter-spacing: -.02em; }
+  .hero .meta { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 12px; color: #979797; }
+  .hero .meta .tema { color: var(--orange); }
+
+  main { background: var(--paper); border-radius: 64px 64px 0 0; margin-top: -64px; position: relative; padding: 56px 0 96px; min-height: 40vh; }
+
+  /* Lista */
+  .lista { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .item { display: grid; grid-template-columns: 140px 1fr auto; gap: 24px; align-items: baseline; padding: 28px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
+  .item:hover h2 { color: var(--orange); }
+  .item .quando { font-size: 12px; color: var(--slate); }
+  .item h2 { margin: 0; font-size: clamp(30px, 4vw, 44px); line-height: .95; letter-spacing: -.03em; transition: color .2s; }
+  .item p { margin: 10px 0 0; color: var(--soft); max-width: 70ch; }
+  .item .tema { font-size: 11px; color: var(--blue); white-space: nowrap; }
+  .vazio { color: var(--soft); }
+
+  /* Post */
+  article.post { max-width: 720px; }
+  article.post .lead { font-size: 22px; line-height: 1.45; letter-spacing: -.02em; margin: 0 0 28px; color: #222; }
+  article.post p { font-size: 18px; line-height: 1.65; margin: 0 0 20px; color: #1a1a1a; }
+  article.post h3 { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; font-size: 34px; line-height: .95; letter-spacing: -.03em; margin: 40px 0 16px; }
+  article.post ul { margin: 0 0 20px; padding-left: 20px; font-size: 18px; line-height: 1.6; }
+  article.post blockquote { margin: 0 0 20px; padding: 4px 0 4px 18px; border-left: 3px solid var(--orange); color: var(--soft); font-size: 18px; }
+  .fonte { margin-top: 40px; padding: 20px 22px; background: var(--card); border-radius: 16px; display: grid; gap: 4px; }
+  .fonte span { font-size: 11px; color: var(--slate); }
+  .fonte a { font-weight: 600; text-decoration: none; word-break: break-word; }
+  .fonte a:hover { color: var(--orange); text-decoration: underline; }
+  .todos { display: inline-flex; margin-top: 36px; background: var(--orange); color: #000; border-radius: 9999px; height: 44px; align-items: center; padding-inline: 20px; text-decoration: none; font-weight: 500; }
+  .todos:hover { background: var(--orange-h); }
+
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--slate); font-size: 12px; }
+  :focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+  @media (max-width: 720px) {
+    .wrap { padding-inline: 16px; }
+    header.hero { padding: 40px 0 88px; }
+    main { border-radius: 40px 40px 0 0; margin-top: -48px; padding-top: 40px; }
+    .item { grid-template-columns: 1fr; gap: 8px; padding: 22px 0; }
+    article.post .lead { font-size: 19px; }
+    article.post p, article.post ul, article.post blockquote { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand cond" href="/">Adriano Arruda</a>
+    <a class="voltar" href="/">← Voltar ao site</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="crumb mono" id="crumb">Blog</div>
+    <h1 class="cond" id="titulo">O que estou<br><span class="dim">lendo</span></h1>
+    <p class="sub" id="sub">Dados, design, desenvolvimento e IA: o que chamou a minha atenção e o que eu acho disso.</p>
+    <div class="meta mono" id="meta" hidden></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div id="conteudo"><p class="vazio">Carregando…</p></div>
+  </div>
+</main>
+
+<footer><div class="wrap mono">Adriano Arruda · blog</div></footer>
+
+<script>
+const API = "/api/posts";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// Texto do post: parágrafos separados por linha em branco; "## " vira subtítulo, "- " vira lista, "> " vira citação, **negrito**
+function formata(txt) {
+  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  return String(txt).split(/\n\s*\n/).map(b => {
+    b = b.trim();
+    if (!b) return "";
+    if (b.startsWith("## ")) return `<h3>${inline(b.slice(3))}</h3>`;
+    if (b.startsWith("> ")) return `<blockquote>${inline(b.replace(/^> ?/gm, ""))}</blockquote>`;
+    if (/^- /.test(b)) return `<ul>${b.split(/\n/).map(l => `<li>${inline(l.replace(/^- /, ""))}</li>`).join("")}</ul>`;
+    return `<p>${inline(b).replace(/\n/g, "<br>")}</p>`;
+  }).join("");
+}
+
+function slugAtual() {
+  const q = new URLSearchParams(location.search).get("p");
+  if (q) return q;
+  const m = location.pathname.match(/\/blog\/([^/]+)\/?$/);
+  return m && m[1] !== "index.html" ? decodeURIComponent(m[1]) : null;
+}
+
+async function lista() {
+  const r = await fetch(API);
+  const { posts = [] } = await r.json();
+  if (!posts.length) { $("conteudo").innerHTML = `<p class="vazio">Os primeiros posts estão chegando.</p>`; return; }
+  $("conteudo").innerHTML = `<div class="lista">${posts.map(p => `
+    <a class="item" href="/blog/${encodeURIComponent(p.slug)}">
+      <span class="quando mono">${esc(p.publicado)}</span>
+      <div><h2 class="cond">${esc(p.titulo)}</h2>${p.resumo ? `<p>${esc(p.resumo)}</p>` : ""}</div>
+      <span class="tema mono">${esc(p.tema)}</span>
+    </a>`).join("")}</div>`;
+}
+
+async function post(slug) {
+  const r = await fetch(API + "?slug=" + encodeURIComponent(slug));
+  if (!r.ok) {
+    $("titulo").innerHTML = "Post não<br><span class=\"dim\">encontrado</span>";
+    $("sub").textContent = "Ele pode ter saído do ar.";
+    $("conteudo").innerHTML = `<a class="todos" href="/blog/">Ver todos os posts →</a>`;
+    return;
+  }
+  const { post: p } = await r.json();
+  document.title = p.titulo + " · Adriano Arruda";
+  document.querySelector('meta[name="description"]').setAttribute("content", p.resumo || p.titulo);
+  $("crumb").innerHTML = `<a href="/blog/">Blog</a>`;
+  $("titulo").textContent = p.titulo;
+  $("titulo").style.fontSize = "clamp(44px, 7vw, 88px)";
+  $("sub").hidden = true;
+  $("meta").hidden = false;
+  $("meta").innerHTML = `<span>${esc(p.publicado)}</span>${p.tema ? `<span class="tema">${esc(p.tema)}</span>` : ""}`;
+  $("conteudo").innerHTML = `<article class="post">
+      ${p.resumo ? `<p class="lead">${esc(p.resumo)}</p>` : ""}
+      ${formata(p.corpo)}
+      <div class="fonte"><span class="mono">Fonte original${p.fonte ? " · " + esc(p.fonte) : ""}</span><a href="${esc(p.fonte_url)}" target="_blank" rel="noopener noreferrer">${esc(p.fonte_url)}</a></div>
+      <a class="todos" href="/blog/">Ver todos os posts →</a>
+    </article>`;
+}
+
+const s = slugAtual();
+(s ? post(s) : lista()).catch(() => { $("conteudo").innerHTML = `<p class="vazio">Não consegui carregar os posts agora.</p>`; });
+</script>
+</body>
+</html>
