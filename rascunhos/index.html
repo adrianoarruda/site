@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rascunhos do blog · Adriano Arruda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
+<style>
+  :root {
+    --ink: #000; --slate: #8a8a8a; --soft: #5c5c5c; --line: #e5e5e5; --card: #f3f3f3; --paper: #fff;
+    --orange: #ff3b1f; --orange-h: #e5301a; --blue: #4686ac; --red: #b3261e;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, Consolas, monospace;
+    --cond: "Archivo", "Arial Narrow", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body { font: 16px/1.5 var(--sans); letter-spacing: -.01em; color: var(--ink); background: var(--paper); }
+  a { color: inherit; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding-inline: 24px; }
+  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+  .cond { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; }
+
+  nav.top { height: 72px; background: #000; }
+  nav.top .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { color: #fff; text-decoration: none; font-size: 26px; letter-spacing: -.02em; }
+  .navlinks { display: flex; gap: 18px; }
+  .navlinks a { color: #979797; font-size: 14px; text-decoration: none; }
+  .navlinks a:hover { color: #fff; }
+
+  header.hero { background: #000; color: #fff; padding: 48px 0 96px; }
+  .crumb { font-size: 12px; color: #979797; }
+  .crumb::before { content: "— "; }
+  h1 { margin: 14px 0 0; font-size: clamp(56px, 9vw, 108px); line-height: .92; letter-spacing: -.04em; }
+  h1 .dim { color: #5c5c5c; }
+  .hero p { margin: 18px 0 0; max-width: 60ch; color: #cdcdcd; font-size: 17px; }
+
+  main { background: var(--paper); border-radius: 64px 64px 0 0; margin-top: -64px; position: relative; padding: 52px 0 96px; min-height: 50vh; }
+
+  .btn { font: 500 15px var(--sans); border: 0; cursor: pointer; height: 42px; padding-inline: 18px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border-radius: 12px; }
+  .btn.orange { background: var(--orange); color: #000; border-radius: 9999px; }
+  .btn.orange:hover { background: var(--orange-h); }
+  .btn.soft { background: var(--card); color: #000; }
+  .btn.soft:hover { background: #e9e9e9; }
+  .btn.ghost { background: none; color: var(--soft); text-decoration: underline; padding-inline: 6px; }
+  .btn.ghost:hover { color: var(--red); }
+  .btn:disabled { opacity: .5; cursor: wait; }
+
+  input, textarea { font: 16px var(--sans); color: var(--ink); background: var(--card); border: 1px solid transparent; border-radius: 12px; padding: 11px 14px; width: 100%; }
+  input:focus, textarea:focus { outline: none; border-color: #000; background: #fff; }
+  textarea { resize: vertical; line-height: 1.6; }
+  label.f { display: grid; gap: 6px; }
+  label.f span { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; font-size: 11px; color: var(--slate); }
+  :focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+  .gate { max-width: 420px; display: grid; gap: 14px; }
+  .gate h2 { margin: 0; font-size: 44px; line-height: .9; letter-spacing: -.03em; }
+  .gate p { margin: 0; color: var(--soft); }
+  .gate .row { display: flex; gap: 8px; }
+  .lembrar { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--soft); cursor: pointer; }
+  .lembrar input { width: auto; }
+  .erro, .gate .erro { color: var(--red); font-size: 14px; margin: 0; min-height: 21px; }
+
+  h2.sec { margin: 0 0 18px; font-size: 40px; line-height: .9; letter-spacing: -.03em; display: flex; align-items: baseline; gap: 12px; }
+  h2.sec small { font-family: var(--mono); font-stretch: 100%; font-weight: 400; font-size: 12px; color: var(--slate); letter-spacing: .04em; }
+  .vazio { color: var(--soft); margin: 0 0 40px; }
+
+  .rasc { border: 1px solid var(--line); border-radius: 20px; padding: 24px; margin-bottom: 20px; display: grid; gap: 14px; }
+  .rasc .topo { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 11px; color: var(--slate); }
+  .rasc .topo .tema { color: var(--blue); }
+  .rasc .topo a { color: var(--slate); }
+  .rasc input.t { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; font-size: 30px; letter-spacing: -.02em; line-height: 1; padding: 12px 14px; }
+  .rasc .acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .rasc .acoes .msg { font-size: 14px; color: var(--soft); margin-left: 4px; }
+  .dica { font-size: 13px; color: var(--slate); margin: -6px 0 0; }
+
+  .pubs { display: grid; border-top: 1px solid var(--line); margin-bottom: 40px; }
+  .pubs div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .pubs a { font-weight: 600; text-decoration: none; }
+  .pubs a:hover { color: var(--orange); }
+  .pubs span { font-size: 11px; color: var(--slate); }
+
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--slate); font-size: 12px; }
+  @media (max-width: 640px) {
+    .wrap { padding-inline: 16px; }
+    main { border-radius: 40px 40px 0 0; margin-top: -48px; padding-top: 40px; }
+    .rasc { padding: 16px; }
+    .rasc input.t { font-size: 24px; }
+    .gate .row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand cond" href="/">Adriano Arruda</a>
+    <div class="navlinks"><a href="/blog/">Blog</a><a href="/links/">Links úteis</a></div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="crumb mono">Área privada</div>
+    <h1 class="cond">Rascunhos<br><span class="dim">do blog</span></h1>
+    <p>Toda segunda, às 7h, o Claude escreve rascunhos a partir das fontes de notícia. Edite o que quiser e publique só o que tiver a sua cara. O que ficar aqui por mais de 15 dias é descartado sozinho.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <form class="gate" id="gate">
+      <h2 class="cond">Precisa de senha</h2>
+      <p>A mesma senha da página de links úteis.</p>
+      <input type="text" name="username" value="links" autocomplete="username" hidden>
+      <div class="row">
+        <input type="password" id="senha" name="password" autocomplete="current-password" placeholder="Senha" required>
+        <button class="btn orange" id="entrar" type="submit">Entrar →</button>
+      </div>
+      <label class="lembrar"><input type="checkbox" id="lembrar"> Lembrar neste aparelho</label>
+      <p class="erro" id="gate-erro" role="alert"></p>
+    </form>
+
+    <section id="area" hidden>
+      <h2 class="sec cond">Para revisar <small id="n-rasc"></small></h2>
+      <div id="rascunhos"></div>
+      <h2 class="sec cond">Publicados <small id="n-pub"></small></h2>
+      <div class="pubs" id="publicados"></div>
+    </section>
+  </div>
+</main>
+
+<footer><div class="wrap mono">Adriano Arruda · rascunhos do blog</div></footer>
+
+<script>
+const API = "/api/posts";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let senha = "";
+
+function lida() { try { return sessionStorage.getItem("links-senha") || localStorage.getItem("links-senha") || ""; } catch (e) { return ""; } }
+function guarda(s, lembrar) { try { sessionStorage.setItem("links-senha", s); if (lembrar) localStorage.setItem("links-senha", s); } catch (e) {} }
+function esquece() { try { sessionStorage.removeItem("links-senha"); localStorage.removeItem("links-senha"); } catch (e) {} }
+
+async function api(method, body) {
+  const r = await fetch(API + (method === "GET" ? "?rascunhos=1" : ""), {
+    method, headers: { "x-senha": senha, ...(body ? { "content-type": "application/json" } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.erro || "Não deu certo (erro " + r.status + ")"); e.status = r.status; throw e; }
+  return j;
+}
+
+function desenha({ rascunhos, publicados }) {
+  $("n-rasc").textContent = rascunhos.length;
+  $("n-pub").textContent = publicados.length;
+  $("rascunhos").innerHTML = rascunhos.length ? rascunhos.map(p => `
+    <form class="rasc" data-id="${p.id}">
+      <div class="topo mono"><span>escrito em ${esc(p.criado)}</span>${p.tema ? `<span class="tema">${esc(p.tema)}</span>` : ""}<a href="${esc(p.fonte_url)}" target="_blank" rel="noopener noreferrer">fonte: ${esc(p.fonte || "abrir")} ↗</a>${p.editado ? "<span>editado por você</span>" : ""}</div>
+      <input class="t" name="titulo" value="${esc(p.titulo)}" aria-label="Título" maxlength="160">
+      <label class="f"><span>Linha fina (aparece na lista e abre o post)</span><textarea name="resumo" rows="2" maxlength="300">${esc(p.resumo)}</textarea></label>
+      <label class="f"><span>Texto</span><textarea name="corpo" rows="16" maxlength="8000">${esc(p.corpo)}</textarea></label>
+      <p class="dica">Linha em branco separa parágrafos. "## " no começo vira subtítulo, "- " vira lista, "> " vira citação, **assim** fica em negrito.</p>
+      <div class="acoes">
+        <button class="btn orange" type="submit" data-acao="publicar">Publicar</button>
+        <button class="btn soft" type="submit" data-acao="salvar">Salvar sem publicar</button>
+        <button class="btn ghost" type="submit" data-acao="descartar">Descartar</button>
+        <span class="msg" role="status"></span>
+      </div>
+    </form>`).join("") : `<p class="vazio">Nenhum rascunho esperando. Os próximos chegam na segunda, às 7h.</p>`;
+  $("publicados").innerHTML = publicados.length ? publicados.map(p => `
+    <div><a href="/blog/${encodeURIComponent(p.slug)}" target="_blank" rel="noopener">${esc(p.titulo)}</a>
+      <span class="mono">${esc(p.publicado)} · <button class="btn ghost" type="button" data-despublicar="${p.id}" style="height:auto;font-size:12px">tirar do ar</button></span></div>`).join("")
+    : `<p class="vazio">Nada publicado ainda.</p>`;
+}
+
+async function carrega() { desenha(await api("GET")); }
+
+async function entra(s, lembrar) {
+  senha = s; $("entrar").disabled = true; $("gate-erro").textContent = "";
+  try {
+    await carrega(); guarda(s, lembrar);
+    $("gate").hidden = true; $("area").hidden = false;
+  } catch (e) {
+    senha = ""; esquece();
+    $("gate-erro").textContent = e.status === 401 ? "Senha incorreta." : e.message;
+  } finally { $("entrar").disabled = false; }
+}
+
+$("gate").addEventListener("submit", e => { e.preventDefault(); entra($("senha").value, $("lembrar").checked); });
+
+$("rascunhos").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target, acao = e.submitter?.dataset.acao || "salvar", msg = f.querySelector(".msg");
+  if (acao === "descartar" && !confirm("Descartar este rascunho?")) return;
+  if (acao === "publicar" && !confirm("Publicar no blog agora? Ele fica público no site.")) return;
+  f.querySelectorAll("button").forEach(b => b.disabled = true);
+  msg.textContent = "Salvando…";
+  try {
+    const body = { id: f.dataset.id, titulo: f.titulo.value, resumo: f.resumo.value, corpo: f.corpo.value };
+    if (acao !== "salvar") body.acao = acao;
+    await api("PATCH", body);
+    if (acao === "salvar") { msg.textContent = "Salvo."; f.querySelectorAll("button").forEach(b => b.disabled = false); }
+    else await carrega();
+  } catch (err) {
+    msg.textContent = err.message;
+    f.querySelectorAll("button").forEach(b => b.disabled = false);
+  }
+});
+
+$("publicados").addEventListener("click", async e => {
+  const b = e.target.closest("[data-despublicar]");
+  if (!b || !confirm("Tirar este post do ar? Ele volta para os rascunhos.")) return;
+  b.disabled = true;
+  try { await api("PATCH", { id: b.dataset.despublicar, acao: "despublicar" }); await carrega(); }
+  catch (err) { alert(err.message); b.disabled = false; }
+});
+
+const salva = lida();
+if (salva) entra(salva, (() => { try { return !!localStorage.getItem("links-senha"); } catch (e) { return false; } })());
+</script>
+</body>
+</html>
