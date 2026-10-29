@@ -79,6 +79,42 @@
     article.post .lead { font-size: 19px; }
     article.post p, article.post ul, article.post blockquote { font-size: 17px; }
   }
+  /* Filtro por tema */
+  .temas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .temas button { font: 500 14px var(--sans); background: var(--card); color: #000; border: 0; border-radius: 9999px; height: 36px; padding-inline: 16px; cursor: pointer; }
+  .temas button:hover { background: #e9e9e9; }
+  .temas button[aria-pressed="true"] { background: #000; color: #fff; }
+
+  /* Dashboard dentro do post (análises) */
+  .painel { margin: 8px 0 32px; border: 1px solid var(--line); border-radius: 24px; padding: 24px; display: grid; gap: 20px; background: #fff; }
+  article.post .painel { width: min(1100px, calc(100vw - 48px)); }
+  .painel .ph { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+  .painel .ph h4 { margin: 0; font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; font-size: 28px; letter-spacing: -.02em; line-height: 1; }
+  .painel .ph small { display: block; margin-top: 6px; font-size: 11px; color: var(--slate); }
+  .painel .per { display: flex; gap: 4px; background: var(--card); border-radius: 9999px; padding: 4px; }
+  .painel .per button { font: 500 13px var(--mono); border: 0; background: none; border-radius: 9999px; height: 30px; padding-inline: 12px; cursor: pointer; color: var(--soft); }
+  .painel .per button[aria-pressed="true"] { background: #fff; color: #000; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .kpi { background: var(--card); border-radius: 16px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+  .kpi span { font-size: 11px; color: var(--slate); }
+  .kpi b { font-family: var(--cond); font-stretch: 68%; font-weight: 700; font-size: 40px; line-height: .9; letter-spacing: -.02em; }
+  .kpi.destaque { background: var(--orange); }
+  .kpi.destaque span { color: #000; opacity: .7; }
+  .kpi em { font-style: normal; font-size: 12px; color: var(--soft); }
+  .kpi.destaque em { color: #000; opacity: .75; }
+  .grafico { position: relative; }
+  .grafico svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .grafico .eixo { font: 400 11px var(--mono); fill: var(--slate); }
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--soft); }
+  .legenda i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .tip { position: absolute; pointer-events: none; background: #000; color: #fff; border-radius: 12px; padding: 10px 12px; font-size: 13px; line-height: 1.5; min-width: 150px; transform: translate(-50%, -100%); white-space: nowrap; }
+  .tip b { font-family: var(--mono); font-weight: 400; font-size: 11px; color: #b5b5b5; display: block; text-transform: uppercase; letter-spacing: .04em; }
+  .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .painel .rodape { font-size: 13px; color: var(--soft); display: flex; flex-wrap: wrap; gap: 6px 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .painel .rodape a { color: #000; font-weight: 600; text-decoration: none; }
+  .painel .rodape a:hover { color: var(--orange); text-decoration: underline; }
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, 1fr); } .kpi.destaque { grid-column: 1 / -1; } article.post .painel { width: 100%; } }
+  @media (max-width: 720px) { .painel { padding: 16px; border-radius: 18px; } .kpi b { font-size: 32px; } }
 </style>
 </head>
 <body>
@@ -118,12 +154,96 @@ function formata(txt) {
   return String(txt).split(/\n\s*\n/).map(b => {
     b = b.trim();
     if (!b) return "";
+    if (b === "[dashboard]") return `<div class="painel" id="painel"></div>`;
     if (b.startsWith("## ")) return `<h3>${inline(b.slice(3))}</h3>`;
     if (b.startsWith("> ")) return `<blockquote>${inline(b.replace(/^> ?/gm, ""))}</blockquote>`;
     if (/^- /.test(b)) return `<ul>${b.split(/\n/).map(l => `<li>${inline(l.replace(/^- /, ""))}</li>`).join("")}</ul>`;
     return `<p>${inline(b).replace(/\n/g, "<br>")}</p>`;
   }).join("");
 }
+
+// ---------- Painéis das análises ----------
+const num = (v, casas = 1) => Number(v).toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
+const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+const mesTxt = m => { const [a, n] = m.split("-"); return MESES[+n - 1] + "/" + a; };
+
+const PAINEIS = {
+  // Juro real no Brasil: dados/juros_inflacao.json, gerado por analises/juros_inflacao.py (GitHub Actions, todo mês)
+  "juro-real": async el => {
+    el.innerHTML = `<p class="vazio">Carregando os dados…</p>`;
+    let d;
+    try { d = await (await fetch("/dados/juros_inflacao.json", { cache: "no-cache" })).json(); }
+    catch (e) { el.innerHTML = `<p class="vazio">Não consegui carregar os dados agora.</p>`; return; }
+    const r = d.resumo, ult = mesTxt(d.ultimo_mes);
+    const SERIES = [
+      { k: "selic", nome: "Selic", cor: "#000", w: 2 },
+      { k: "ipca", nome: "IPCA", cor: "#4686ac", w: 2 },
+      { k: "juro_real", nome: "Juro real", cor: "#ff3b1f", w: 3 },
+    ];
+    el.innerHTML = `
+      <div class="ph"><div><h4>Selic, IPCA e juro real</h4><small class="mono">Acumulado em 12 meses · dados até ${esc(ult)} · atualiza sozinho todo mês</small></div>
+        <div class="per" role="group" aria-label="Período">${[[12, "1 ano"], [36, "3 anos"], [60, "5 anos"], [120, "10 anos"]].map(([n, t]) =>
+          `<button type="button" data-n="${n}" aria-pressed="${n === 120}">${t}</button>`).join("")}</div></div>
+      <div class="kpis">
+        <div class="kpi"><span class="mono">Selic · 12 meses</span><b>${num(r.selic_12m)}%</b></div>
+        <div class="kpi"><span class="mono">IPCA · 12 meses</span><b>${num(r.ipca_12m)}%</b></div>
+        <div class="kpi destaque"><span class="mono">Juro real · 12 meses</span><b>${num(r.juro_real_12m)}%</b><em>${num(r.juro_real_12m / r.juro_real_medio_10a)}× a média de 10 anos</em></div>
+        <div class="kpi"><span class="mono">Média · 10 anos</span><b>${num(r.juro_real_medio_10a)}%</b><em>juro real</em></div>
+        <div class="kpi"><span class="mono">Juro real negativo</span><b>${r.meses_juro_real_negativo}</b><em>meses em 10 anos</em></div>
+      </div>
+      <div class="legenda">${SERIES.map(s => `<span><i style="background:${s.cor}"></i>${s.nome}</span>`).join("")}</div>
+      <div class="grafico"><svg viewBox="0 0 800 320" role="img" aria-label="Gráfico de linhas: Selic, IPCA e juro real acumulados em 12 meses"></svg><div class="tip" hidden></div></div>
+      <div class="rodape"><span>Fonte: ${esc(d.fonte)}</span><span>Juro real = (1 + Selic) ÷ (1 + IPCA) − 1</span><a href="https://github.com/adrianoarruda/site/blob/main/analises/juros_inflacao.py" target="_blank" rel="noopener">Ver o código em Python ↗</a></div>`;
+
+    const svg = el.querySelector("svg"), tip = el.querySelector(".tip");
+    // O gráfico usa a largura real da tela, para o texto dos eixos não encolher no celular
+    let W = 800, H = 320;
+    const m = { t: 12, r: 12, b: 28, l: 40 };
+    const desenha = n => {
+      W = Math.max(320, Math.round(svg.parentElement.clientWidth || 800)); H = W < 600 ? 240 : 320;
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      const dados = d.serie.slice(-n);
+      const vals = dados.flatMap(p => SERIES.map(s => p[s.k]));
+      const lo = Math.floor(Math.min(0, ...vals) / 5) * 5, hi = Math.ceil(Math.max(...vals) / 5) * 5;
+      const x = i => m.l + (i / (dados.length - 1)) * (W - m.l - m.r);
+      const y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+      let g = "";
+      for (let v = lo; v <= hi; v += 5) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 0 ? "#b5b5b5" : "#eee"}" ${v === 0 ? 'stroke-dasharray="4 4"' : ""}/><text class="eixo" x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`;
+      dados.forEach((p, i) => {
+        const [a, mm] = p.mes.split("-");
+        if (n <= 12 ? (W >= 600 || +mm % 2 === 1) : mm === "01" && (W >= 600 || n <= 60 || +a % 2 === 0)) g += `<text class="eixo" x="${x(i)}" y="${H - 8}" text-anchor="middle">${n > 12 ? a : MESES[+mm - 1]}</text>`;
+      });
+      SERIES.forEach(s => { g += `<path d="${dados.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p[s.k]).toFixed(1)).join(" ")}" fill="none" stroke="${s.cor}" stroke-width="${s.w}" stroke-linejoin="round"/>`; });
+      g += `<line class="cursor" y1="${m.t}" y2="${H - m.b}" stroke="#000" stroke-width="1" visibility="hidden"/>` + SERIES.map(s => `<circle class="pt" data-k="${s.k}" r="4.5" fill="${s.cor}" stroke="#fff" stroke-width="2" visibility="hidden"/>`).join("");
+      g += `<rect x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/>`;
+      svg.innerHTML = g;
+      // Passar o mouse (ou o dedo) mostra os três valores do mês
+      const mostra = clientX => {
+        const b = svg.getBoundingClientRect(), px = (clientX - b.left) * W / b.width;
+        const i = Math.max(0, Math.min(dados.length - 1, Math.round((px - m.l) / (W - m.l - m.r) * (dados.length - 1))));
+        const p = dados[i], cx = x(i), cur = svg.querySelector(".cursor");
+        cur.setAttribute("x1", cx); cur.setAttribute("x2", cx); cur.setAttribute("visibility", "visible");
+        svg.querySelectorAll(".pt").forEach(c => { c.setAttribute("cx", cx); c.setAttribute("cy", y(p[c.dataset.k])); c.setAttribute("visibility", "visible"); });
+        tip.hidden = false;
+        tip.innerHTML = `<b>${esc(mesTxt(p.mes))}</b>` + SERIES.map(s => `<div><i style="background:${s.cor === "#000" ? "#fff" : s.cor}"></i>${s.nome}: ${num(p[s.k])}%</div>`).join("");
+        const topo = Math.min(...SERIES.map(s => y(p[s.k])));
+        tip.style.left = Math.max(80, Math.min(b.width - 80, cx * b.width / W)) + "px";
+        tip.style.top = Math.max(70, topo * b.height / H - 12) + "px";
+      };
+      svg.onmousemove = ev => mostra(ev.clientX);
+      svg.ontouchmove = ev => mostra(ev.touches[0].clientX);
+      svg.onmouseleave = () => { tip.hidden = true; svg.querySelectorAll(".cursor, .pt").forEach(e => e.setAttribute("visibility", "hidden")); };
+    };
+    desenha(120);
+    let atual = 120;
+    addEventListener("resize", () => desenha(atual));
+    el.querySelector(".per").addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      el.querySelectorAll(".per button").forEach(x => x.setAttribute("aria-pressed", x === b));
+      atual = +b.dataset.n; desenha(atual);
+    });
+  },
+};
 
 function slugAtual() {
   const q = new URLSearchParams(location.search).get("p");
@@ -136,12 +256,29 @@ async function lista() {
   const r = await fetch(API);
   const { posts = [] } = await r.json();
   if (!posts.length) { $("conteudo").innerHTML = `<p class="vazio">Os primeiros posts estão chegando.</p>`; return; }
-  $("conteudo").innerHTML = `<div class="lista">${posts.map(p => `
-    <a class="item" href="/blog/${encodeURIComponent(p.slug)}">
-      <span class="quando mono">${esc(p.publicado)}</span>
-      <div><h2 class="cond">${esc(p.titulo)}</h2>${p.resumo ? `<p>${esc(p.resumo)}</p>` : ""}</div>
-      <span class="tema mono">${esc(p.tema)}</span>
-    </a>`).join("")}</div>`;
+  // Temas presentes, com "Análises" primeiro; ?tema= no link abre já filtrado
+  const temas = [...new Set(posts.map(p => p.tema).filter(Boolean))].sort((a, b) => (b === "Análises") - (a === "Análises") || a.localeCompare(b, "pt-BR"));
+  let ativo = new URLSearchParams(location.search).get("tema") || "";
+  if (!temas.includes(ativo)) ativo = "";
+  const desenha = () => {
+    const vis = posts.filter(p => !ativo || p.tema === ativo);
+    $("conteudo").innerHTML = (temas.length > 1 ? `<div class="temas" role="group" aria-label="Filtrar por tema">${["", ...temas].map(t =>
+        `<button type="button" data-tema="${esc(t)}" aria-pressed="${t === ativo}">${t ? esc(t) : "Todos"}</button>`).join("")}</div>` : "") +
+      `<div class="lista">${vis.map(p => `
+      <a class="item" href="/blog/${encodeURIComponent(p.slug)}">
+        <span class="quando mono">${esc(p.publicado)}</span>
+        <div><h2 class="cond">${esc(p.titulo)}</h2>${p.resumo ? `<p>${esc(p.resumo)}</p>` : ""}</div>
+        <span class="tema mono">${esc(p.tema)}</span>
+      </a>`).join("")}</div>`;
+  };
+  desenha();
+  $("conteudo").addEventListener("click", e => {
+    const b = e.target.closest("[data-tema]");
+    if (!b) return;
+    ativo = b.dataset.tema;
+    history.replaceState(null, "", ativo ? "?tema=" + encodeURIComponent(ativo) : location.pathname);
+    desenha();
+  });
 }
 
 async function post(slug) {
@@ -167,6 +304,11 @@ async function post(slug) {
       <div class="fonte"><span class="mono">Fonte original${p.fonte ? " · " + esc(p.fonte) : ""}</span><a href="${esc(p.fonte_url)}" target="_blank" rel="noopener noreferrer">${esc(p.fonte_url)}</a></div>
       <a class="todos" href="/blog/">Ver todos os posts →</a>
     </article>`;
+  // Análise com painel interativo: entra no lugar de [dashboard] no texto, ou logo depois da linha fina
+  if (p.dashboard && PAINEIS[p.dashboard]) {
+    if (!$("painel")) document.querySelector("article.post .lead, article.post > :first-child").insertAdjacentHTML("afterend", `<div class="painel" id="painel"></div>`);
+    PAINEIS[p.dashboard]($("painel"));
+  }
 }
 
 const s = slugAtual();

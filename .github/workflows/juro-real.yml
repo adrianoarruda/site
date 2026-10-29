@@ -1,0 +1,33 @@
+# Atualiza os dados da análise "Juro real no Brasil" (dados/juros_inflacao.json).
+# O IBGE divulga o IPCA por volta do dia 10; roda do dia 10 ao 15 de cada mês
+# e só faz commit quando entra um mês novo. Também dá para rodar à mão (Actions → Run workflow).
+name: Atualizar juro real
+
+on:
+  schedule:
+    - cron: "0 13 10-15 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r analises/requirements.txt
+      - run: python analises/juros_inflacao.py
+      - name: Commit se o último mês mudou
+        run: |
+          antes=$(git show HEAD:dados/juros_inflacao.json | python -c "import json,sys;print(json.load(sys.stdin)['ultimo_mes'])")
+          depois=$(python -c "import json;print(json.load(open('dados/juros_inflacao.json'))['ultimo_mes'])")
+          if [ "$antes" = "$depois" ]; then echo "Sem mês novo ($depois)"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/juros_inflacao.json
+          git commit -m "Dados do juro real: $depois"
+          git push

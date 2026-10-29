@@ -25,7 +25,7 @@ function slugDe(titulo) {
   return (base || "post") + "-" + Math.random().toString(36).slice(2, 6);
 }
 
-const CAMPOS = sql.unsafe(`id, slug, status, titulo, resumo, corpo, tema, fonte, fonte_url, editado,
+const CAMPOS = sql.unsafe(`id, slug, status, titulo, resumo, corpo, tema, fonte, fonte_url, dashboard, editado,
   to_char(criado_em at time zone 'America/Sao_Paulo', 'DD/MM/YYYY') as criado,
   to_char(publicado_em at time zone 'America/Sao_Paulo', 'DD/MM/YYYY') as publicado`);
 
@@ -43,9 +43,12 @@ export default async function handler(req, res) {
         return post ? res.status(200).json({ post }) : res.status(404).json({ erro: "Post não encontrado" });
       }
       const limite = Math.min(50, Math.max(1, parseInt(req.query.limite, 10) || 50));
-      const posts = await sql`select slug, titulo, resumo, tema, fonte,
+      // ?tema=Análises: só os posts daquela tag (a página principal mostra a última análise)
+      const tema = limpa(req.query.tema, 40);
+      const posts = await sql`select slug, titulo, resumo, tema, fonte, dashboard,
           to_char(publicado_em at time zone 'America/Sao_Paulo', 'DD/MM/YYYY') as publicado
-        from posts where status = 'publicado' order by publicado_em desc limit ${limite}`;
+        from posts where status = 'publicado' and (${tema} = '' or tema = ${tema})
+        order by publicado_em desc limit ${limite}`;
       return res.status(200).json({ posts });
     }
 
@@ -66,8 +69,9 @@ export default async function handler(req, res) {
       for (const r of lista) {
         const titulo = limpa(r.titulo, 160), corpo = limpa(r.corpo, 8000), fonte_url = limpa(r.fonte_url, 2000);
         if (!titulo || corpo.length < 200 || !urlOk(fonte_url)) continue;
-        const [p] = await sql`insert into posts (slug, titulo, resumo, corpo, tema, fonte, fonte_url)
-          values (${slugDe(titulo)}, ${titulo}, ${limpa(r.resumo, 300)}, ${corpo}, ${limpa(r.tema, 40)}, ${limpa(r.fonte, 80)}, ${fonte_url})
+        // dashboard: nome do painel interativo que o post mostra (ex.: "juro-real"); só para análises
+        const [p] = await sql`insert into posts (slug, titulo, resumo, corpo, tema, fonte, fonte_url, dashboard)
+          values (${slugDe(titulo)}, ${titulo}, ${limpa(r.resumo, 300)}, ${corpo}, ${limpa(r.tema, 40)}, ${limpa(r.fonte, 80)}, ${fonte_url}, ${limpa(r.dashboard, 40) || null})
           returning id, slug`;
         gravados.push(p);
       }

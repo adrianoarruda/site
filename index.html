@@ -287,6 +287,7 @@
     .door { width: 260px; }
   }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } }
+  #an-link[hidden], .blogs[hidden] { display: none !important; }
   /* Blog: últimos posts (só aparece quando há post publicado) */
   .blogs { padding: 110px 0 40px; }
   .blogs .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 18px 40px; margin-bottom: 40px; }
@@ -772,17 +773,18 @@
       <a class="crumb" href="#">Análises</a>
       <h2 class="h-lg">Pergunte aos dados</h2>
       <p>Análises públicas feitas em Python, com dados abertos. A primeira: quanto o brasileiro ganha de juro de verdade, já descontada a inflação.</p>
+      <a class="btn dark yellow" id="an-link" href="https://site-beta-six-19.vercel.app/blog/?tema=An%C3%A1lises" hidden>Ver análise completa <span class="arr"><i>→</i></span></a>
     </div>
     <div style="position:relative" class="reveal" id="chatwrap">
       <div class="chatwin">
-        <div class="tb"><i></i><i></i><i></i><span style="margin-left:14px">‹ › Análise 01 · Juro real ⌄</span><span class="nc">Banco Central · SGS 4390 e 433</span></div>
+        <div class="tb"><i></i><i></i><i></i><span style="margin-left:14px">‹ › Análise 01 · Juro real ⌄</span><span class="nc">Banco Central e IBGE · SGS 4390 e 433</span></div>
         <div class="q">O juro real está alto ou baixo hoje?</div>
         <div class="ans">
           <span class="rs">Raciocínio ›</span>
-          <span>Em 12 meses até set/2026, a <b style="font-weight:600">Selic</b> rendeu <b>14,5%</b> e o IPCA foi <b>4,6%</b>. O juro real ficou em <b>9,5% ao ano</b>, mais que o dobro da média dos últimos 10 anos (4,2%).</span>
+          <span id="an-txt">Em 12 meses até set/2026, a <b style="font-weight:600">Selic</b> rendeu <b>14,5%</b> e o IPCA foi <b>4,6%</b>. O juro real ficou em <b>9,5% ao ano</b>, mais que o dobro da média dos últimos 10 anos (4,2%).</span>
           <div class="chart"><h5>Selic, IPCA e juro real</h5><span style="font-size:12px;color:var(--slate)">Acumulado em 12 meses, últimos 10 anos</span>
-            <div class="legend"><span><i style="background:#8a8a8a"></i>Selic</span><span><i style="background:#cdcdcd"></i>IPCA</span><span><i style="background:#000"></i>Juro real</span></div>
-            <svg viewBox="0 0 700 170" width="100%" height="170" aria-hidden="true">
+            <div class="legend"><span><i style="background:#000"></i>Selic</span><span><i style="background:#4686ac"></i>IPCA</span><span><i style="background:#ff3b1f"></i>Juro real</span></div>
+            <svg id="an-svg" viewBox="0 0 700 170" width="100%" height="170" aria-hidden="true">
               <g stroke="#f0f0f2"><path d="M0 20H700M0 70H700M0 120H700M0 168H700"/></g>
               <path d="M0 115.2H700" stroke="#d9d9de" stroke-dasharray="4 4"/>
               <path class="draw" d="M0.0 62.0 L5.9 68.0 L11.8 72.7 L17.6 79.1 L23.5 83.1 L29.4 84.4 L35.3 87.7 L41.2 90.9 L47.1 95.0 L52.9 96.9 L58.8 98.6 L64.7 98.1 L70.6 97.0 L76.5 96.3 L82.4 95.3 L88.2 95.9 L94.1 96.1 L100.0 97.1 L105.9 96.6 L111.8 96.0 L117.6 85.6 L123.5 85.0 L129.4 86.9 L135.3 84.6 L141.2 84.4 L147.1 87.9 L152.9 89.9 L158.8 89.7 L164.7 89.0 L170.6 84.3 L176.5 81.9 L182.4 83.7 L188.2 92.5 L194.1 93.5 L200.0 92.1 L205.9 95.7 L211.8 98.1 L217.6 93.1 L223.5 86.1 L229.4 86.9 L235.3 88.2 L241.2 92.9 L247.1 99.0 L252.9 102.5 L258.8 100.9 L264.7 99.6 L270.6 98.8 L276.5 94.0 L282.4 88.8 L288.2 86.1 L294.1 84.7 L300.0 84.4 L305.9 80.1 L311.8 74.0 L317.6 69.6 L323.5 60.8 L329.4 58.8 L335.3 54.5 L341.2 49.8 L347.1 46.0 L352.9 43.1 L358.8 42.6 L364.7 47.2 L370.6 45.1 L376.5 44.0 L382.4 38.9 L388.2 33.3 L394.1 36.0 L400.0 34.9 L405.9 47.2 L411.8 56.2 L417.6 66.8 L423.5 71.5 L429.4 75.4 L435.3 76.2 L441.2 76.2 L447.1 77.4 L452.9 83.8 L458.8 87.0 L464.7 88.6 L470.6 93.9 L476.5 88.3 L482.4 84.1 L488.2 80.2 L494.1 82.7 L500.0 83.6 L505.9 84.0 L511.8 84.8 L517.6 84.8 L523.5 88.7 L529.4 90.3 L535.3 88.7 L541.2 86.7 L547.1 84.8 L552.9 86.6 L558.8 85.4 L564.7 83.1 L570.6 82.3 L576.5 82.6 L582.4 84.4 L588.2 81.0 L594.1 78.2 L600.0 77.9 L605.9 79.3 L611.8 79.1 L617.6 79.9 L623.5 80.6 L629.4 80.3 L635.3 83.6 L641.2 85.1 L647.1 86.5 L652.9 85.2 L658.8 89.5 L664.7 87.3 L670.6 85.6 L676.5 83.3 L682.4 83.9 L688.2 85.2 L694.1 86.7 L700.0 84.3" fill="none" stroke="#cdcdcd" stroke-width="2"/>
@@ -797,7 +799,7 @@
       <div class="person" style="left:0;bottom:-40px"><span class="tag"><i style="background:linear-gradient(135deg,#9db0c7,#4d5f78)"></i><b>Time de produto</b><em>Design</em></span><span class="bubble">Dá para transformar essa métrica numa tela que o cliente entende?</span></div>
     </div>
     <div class="feats3 reveal">
-      <div><div class="shot"><div class="tile" style="width:70%"><h5>Juro real · 12m</h5><div class="rows"><div>Selic<b style="color:var(--ink)">14,5%</b></div><div>IPCA<b style="color:var(--ink)">4,6%</b></div><div>Juro real<b style="color:var(--ink)">9,5%</b></div></div></div></div><b>Análises em Python</b><p>Dados públicos, código aberto e atualização automática.</p></div>
+      <div><div class="shot"><div class="tile" style="width:70%"><h5>Juro real · 12m</h5><div class="rows"><div>Selic<b style="color:var(--ink)" id="an-k-selic">14,5%</b></div><div>IPCA<b style="color:var(--ink)" id="an-k-ipca">4,6%</b></div><div>Juro real<b style="color:var(--ink)" id="an-k-real">9,5%</b></div></div></div></div><b>Análises em Python</b><p>Dados públicos, código aberto e atualização automática.</p></div>
       <div><div class="shot"><div class="tile" style="width:72%"><div class="code"><span class="c"># pandas</span>
 df = sgs(<span class="s">4390</span>, <span class="s">433</span>)
 df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código que dá para ler</b><p>Cada número do site tem o script que o gerou, no GitHub.</p></div>
@@ -978,6 +980,38 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
         <h3>${esc(p.titulo)}</h3>${p.resumo ? `<p>${esc(p.resumo)}</p>` : ""}
       </a>`).join("");
     document.getElementById("blog").hidden = false;
+  } catch (e) {}
+})();
+</script>
+<script>
+// "Pergunte aos dados": números e gráfico vêm de dados/juros_inflacao.json (atualizado todo mês pelo GitHub Actions)
+// e o botão leva à última análise publicada no blog com a tag "Análises".
+(async () => {
+  const BASE = "https://site-beta-six-19.vercel.app";
+  const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const num = v => Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  try {
+    const d = await (await fetch("dados/juros_inflacao.json", { cache: "no-cache" })).json();
+    const r = d.resumo, [a, m] = d.ultimo_mes.split("-");
+    document.getElementById("an-txt").innerHTML = `Em 12 meses até ${MESES[+m - 1]}/${a}, a <b style="font-weight:600">Selic</b> rendeu <b>${num(r.selic_12m)}%</b> e o IPCA foi <b>${num(r.ipca_12m)}%</b>. O juro real ficou em <b>${num(r.juro_real_12m)}% ao ano</b>, ${r.juro_real_12m >= 2 * r.juro_real_medio_10a ? "mais que o dobro da" : r.juro_real_12m > r.juro_real_medio_10a ? "acima da" : "abaixo da"} média dos últimos 10 anos (${num(r.juro_real_medio_10a)}%).`;
+    document.getElementById("an-k-selic").textContent = num(r.selic_12m) + "%";
+    document.getElementById("an-k-ipca").textContent = num(r.ipca_12m) + "%";
+    document.getElementById("an-k-real").textContent = num(r.juro_real_12m) + "%";
+    const sv = d.serie, vals = sv.flatMap(p => [p.selic, p.ipca, p.juro_real]);
+    const lo = Math.min(0, ...vals) - 1, hi = Math.max(...vals) + 1;
+    const x = i => (i / (sv.length - 1)) * 700, y = v => 6 + (1 - (v - lo) / (hi - lo)) * 160;
+    const linha = (k, cor, w) => `<path class="draw" d="${sv.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p[k]).toFixed(1)).join(" ")}" fill="none" stroke="${cor}" stroke-width="${w}"/>`;
+    const svg = document.getElementById("an-svg");
+    svg.innerHTML = `<g stroke="#f0f0f2"><path d="M0 20H700M0 70H700M0 120H700M0 168H700"/></g><path d="M0 ${y(0).toFixed(1)}H700" stroke="#d9d9de" stroke-dasharray="4 4"/>` +
+      linha("ipca", "#4686ac", 2) + linha("selic", "#000", 2) + linha("juro_real", "#ff3b1f", 2.5);
+  } catch (e) {}
+  try {
+    const { posts = [] } = await (await fetch(BASE + "/api/posts?tema=" + encodeURIComponent("Análises") + "&limite=1")).json();
+    if (posts.length) {
+      const l = document.getElementById("an-link");
+      l.href = BASE + "/blog/" + encodeURIComponent(posts[0].slug);
+      l.hidden = false;
+    }
   } catch (e) {}
 })();
 </script>
