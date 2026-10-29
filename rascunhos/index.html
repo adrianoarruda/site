@@ -80,11 +80,16 @@
   .rasc .acoes .msg { font-size: 14px; color: var(--soft); margin-left: 4px; }
   .dica { font-size: 13px; color: var(--slate); margin: -6px 0 0; }
 
-  .pubs { display: grid; border-top: 1px solid var(--line); margin-bottom: 40px; }
-  .pubs div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: center; }
-  .pubs a { font-weight: 600; text-decoration: none; }
-  .pubs a:hover { color: var(--orange); }
-  .pubs span { font-size: 11px; color: var(--slate); }
+  .pubs { display: grid; gap: 12px; margin-bottom: 40px; }
+  details.pub { border: 1px solid var(--line); border-radius: 20px; padding: 18px 24px; }
+  details.pub summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; }
+  details.pub summary::-webkit-details-marker { display: none; }
+  details.pub .pt { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; font-size: 26px; line-height: 1; letter-spacing: -.02em; }
+  details.pub .pt::before { content: "▸ "; color: var(--slate); }
+  details.pub[open] .pt::before { content: "▾ "; }
+  details.pub .pa { display: flex; flex-wrap: wrap; gap: 8px; }
+  details.pub form.rasc { border: 0; padding: 18px 0 0; margin: 0; }
+  .btn.feito, .btn.feito:disabled { background: #e3f1e7; color: #2f7a4b; opacity: 1; cursor: default; border-radius: 9999px; }
 
   footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--slate); font-size: 12px; }
   @media (max-width: 640px) {
@@ -175,9 +180,27 @@ function desenha({ rascunhos, publicados }) {
         <span class="msg" role="status"></span>
       </div>
     </form>`).join("") : `<p class="vazio">Nenhum rascunho esperando. Os próximos chegam na segunda, às 7h.</p>`;
+  // Publicados: o botão fica desabilitado avisando que já saiu; o texto abre para corrigir, se precisar
   $("publicados").innerHTML = publicados.length ? publicados.map(p => `
-    <div><a href="/blog/${encodeURIComponent(p.slug)}" target="_blank" rel="noopener">${esc(p.titulo)}</a>
-      <span class="mono">${esc(p.publicado)} · <button class="btn ghost" type="button" data-despublicar="${p.id}" style="height:auto;font-size:12px">tirar do ar</button></span></div>`).join("")
+    <details class="pub">
+      <summary>
+        <span class="pt">${esc(p.titulo)}</span>
+        <span class="pa">
+          <button class="btn feito" type="button" disabled>✓ Publicado em ${esc(p.publicado)}</button>
+          <a class="btn soft" href="/blog/${encodeURIComponent(p.slug)}" target="_blank" rel="noopener">Ver no blog ↗</a>
+        </span>
+      </summary>
+      <form class="rasc" data-id="${p.id}" data-publicado="1">
+        <input class="t" name="titulo" value="${esc(p.titulo)}" aria-label="Título" maxlength="160">
+        <label class="f"><span>Linha fina</span><textarea name="resumo" rows="2" maxlength="300">${esc(p.resumo)}</textarea></label>
+        <label class="f"><span>Texto</span><textarea name="corpo" rows="14" maxlength="8000">${esc(p.corpo)}</textarea></label>
+        <div class="acoes">
+          <button class="btn soft" type="submit" data-acao="salvar">Salvar correção (vai direto para o ar)</button>
+          <button class="btn ghost" type="submit" data-acao="despublicar">Tirar do ar</button>
+          <span class="msg" role="status"></span>
+        </div>
+      </form>
+    </details>`).join("")
     : `<p class="vazio">Nada publicado ainda.</p>`;
 }
 
@@ -196,11 +219,12 @@ async function entra(s, lembrar) {
 
 $("gate").addEventListener("submit", e => { e.preventDefault(); entra($("senha").value, $("lembrar").checked); });
 
-$("rascunhos").addEventListener("submit", async e => {
+async function envia(e) {
   e.preventDefault();
   const f = e.target, acao = e.submitter?.dataset.acao || "salvar", msg = f.querySelector(".msg");
   if (acao === "descartar" && !confirm("Descartar este rascunho?")) return;
   if (acao === "publicar" && !confirm("Publicar no blog agora? Ele fica público no site.")) return;
+  if (acao === "despublicar" && !confirm("Tirar este post do ar? Ele volta para os rascunhos.")) return;
   f.querySelectorAll("button").forEach(b => b.disabled = true);
   msg.textContent = "Salvando…";
   try {
@@ -208,20 +232,19 @@ $("rascunhos").addEventListener("submit", async e => {
     if (acao !== "salvar") body.acao = acao;
     await api("PATCH", body);
     if (acao === "salvar") { msg.textContent = "Salvo."; f.querySelectorAll("button").forEach(b => b.disabled = false); }
-    else await carrega();
+    else {
+      await carrega();
+      // Depois de publicar, mostra onde o post foi parar, já com o aviso de publicado
+      const pub = acao === "publicar" && $("publicados").querySelector(`form[data-id="${f.dataset.id}"]`)?.closest("details");
+      if (pub) { pub.scrollIntoView({ behavior: "smooth", block: "center" }); pub.animate([{ background: "#e3f1e7" }, { background: "transparent" }], { duration: 1800 }); }
+    }
   } catch (err) {
     msg.textContent = err.message;
     f.querySelectorAll("button").forEach(b => b.disabled = false);
   }
-});
-
-$("publicados").addEventListener("click", async e => {
-  const b = e.target.closest("[data-despublicar]");
-  if (!b || !confirm("Tirar este post do ar? Ele volta para os rascunhos.")) return;
-  b.disabled = true;
-  try { await api("PATCH", { id: b.dataset.despublicar, acao: "despublicar" }); await carrega(); }
-  catch (err) { alert(err.message); b.disabled = false; }
-});
+}
+$("rascunhos").addEventListener("submit", envia);
+$("publicados").addEventListener("submit", envia);
 
 const salva = lida();
 if (salva) entra(salva, (() => { try { return !!localStorage.getItem("links-senha"); } catch (e) { return false; } })());
