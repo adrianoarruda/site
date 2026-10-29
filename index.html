@@ -564,7 +564,7 @@
 <nav class="top">
   <div class="wrap">
     <a class="logo" href="#"><span class="brand">Adriano Arruda</span></a>
-    <div class="menu"><a href="#areas">Áreas</a><a href="#trajetoria">Trajetória</a><a href="#como">Como trabalho</a><a href="#analises">Análises</a><a href="https://site-beta-six-19.vercel.app/blog/">Blog</a></div>
+    <div class="menu"><a href="#areas">Áreas</a><a href="#trajetoria">Trajetória</a><a href="#como">Como trabalho</a><a href="#analises">Análises</a><a href="https://www.adrianoarruda.com/blog/">Blog</a></div>
     <a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn</a>
   </div>
 </nav>
@@ -773,7 +773,7 @@
       <a class="crumb" href="#">Análises</a>
       <h2 class="h-lg">Pergunte aos dados</h2>
       <p>Análises públicas feitas em Python, com dados abertos. A primeira: quanto o brasileiro ganha de juro de verdade, já descontada a inflação.</p>
-      <a class="btn dark yellow" id="an-link" href="https://site-beta-six-19.vercel.app/blog/?tema=An%C3%A1lises" hidden>Ver análise completa <span class="arr"><i>→</i></span></a>
+      <a class="btn dark yellow" id="an-link" href="https://www.adrianoarruda.com/blog/?tema=An%C3%A1lises" hidden>Ver análise completa <span class="arr"><i>→</i></span></a>
     </div>
     <div style="position:relative" class="reveal" id="chatwrap">
       <div class="chatwin">
@@ -812,7 +812,7 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
   <div class="wrap">
     <div class="head reveal">
       <div><a class="crumb" href="#">Blog</a><h2 class="h-lg">O que estou lendo</h2><p>Dados, design, desenvolvimento e IA: o que chamou a minha atenção e o que eu acho disso.</p></div>
-      <a class="btn dark yellow" href="https://site-beta-six-19.vercel.app/blog/">Ver todos os posts <span class="arr"><i>→</i></span></a>
+      <a class="btn dark yellow" href="https://www.adrianoarruda.com/blog/">Ver todos os posts <span class="arr"><i>→</i></span></a>
     </div>
     <div class="grid" id="blog-grid"></div>
   </div>
@@ -969,7 +969,7 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
 <script>
 // Últimos posts do blog (API no Vercel; funciona também no GitHub Pages)
 (async () => {
-  const BASE = "https://site-beta-six-19.vercel.app";
+  const BASE = "https://www.adrianoarruda.com";
   const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   try {
     const { posts = [] } = await (await fetch(BASE + "/api/posts?limite=3")).json();
@@ -987,7 +987,7 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
 // "Pergunte aos dados": números e gráfico vêm de dados/juros_inflacao.json (atualizado todo mês pelo GitHub Actions)
 // e o botão leva à última análise publicada no blog com a tag "Análises".
 (async () => {
-  const BASE = "https://site-beta-six-19.vercel.app";
+  const BASE = "https://www.adrianoarruda.com";
   const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
   const num = v => Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   try {

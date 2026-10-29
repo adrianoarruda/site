@@ -1,5 +1,21 @@
 {
   "rewrites": [
-    { "source": "/blog/:slug", "destination": "/blog/index.html" }
+    {
+      "source": "/blog/:slug",
+      "destination": "/blog/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/((?!api/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "site-beta-six-19.vercel.app"
+        }
+      ],
+      "destination": "https://www.adrianoarruda.com/$1",
+      "permanent": true
+    }
   ]
 }
