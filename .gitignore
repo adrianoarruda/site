@@ -1,2 +1,8 @@
 .DS_Store
 .vercel
+node_modules
+.env*
+# Skills que o Vercel instala para agentes: não publicar
+.agents
+.claude
+skills-lock.json

@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Links úteis · Adriano Arruda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
+<style>
+  /* Mesma identidade da v3: preto e branco, verde neon como única cor de destaque */
+  :root {
+    --ink: #000; --slate: #8a8a8a; --soft: #5c5c5c; --line: #e5e5e5; --card: #f3f3f3; --paper: #fff;
+    --green: #39ff14; --green-h: #2ee010; --red: #d4321c;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, Consolas, monospace;
+    --cond: "Archivo", "Arial Narrow", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body { font: 16px/1.5 var(--sans); letter-spacing: -.01em; color: var(--ink); background: var(--paper); }
+  a { color: inherit; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: 24px; }
+  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+  .cond { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; }
+
+  nav.top { height: 72px; background: #000; }
+  nav.top .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { color: #fff; text-decoration: none; font-size: 26px; letter-spacing: -.02em; }
+  .voltar { color: #979797; font-size: 14px; text-decoration: none; }
+  .voltar:hover { color: #fff; }
+
+  header.hero { background: #000; color: #fff; padding: 56px 0 96px; }
+  .crumb { font-size: 12px; color: #979797; }
+  .crumb::before { content: "— "; }
+  h1 { margin: 16px 0 0; font-size: clamp(64px, 11vw, 132px); line-height: .92; letter-spacing: -.04em; }
+  h1 .dim { color: #5c5c5c; }
+  .hero p { margin: 22px 0 0; max-width: 56ch; color: #cdcdcd; font-size: 18px; letter-spacing: -.02em; }
+
+  main { background: var(--paper); border-radius: 64px 64px 0 0; margin-top: -64px; position: relative; padding: 56px 0 96px; min-height: 50vh; }
+
+  .btn { font: 500 15px var(--sans); letter-spacing: -.01em; border: 0; cursor: pointer; height: 44px; padding-inline: 20px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+  .btn.green { background: var(--green); color: #000; border-radius: 9999px; }
+  .btn.green:hover { background: var(--green-h); }
+  .btn.dark { background: #000; color: #fff; border-radius: 12px; }
+  .btn.dark:hover { background: #222; }
+  .btn.soft { background: var(--card); color: #000; border-radius: 12px; }
+  .btn.soft:hover { background: #e9e9e9; }
+  .btn:disabled { opacity: .5; cursor: wait; }
+
+  input, textarea { font: 16px var(--sans); color: var(--ink); background: var(--card); border: 1px solid transparent; border-radius: 12px; padding: 11px 14px; width: 100%; }
+  input:focus, textarea:focus { outline: none; border-color: #000; background: #fff; }
+  textarea { resize: vertical; min-height: 84px; }
+  label.f { display: grid; gap: 6px; font-size: 13px; color: var(--soft); }
+  label.f span { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; font-size: 11px; }
+  :focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+  /* Portão da senha */
+  .gate { max-width: 420px; display: grid; gap: 14px; }
+  .gate h2 { margin: 0; font-size: 44px; line-height: .9; letter-spacing: -.03em; }
+  .gate p { margin: 0; color: var(--soft); }
+  .gate .row { display: flex; gap: 8px; }
+  .gate .row input { flex: 1; }
+  .lembrar { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--soft); cursor: pointer; }
+  .erro, .gate .erro { color: var(--red); font-size: 14px; margin: 0; min-height: 21px; }
+
+  /* Barra de ferramentas */
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 36px; }
+  .bar input[type=search] { flex: 1 1 260px; max-width: 420px; border-radius: 9999px; padding-left: 18px; }
+  .bar .n { font-size: 12px; color: var(--slate); margin-left: auto; }
+  .bar .sair { background: none; border: 0; color: var(--slate); font: 14px var(--sans); cursor: pointer; text-decoration: underline; }
+
+  /* Formulário de inclusão */
+  .novo { background: #000; color: #fff; border-radius: 24px; padding: 28px; margin-bottom: 40px; display: grid; gap: 16px; }
+  .novo[hidden] { display: none; }
+  .novo h3 { margin: 0; font-size: 36px; line-height: .9; letter-spacing: -.03em; }
+  .novo .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .novo .full { grid-column: 1 / -1; }
+  .novo label.f { color: #979797; }
+  .novo input, .novo textarea { background: #1a1a1a; color: #fff; }
+  .novo input:focus, .novo textarea:focus { border-color: var(--green); background: #111; }
+  .novo .acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .novo .btn.soft { background: #1a1a1a; color: #fff; }
+  .novo .btn.soft:hover { background: #262626; }
+  .novo .erro { color: #ff8a73; }
+
+  /* Lista por categoria */
+  .cat { margin-bottom: 44px; }
+  .cat[hidden] { display: none; }
+  .cat h2 { margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px; font-size: 40px; line-height: .9; letter-spacing: -.03em; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .cat h2 small { font-family: var(--mono); font-stretch: 100%; font-weight: 400; font-size: 12px; color: var(--slate); letter-spacing: .04em; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+  .card { background: var(--card); border-radius: 16px; padding: 20px; display: grid; gap: 8px; align-content: start; position: relative; transition: background-color .2s; }
+  .card:hover { background: #ececec; }
+  .card[hidden] { display: none; }
+  .card a.t { font-weight: 600; font-size: 18px; letter-spacing: -.02em; text-decoration: none; }
+  .card a.t::after { content: ""; position: absolute; inset: 0; border-radius: 16px; }
+  .card a.t:hover { text-decoration: underline; }
+  .card .host { font-size: 11px; color: var(--slate); word-break: break-all; }
+  .card p { margin: 0; color: var(--soft); font-size: 15px; }
+  .card .pe { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; }
+  .card .pe .mono { font-size: 11px; color: var(--slate); }
+  .card .rm { position: relative; z-index: 1; background: none; border: 0; color: var(--slate); font: 13px var(--sans); cursor: pointer; padding: 2px 0; }
+  .card .rm:hover { color: var(--red); text-decoration: underline; }
+  .vazio { color: var(--soft); }
+
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--slate); font-size: 12px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding-inline: 16px; }
+    header.hero { padding: 40px 0 88px; }
+    main { border-radius: 40px 40px 0 0; margin-top: -48px; padding-top: 40px; }
+    .novo { padding: 20px; border-radius: 20px; }
+    .novo .grid { grid-template-columns: 1fr; }
+    .cat h2 { font-size: 32px; }
+    .gate .row { flex-direction: column; }
+    .bar .n { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand cond" href="../">Adriano Arruda</a>
+    <a class="voltar" href="../">← Voltar ao site</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="crumb mono">Área privada</div>
+    <h1 class="cond">Links<br><span class="dim">úteis</span></h1>
+    <p>Ferramentas e referências que eu quero ter sempre à mão: design, dashboards, desenvolvimento e IA.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <form class="gate" id="gate" autocomplete="on">
+      <h2 class="cond">Precisa de senha</h2>
+      <p>Esta página é só minha. Digite a senha para ver e incluir links.</p>
+      <input type="text" name="username" value="links" autocomplete="username" hidden>
+      <div class="row">
+        <input type="password" id="senha" name="password" autocomplete="current-password" placeholder="Senha" required>
+        <button class="btn green" id="entrar" type="submit">Entrar →</button>
+      </div>
+      <label class="lembrar"><input type="checkbox" id="lembrar" style="width:auto"> Lembrar neste aparelho</label>
+      <p class="erro" id="gate-erro" role="alert"></p>
+    </form>
+
+    <section id="area" hidden>
+      <div class="bar">
+        <input type="search" id="busca" placeholder="Buscar por nome, site ou assunto" aria-label="Buscar links">
+        <button class="btn green" id="abrir-novo" type="button">+ Incluir link</button>
+        <span class="n mono" id="total"></span>
+        <button class="sair" id="sair" type="button">Sair</button>
+      </div>
+
+      <form class="novo" id="novo" hidden>
+        <h3 class="cond">Novo link</h3>
+        <div class="grid">
+          <label class="f"><span>Endereço</span><input type="url" id="n-url" placeholder="https://" required></label>
+          <label class="f"><span>Nome</span><input type="text" id="n-t" maxlength="120" required></label>
+          <label class="f"><span>Categoria</span><input type="text" id="n-cat" list="cats" maxlength="60" placeholder="Design, Dashboards, IA…"></label>
+          <datalist id="cats"></datalist>
+          <label class="f full"><span>Para que serve</span><textarea id="n-d" maxlength="400"></textarea></label>
+        </div>
+        <div class="acoes">
+          <button class="btn green" id="salvar" type="submit">Salvar link</button>
+          <button class="btn soft" id="cancelar" type="button">Cancelar</button>
+        </div>
+        <p class="erro" id="novo-erro" role="alert"></p>
+      </form>
+
+      <div id="lista"></div>
+      <p class="vazio" id="vazio" hidden>Nada encontrado com essa busca.</p>
+    </section>
+  </div>
+</main>
+
+<footer><div class="wrap mono">Adriano Arruda · links úteis</div></footer>
+
+<script>
+const API = "/api/links";
+const $ = id => document.getElementById(id);
+let senha = "";
+let links = [];
+
+function guarda(s, lembrar) {
+  try {
+    sessionStorage.setItem("links-senha", s);
+    if (lembrar) localStorage.setItem("links-senha", s); else localStorage.removeItem("links-senha");
+  } catch (e) {}
+}
+function lida() {
+  try { return sessionStorage.getItem("links-senha") || localStorage.getItem("links-senha") || ""; } catch (e) { return ""; }
+}
+function esquece() {
+  try { sessionStorage.removeItem("links-senha"); localStorage.removeItem("links-senha"); } catch (e) {}
+}
+
+async function api(method, body, query = "") {
+  const r = await fetch(API + query, {
+    method,
+    headers: { "x-senha": senha, ...(body ? { "content-type": "application/json" } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.erro || "Não deu certo (erro " + r.status + ")"); e.status = r.status; throw e; }
+  return j;
+}
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const host = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u; } };
+
+function desenha() {
+  const cats = [...new Set(links.map(l => l.cat))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  $("cats").innerHTML = cats.map(c => `<option value="${esc(c)}">`).join("");
+  $("lista").innerHTML = cats.map(c => {
+    const li = links.filter(l => l.cat === c).sort((a, b) => a.t.localeCompare(b.t, "pt-BR"));
+    return `<section class="cat" data-cat="${esc(c)}">
+      <h2 class="cond">${esc(c)} <small>${li.length}</small></h2>
+      <div class="cards">${li.map(l => `
+        <article class="card" data-busca="${esc((l.t + " " + l.url + " " + l.cat + " " + l.d).toLowerCase())}">
+          <a class="t" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.t)}</a>
+          <span class="host mono">${esc(host(l.url))}</span>
+          ${l.d ? `<p>${esc(l.d)}</p>` : ""}
+          <div class="pe"><span class="mono">salvo em ${esc(l.add)}</span><button class="rm" type="button" data-id="${esc(l.id)}" data-t="${esc(l.t)}">Remover</button></div>
+        </article>`).join("")}</div>
+    </section>`;
+  }).join("");
+  $("total").textContent = links.length + (links.length === 1 ? " link" : " links");
+  filtra();
+}
+
+function filtra() {
+  const q = $("busca").value.trim().toLowerCase();
+  let algum = false;
+  document.querySelectorAll(".cat").forEach(sec => {
+    let n = 0;
+    sec.querySelectorAll(".card").forEach(c => { const ok = !q || c.dataset.busca.includes(q); c.hidden = !ok; if (ok) n++; });
+    sec.hidden = n === 0;
+    if (n) algum = true;
+  });
+  $("vazio").hidden = algum || !links.length;
+}
+
+async function entra(s, lembrar) {
+  senha = s;
+  $("entrar").disabled = true;
+  $("gate-erro").textContent = "";
+  try {
+    links = (await api("GET")).links;
+    guarda(s, lembrar);
+    $("gate").hidden = true;
+    $("area").hidden = false;
+    desenha();
+  } catch (e) {
+    senha = "";
+    esquece();
+    $("gate-erro").textContent = e.status === 401 ? "Senha incorreta." : e.message;
+  } finally {
+    $("entrar").disabled = false;
+  }
+}
+
+$("gate").addEventListener("submit", e => { e.preventDefault(); entra($("senha").value, $("lembrar").checked); });
+$("busca").addEventListener("input", filtra);
+$("sair").addEventListener("click", () => { esquece(); location.reload(); });
+
+$("abrir-novo").addEventListener("click", () => { $("novo").hidden = false; $("n-url").focus(); });
+$("cancelar").addEventListener("click", () => { $("novo").reset(); $("novo").hidden = true; $("novo-erro").textContent = ""; });
+
+// Ao colar o endereço, sugere o nome a partir do site
+$("n-url").addEventListener("change", () => {
+  if ($("n-t").value) return;
+  const h = host($("n-url").value);
+  if (h && h !== $("n-url").value) { $("n-t").value = h.split(".")[0].replace(/^./, c => c.toUpperCase()); $("n-t").dataset.auto = "1"; }
+});
+// Nome sugerido fica selecionado: digitar substitui em vez de emendar
+$("n-t").addEventListener("focus", () => { if ($("n-t").dataset.auto) { $("n-t").select(); delete $("n-t").dataset.auto; } });
+$("n-t").addEventListener("input", () => { delete $("n-t").dataset.auto; });
+
+$("novo").addEventListener("submit", async e => {
+  e.preventDefault();
+  $("salvar").disabled = true;
+  $("novo-erro").textContent = "";
+  try {
+    const { link } = await api("POST", { url: $("n-url").value, t: $("n-t").value, cat: $("n-cat").value, d: $("n-d").value });
+    links.push(link);
+    $("novo").reset();
+    $("novo").hidden = true;
+    desenha();
+  } catch (err) {
+    $("novo-erro").textContent = err.message;
+  } finally {
+    $("salvar").disabled = false;
+  }
+});
+
+$("lista").addEventListener("click", async e => {
+  const b = e.target.closest(".rm");
+  if (!b || !confirm(`Remover "${b.dataset.t}"?`)) return;
+  b.disabled = true;
+  try {
+    await api("DELETE", null, "?id=" + encodeURIComponent(b.dataset.id));
+    links = links.filter(l => l.id !== b.dataset.id);
+    desenha();
+  } catch (err) {
+    alert(err.message);
+    b.disabled = false;
+  }
+});
+
+const salva = lida();
+if (salva) entra(salva, (() => { try { return !!localStorage.getItem("links-senha"); } catch (e) { return false; } })());
+</script>
+</body>
+</html>
