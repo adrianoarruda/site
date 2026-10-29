@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === "GET") {
-      const links = await sql`select id, t, url, cat, d, to_char(add, 'DD/MM/YYYY') as add from links order by cat, t`;
+      const links = await sql`select id, t, url, cat, d, feed, to_char(add, 'DD/MM/YYYY') as add from links order by cat, t`;
       return res.status(200).json({ links });
     }
 
@@ -37,12 +37,17 @@ export default async function handler(req, res) {
       const t = limpa(b.t, 120);
       const cat = limpa(b.cat, 60) || "Outros";
       const d = limpa(b.d, 400);
+      // Feed (RSS/Atom ou página de novidades): opcional; com ele, o link vira fonte das notícias do dia
+      const feed = limpa(b.feed, 2000) || null;
+      if (feed && !/^https?:\/\/[^\s]+$/i.test(feed)) {
+        return res.status(400).json({ erro: "O feed precisa começar com http:// ou https://" });
+      }
       if (!t || !/^https?:\/\/[^\s]+$/i.test(url)) {
         return res.status(400).json({ erro: "Preencha o nome e um endereço que comece com http:// ou https://" });
       }
       const id = "lk-" + randomUUID().slice(0, 8);
-      const [link] = await sql`insert into links (id, t, url, cat, d) values (${id}, ${t}, ${url}, ${cat}, ${d})
-        returning id, t, url, cat, d, to_char(add, 'DD/MM/YYYY') as add`;
+      const [link] = await sql`insert into links (id, t, url, cat, d, feed) values (${id}, ${t}, ${url}, ${cat}, ${d}, ${feed})
+        returning id, t, url, cat, d, feed, to_char(add, 'DD/MM/YYYY') as add`;
       return res.status(201).json({ link });
     }
 
