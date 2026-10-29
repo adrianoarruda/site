@@ -79,6 +79,16 @@
     article.post .lead { font-size: 19px; }
     article.post p, article.post ul, article.post blockquote { font-size: 17px; }
   }
+  /* Código dentro do post, com botão de copiar */
+  article.post code { font-family: var(--mono); font-size: .88em; background: var(--card); border-radius: 6px; padding: 1px 6px; }
+  .codigo { margin: 0 0 24px; background: #0b0b0b; border-radius: 16px; overflow: hidden; }
+  .codigo .ch { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid #222; }
+  .codigo .ch span { font-size: 11px; color: #8a8a8a; }
+  .codigo .copiar { font: 500 13px var(--sans); background: #1f1f1f; color: #fff; border: 0; border-radius: 9999px; height: 30px; padding-inline: 14px; cursor: pointer; }
+  .codigo .copiar:hover { background: var(--orange); color: #000; }
+  .codigo pre { margin: 0; padding: 16px 18px; overflow-x: auto; }
+  .codigo pre code { background: none; padding: 0; color: #e6e6e6; font-size: 13.5px; line-height: 1.6; white-space: pre; }
+
   /* Filtro por tema */
   .temas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
   .temas button { font: 500 14px var(--sans); background: var(--card); color: #000; border: 0; border-radius: 9999px; height: 36px; padding-inline: 16px; cursor: pointer; }
@@ -150,10 +160,18 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 
 // Texto do post: parágrafos separados por linha em branco; "## " vira subtítulo, "- " vira lista, "> " vira citação, **negrito**
 function formata(txt) {
-  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-  return String(txt).split(/\n\s*\n/).map(b => {
+  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>");
+  // Blocos de código (```python ... ```) saem antes, porque podem ter linhas em branco
+  const codigos = [];
+  txt = String(txt).replace(/```(\w*)\n([\s\S]*?)\n```/g, (_, lang, code) => `\n\n[codigo-${codigos.push({ lang, code }) - 1}]\n\n`);
+  return txt.split(/\n\s*\n/).map(b => {
     b = b.trim();
     if (!b) return "";
+    const c = b.match(/^\[codigo-(\d+)\]$/);
+    if (c) {
+      const { lang, code } = codigos[+c[1]];
+      return `<div class="codigo"><div class="ch"><span class="mono">${esc(lang || "código")}</span><button type="button" class="copiar">Copiar</button></div><pre><code>${esc(code)}</code></pre></div>`;
+    }
     if (b === "[dashboard]") return `<div class="painel" id="painel"></div>`;
     if (b.startsWith("## ")) return `<h3>${inline(b.slice(3))}</h3>`;
     if (b.startsWith("> ")) return `<blockquote>${inline(b.replace(/^> ?/gm, ""))}</blockquote>`;
@@ -310,6 +328,16 @@ async function post(slug) {
     PAINEIS[p.dashboard]($("painel"));
   }
 }
+
+// Botão "Copiar" dos blocos de código
+document.addEventListener("click", async e => {
+  const b = e.target.closest(".copiar");
+  if (!b) return;
+  const code = b.closest(".codigo").querySelector("code").textContent;
+  try { await navigator.clipboard.writeText(code); b.textContent = "Copiado ✓"; }
+  catch (err) { const r = document.createRange(); r.selectNodeContents(b.closest(".codigo").querySelector("code")); getSelection().removeAllRanges(); getSelection().addRange(r); b.textContent = "Selecionado: Ctrl+C"; }
+  setTimeout(() => { b.textContent = "Copiar"; }, 2000);
+});
 
 const s = slugAtual();
 (s ? post(s) : lista()).catch(() => { $("conteudo").innerHTML = `<p class="vazio">Não consegui carregar os posts agora.</p>`; });
