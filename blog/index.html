@@ -163,7 +163,7 @@ function formata(txt) {
   const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>");
   // Blocos de código (```python ... ```) saem antes, porque podem ter linhas em branco
   const codigos = [];
-  txt = String(txt).replace(/```(\w*)\n([\s\S]*?)\n```/g, (_, lang, code) => `\n\n[codigo-${codigos.push({ lang, code }) - 1}]\n\n`);
+  txt = String(txt).replace(/\r\n?/g, "\n").replace(/```(\w*)\n([\s\S]*?)\n```/g, (_, lang, code) => `\n\n[codigo-${codigos.push({ lang, code }) - 1}]\n\n`);
   return txt.split(/\n\s*\n/).map(b => {
     b = b.trim();
     if (!b) return "";
