@@ -68,22 +68,10 @@
   .trilho .rot { display: grid; row-gap: 1px; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; }
   .trilho .rot span { font-size: 11px; color: var(--cinza); font-weight: 600; font-variant-numeric: tabular-nums; }
   .trilho { display: flex; flex-direction: column; justify-content: flex-end; }
-  .trilho .linha {
-    margin-top: 8px;
-    height: 4px;
-    border-radius: 2px;
-    background-color: var(--destaque-trilha);
-    background-image: radial-gradient(circle, var(--destaque) 1.6px, transparent 2px);
-    background-size: 14px 4px;
-    background-repeat: repeat-x;
-    transform-origin: left;
-    transform: scaleX(0);
-  }
-  .trilho .linha.pronta { transform: scaleX(1); transition: transform .9s var(--ease-out); animation: fluxo 1.4s linear infinite; }
-  @keyframes fluxo { to { background-position: 14px 0; } }
-  /* A intensidade do trilho sobe junto com a gravidade do contato */
-  .trilho[data-nivel="2"] .linha { background-color: #eea3b0; }
-  .trilho[data-nivel="3"] .linha { background-color: #e47e90; background-image: radial-gradient(circle, #7d0519 1.6px, transparent 2px); }
+  /* Divisória do grupo: a parte vermelha é a fatia do grupo no volume total */
+  .trilho .linha { position: relative; margin-top: 8px; height: 3px; border-radius: 2px; background: #e3e5ea; overflow: hidden; }
+  .trilho .linha i { position: absolute; top: 0; bottom: 0; left: 0; width: max(4px, calc(var(--s) * 100%)); border-radius: 2px; background: var(--destaque); transform-origin: left; transform: scaleX(0); }
+  .trilho .linha.pronta i { transform: scaleX(1); transition: transform 1s var(--ease-out); }
 
   /* ---------- Card ---------- */
   .card {
@@ -144,31 +132,42 @@
   .c-vol strong { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
   .c-vol small { font-size: 11px; color: var(--cinza); }
   .c-vol .var { display: block; font-size: 12px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .c-met { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--cinza-claro); }
+  .c-met small { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); }
+  .c-met strong { display: block; font-size: 20px; font-weight: 800; letter-spacing: -.01em; font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .c-met .var { font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-  /* CSAT: nota sobre 5, régua de crítico a meta e variação em pontos */
-  .csat-num { display: flex; align-items: baseline; gap: 5px; }
-  .csat-num b { font-size: 28px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; }
-  .csat-num small { font-size: 13px; font-weight: 600; color: #9a9aa0; }
-  .escala {
-    position: relative;
-    height: 8px;
-    border-radius: 4px;
-    overflow: hidden;
-    background: linear-gradient(90deg, #e53935 0%, #f08c1a 45%, #1e9e4a 100%);
+  /* CSAT: medidor circular de 1 a 5, de vermelho (crítico) a verde (meta), com marca na meta */
+  @property --a { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+  .gauge { position: relative; flex: none; aspect-ratio: 1; }
+  .gauge-g { width: 128px; --esp: 11px; }
+  .gauge-p { width: 66px; --esp: 7px; }
+  .gauge-anel {
+    position: absolute; inset: 0; border-radius: 50%;
+    background:
+      conic-gradient(transparent 0 var(--a), #eceef2 var(--a) 100%),
+      conic-gradient(#e53935 0%, #f08c1a 45%, #1e9e4a 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--esp)), #000 calc(100% - var(--esp) + 1px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - var(--esp)), #000 calc(100% - var(--esp) + 1px));
   }
-  .escala i { position: absolute; top: 0; right: 0; bottom: 0; width: 100%; background: #eceef2; }
-  .escala i.anima { transition: width 1.2s var(--ease-out); }
-  .escala::after { content: ""; position: absolute; top: 0; bottom: 0; left: calc(var(--m) * 100%); width: 2px; background: var(--branco); }
-  .escala-rot { display: flex; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--cinza); margin: 9px 0 5px; white-space: nowrap; }
+  .gauge-anel.anima { transition: --a 1.3s var(--ease-out); }
+  .gauge-meta { position: absolute; inset: 0; transform: rotate(calc(var(--m) * 1turn)); pointer-events: none; }
+  .gauge-meta::before { content: ""; position: absolute; left: 50%; top: -3px; width: 2px; margin-left: -1px; height: calc(var(--esp) + 6px); border-radius: 1px; background: var(--tinta); }
+  .gauge-centro { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.05; }
+  .gauge-centro span { font-size: 10.5px; font-weight: 600; color: var(--cinza); }
+  .gauge-centro b { font-size: 30px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .gauge-centro small { font-size: 11px; font-weight: 600; color: #9a9aa0; }
+  .gauge-p .gauge-centro b { font-size: 16px; }
+  .gauge-p .gauge-meta { display: none; }
+
   .pill { display: inline-flex; align-items: center; gap: 3px; font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .pill.sobe { background: #e7f5ec; }
   .pill.desce { background: #fde8e8; }
 
-  .c-csat { margin-top: 22px; display: grid; gap: 7px; border: 1px solid #eceef2; border-radius: 12px; padding: 12px; }
+  .c-csat { margin-top: 22px; display: flex; align-items: center; gap: 12px; border: 1px solid #eceef2; border-radius: 12px; padding: 10px 12px; }
+  .c-csat > div:last-child { display: grid; gap: 6px; justify-items: start; }
   .c-csat-rot { font-size: 11px; font-weight: 600; color: var(--cinza); }
-  .c-csat .csat-num b { font-size: 24px; }
-  .c-csat .escala { height: 6px; }
-  .c-csat .pill { justify-self: start; font-size: 10.5px; }
+  .c-csat .pill { font-size: 10.5px; }
 
   .c-etapas { margin-top: 20px; display: grid; gap: 10px; }
   .c-etapas div { font-size: 11px; color: var(--cinza); font-weight: 600; display: flex; justify-content: space-between; gap: 6px; }
@@ -228,14 +227,40 @@
   .valores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
   .valores small { display: block; font-size: 11px; color: var(--cinza); margin-bottom: 2px; }
   .valores strong { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+  .valores small { display: flex; align-items: center; gap: 5px; }
+  .valores .met-var strong { font-size: 15px; }
+
+  .ajuda {
+    position: relative;
+    width: 15px; height: 15px; flex: none;
+    border: 0; border-radius: 50%;
+    background: #8e8e93; color: var(--branco);
+    font: 700 10px/15px "Plus Jakarta Sans", sans-serif;
+    cursor: help;
+  }
+  .ajuda::after {
+    content: attr(data-dica);
+    position: absolute; bottom: calc(100% + 8px); left: -10px;
+    width: 210px; padding: 8px 10px; border-radius: 8px;
+    background: var(--tinta); color: var(--branco);
+    font-size: 11px; font-weight: 500; line-height: 1.4; text-align: left;
+    opacity: 0; pointer-events: none; transform: translateY(4px);
+    transition: opacity .2s, transform .2s var(--ease-out);
+    z-index: 5;
+  }
+  .ajuda:hover::after, .ajuda:focus-visible::after { opacity: 1; transform: none; }
   .sobe { color: var(--sobe); }
   .desce { color: var(--desce); }
 
   .faixa { border-radius: 12px; overflow: hidden; border: 1px solid #eceef2; }
   .faixa-sec { border-top: 1px solid #eceef2; }
-  .csat-dest { padding: 14px; }
-  .csat-rot { font-size: 11.5px; font-weight: 600; color: var(--cinza); margin-bottom: 6px; }
-  .delta { margin-top: 12px; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--cinza); }
+  .csat-dest { padding: 14px; display: flex; align-items: center; gap: 16px; }
+  .csat-info { display: grid; gap: 12px; min-width: 0; }
+  .delta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 11px; color: var(--cinza); }
+  .legenda-csat { display: grid; gap: 4px; font-size: 10.5px; color: var(--cinza); white-space: nowrap; }
+  .legenda-csat span::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .legenda-csat .l-crit::before { background: #e53935; }
+  .legenda-csat .l-meta::before { background: #1e9e4a; }
   .faixa-sec { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
   .faixa-sec .anel { width: 44px; height: 44px; }
   .faixa-sec .anel b { font-size: 11px; }
@@ -325,7 +350,7 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .card { opacity: 1 !important; transform: none !important; }
-    .trilho .linha { transform: none !important; }
+    .trilho .linha i { transform: none !important; }
   }
 </style>
 </head>
@@ -352,11 +377,10 @@
         <h2><span class="icone"></span><span data-c="canal"></span></h2>
       </div>
       <div class="c-vol"><strong data-c="total"></strong><small data-c="unidade"></small><span class="var" data-c="variacao"></span></div>
+      <div class="c-met"><small data-c="metNome"></small><strong data-c="metValor"></strong><span class="var" data-c="metVar"></span></div>
       <div class="c-csat">
-        <span class="c-csat-rot">CSAT geral</span>
-        <div class="csat-num"><b data-c="csat"></b><small>/ 5,0</small></div>
-        <div class="escala"><i></i></div>
-        <span class="pill" data-c="csatVar"></span>
+        <div class="gauge gauge-p"><div class="gauge-anel"></div><div class="gauge-meta"></div><div class="gauge-centro"><b data-c="csat"></b></div></div>
+        <div><span class="c-csat-rot">CSAT geral</span><span class="pill" data-c="csatVar"></span></div>
       </div>
       <div class="c-etapas"></div>
       <div class="c-pe">
@@ -378,14 +402,16 @@
           <div class="valores">
             <div><small data-f="rotuloVolume"></small><strong data-f="total"></strong></div>
             <div><small>Variação em 30 dias</small><strong data-f="variacao"></strong></div>
+            <div><small><span data-f="metNome"></span><button class="ajuda" type="button" data-f="metAjuda">?</button></small><strong data-f="metValor"></strong></div>
+            <div class="met-var"><small>vs mês anterior</small><strong data-f="metVar"></strong></div>
           </div>
           <div class="faixa">
             <div class="csat-dest">
-              <div class="csat-rot">CSAT geral</div>
-              <div class="csat-num"><b data-f="csat"></b><small>/ 5,0</small></div>
-              <div class="escala-rot"><span data-f="rotCritico"></span><span data-f="rotMeta"></span></div>
-              <div class="escala" role="img"><i></i></div>
-              <div class="delta"><span class="pill" data-f="csatVar"></span>vs período anterior</div>
+              <div class="gauge gauge-g" role="img"><div class="gauge-anel"></div><div class="gauge-meta"></div><div class="gauge-centro"><span>CSAT geral</span><b data-f="csat"></b><small>/ 5,0</small></div></div>
+              <div class="csat-info">
+                <div class="delta"><span class="pill" data-f="csatVar"></span>vs período anterior</div>
+                <div class="legenda-csat"><span class="l-crit" data-f="rotCritico"></span><span class="l-meta" data-f="rotMeta"></span></div>
+              </div>
             </div>
             <div class="faixa-sec">
               <div class="anel" role="img"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-f="anelPct"></b></div>
@@ -419,6 +445,7 @@
   const canais = [
     {
       seg: 0, grupo: "Autoatendimento digital", canal: "App", icone: "app", rotuloVolume: "Sessões no mês", unidade: "sessões no mês",
+      metrica: { nome: "MAU", tipo: "qtd", valor: 1240000, var: 2.10, desc: "Usuários únicos que acessaram o app pelo menos uma vez no mês." },
       anel: { pct: 91, rotulo: "Resolução", desc: "sem contato humano" },
       csat: 4.48, csatVar: +0.06,
       etapas: [
@@ -434,6 +461,7 @@
     },
     {
       seg: 1, grupo: "Atendimento digital", canal: "Chat", icone: "chat", rotuloVolume: "Conversas no mês", unidade: "conversas no mês",
+      metrica: { nome: "Contact rate", tipo: "pct", valor: 8.40, var: 0.30, inverso: true, desc: "Contatos no chat divididos pela base de clientes ativos no mês." },
       anel: { pct: 70, rotulo: "Retenção", desc: "resolvido na BIA" },
       csat: 4.1, csatVar: +0.03,
       etapas: [
@@ -450,6 +478,7 @@
     },
     {
       seg: 1, grupo: "Atendimento telefônico", canal: "Voz", icone: "voz", rotuloVolume: "Ligações no mês", unidade: "ligações no mês",
+      metrica: { nome: "Contact rate", tipo: "pct", valor: 4.60, var: -0.20, inverso: true, desc: "Ligações recebidas divididas pela base de clientes ativos no mês." },
       anel: { pct: 58, rotulo: "Retenção", desc: "resolvido na URA" },
       csat: 3.97, csatVar: -0.05,
       etapas: [
@@ -465,6 +494,7 @@
     },
     {
       seg: 3, grupo: "Autoatendimento físico", canal: "Totem", icone: "totem", rotuloVolume: "Acessos no mês", unidade: "acessos no mês",
+      metrica: { nome: "Contact rate", tipo: "pct", valor: 1.30, var: -0.10, inverso: true, desc: "Acessos ao totem divididos pela base de clientes ativos no mês." },
       anel: { pct: 96, rotulo: "Disponibilidade", desc: "terminais operando" },
       csat: 3.92, csatVar: -0.02,
       etapas: [
@@ -480,6 +510,7 @@
     },
     {
       seg: 2, grupo: "Reclamações formais", canal: "Manifestações", icone: "doc", rotuloVolume: "Registros no mês", unidade: "registros no mês",
+      metrica: { nome: "Claim rate", tipo: "pct", valor: 0.32, var: 0.02, inverso: true, desc: "Reclamações formais divididas pela base de clientes ativos no mês." },
       inverso: true,
       anel: { pct: 88, rotulo: "No prazo", desc: "respondidas em dia" },
       csat: 3.35, csatVar: -0.08,
@@ -510,11 +541,13 @@
   const reduzMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const telaEstreita = matchMedia("(max-width: 1080px)");
 
-  // Versão pública: os gráficos usam valores ilustrativos, mas todo número na tela vira 0
   const z = t => String(t).replace(/\d/g, "0");
   const num = (v, casas = 1) => z(v.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas }));
   const compacto = v => v >= 1e6 ? num(v / 1e6, 2) + " mi" : v >= 1e3 ? num(v / 1e3, 1) + " mil" : z(Math.round(v));
   const pctSinal = v => (v > 0 ? "+" : "") + num(v, 2) + "%";
+  // Métrica principal: MAU em quantidade; Contact rate e Claim rate em %, com variação em pontos percentuais
+  const fmtMetrica = (m, v = m.valor) => m.tipo === "pct" ? num(v, 2) + "%" : compacto(v);
+  const fmtVarMetrica = m => m.tipo === "pct" ? `${m.var > 0 ? "↗ +" : "↘ "}${num(m.var, 2)} p.p.` : (m.var > 0 ? "↗ " : "↘ ") + pctSinal(m.var);
   const classeVar = (v, inverso) => ((v > 0) !== !!inverso) ? "sobe" : "desce";
   const seta = v => v > 0 ? "↗ " : "↘ ";
 
@@ -523,11 +556,11 @@
   const naMeta = v => v >= CSAT_META;
   const posEscala = v => Math.max(0, Math.min(1, (v - CSAT_MIN) / (CSAT_MAX - CSAT_MIN)));
   const deltaPts = d => `${seta(d)}${d > 0 ? "+" : ""}${num(d, 2)} pts`;
-  function animarEscala(el, v, atraso = 0) {
+  function animarGauge(el, v, atraso = 0) {
     el.classList.remove("anima");
-    el.style.width = "100%";
+    el.style.setProperty("--a", "0%");
     void el.getBoundingClientRect();
-    setTimeout(() => { el.classList.add("anima"); el.style.width = (1 - posEscala(v)) * 100 + "%"; }, reduzMovimento ? 0 : atraso);
+    setTimeout(() => { el.classList.add("anima"); el.style.setProperty("--a", posEscala(v) * 100 + "%"); }, reduzMovimento ? 0 : atraso);
   }
 
   function serie(semente, n = 30) {
@@ -577,11 +610,12 @@
     .sort((a, b) => a.idx[0] - b.idx[0])
     .forEach(({ s, idx }) => {
     const soma = idx.reduce((t, i) => t + canais[i].total, 0);
+    const fatia = soma / canais.reduce((t, c) => t + c.total, 0);
     const el = document.createElement("div");
     el.className = "trilho";
     el.dataset.nivel = s.nivel;
     el.style.gridColumn = `${idx[0] + 1} / ${idx[idx.length - 1] + 2}`;
-    el.innerHTML = `<div class="rot">${s.nome}<span>${compacto(soma)} contatos</span></div><div class="linha"></div>`;
+    el.innerHTML = `<div class="rot">${s.nome}<span>${compacto(soma)} contatos (${num(fatia * 100, 1)}% do total)</span></div><div class="linha" role="img" aria-label="${num(fatia * 100, 1)}% do volume total"><i style="--s:${fatia.toFixed(4)}"></i></div>`;
     vitrine.appendChild(el);
   });
 
@@ -607,14 +641,14 @@
     C("anelRotulo").textContent = c.anel.rotulo;
     C("anelDesc").textContent = c.anel.desc;
     C("csat").textContent = num(c.csat, 2);
-    card.querySelectorAll(".escala").forEach(el => el.style.setProperty("--m", posEscala(CSAT_META)));
+    card.querySelectorAll(".gauge").forEach(el => el.style.setProperty("--m", posEscala(CSAT_META)));
     card.querySelectorAll('[data-c="csatVar"], [data-f="csatVar"]').forEach(el => {
       el.textContent = deltaPts(c.csatVar);
       el.classList.add(c.csatVar >= 0 ? "sobe" : "desce");
     });
-    F("rotCritico").textContent = `Crítico (< ${num(CSAT_META, 2)})`;
-    F("rotMeta").textContent = `Meta (≥ ${num(CSAT_META, 2)})`;
-    card.querySelector(".csat-dest .escala").setAttribute("aria-label", `CSAT ${num(c.csat, 2)} de 5, ${naMeta(c.csat) ? "na meta" : "crítico"}`);
+    F("rotCritico").textContent = `Crítico: abaixo de ${num(CSAT_META, 2)}`;
+    F("rotMeta").textContent = `Meta: ${num(CSAT_META, 2)} ou mais`;
+    card.querySelector(".csat-dest .gauge").setAttribute("aria-label", `CSAT ${num(c.csat, 2)} de 5, ${naMeta(c.csat) ? "na meta" : "crítico"}`);
     const maxEtapa = Math.max(...c.etapas.map(e => e.vol));
     card.querySelector(".c-etapas").innerHTML = c.etapas.map(e =>
       `<div style="display:block"><div><span>${e.nome}</span><span>${compacto(e.vol)}</span></div><i style="--p:${(e.vol / maxEtapa).toFixed(3)}"></i></div>`).join("");
@@ -630,6 +664,15 @@
     F("total").textContent = compacto(c.total);
     F("variacao").textContent = pctSinal(c.variacao);
     F("anelPct").textContent = C("anelPct").textContent;
+    const m = c.metrica;
+    [C, F].forEach(X => {
+      X("metNome").textContent = m.nome;
+      X("metValor").textContent = fmtMetrica(m);
+      X("metVar").textContent = fmtVarMetrica(m);
+      X("metVar").classList.add(classeVar(m.var, m.inverso));
+    });
+    F("metAjuda").dataset.dica = m.desc;
+    F("metAjuda").setAttribute("aria-label", `O que é ${m.nome}: ${m.desc}`);
     F("anelRotulo").textContent = c.anel.rotulo;
     F("anelDesc").textContent = c.anel.desc;
     F("csat").textContent = num(c.csat, 2);
@@ -681,11 +724,12 @@
     const c = canais[i], card = cards[i];
     const F = k => card.querySelector(`[data-f="${k}"]`);
     animarAnel(card.querySelector(".faixa .anel"), c.anel.pct, 250);
-    animarEscala(card.querySelector(".csat-dest .escala i"), c.csat, 250);
+    animarGauge(card.querySelector(".csat-dest .gauge-anel"), c.csat, 250);
     if (recontar) {
       setTimeout(() => {
         contar(F("total"), c.total, 1000, compacto);
         contar(F("variacao"), c.variacao, 1000, pctSinal);
+        contar(F("metValor"), c.metrica.valor, 1000, v => fmtMetrica(c.metrica, v));
         contar(F("csat"), c.csat, 1100, v => num(v, 2));
         contar(F("anelPct"), c.anel.pct, 1200, v => z(Math.round(v)) + "%");
       }, reduzMovimento ? 0 : 220);
@@ -732,12 +776,13 @@
         if (ev.animationName === "entrada") { card.classList.remove("entrou"); card.classList.add("pronto"); }
       });
       animarAnel(card.querySelector(".c-anel .anel"), canais[i].anel.pct, 400 + i * 90);
-      animarEscala(card.querySelector(".c-csat .escala i"), canais[i].csat, 400 + i * 90);
+      animarGauge(card.querySelector(".c-csat .gauge-anel"), canais[i].csat, 400 + i * 90);
     });
     const c = canais[inicial], F = k => cards[inicial].querySelector(`[data-f="${k}"]`);
     setTimeout(() => {
       contar(F("total"), c.total, 1200, compacto);
       contar(F("variacao"), c.variacao, 1200, pctSinal);
+      contar(F("metValor"), c.metrica.valor, 1200, v => fmtMetrica(c.metrica, v));
       contar(F("csat"), c.csat, 1200, v => num(v, 2));
       contar(F("anelPct"), c.anel.pct, 1300, v => z(Math.round(v)) + "%");
     }, reduzMovimento ? 0 : 450);
