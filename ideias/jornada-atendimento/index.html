@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* Cópia no GitHub Pages: leva para o domínio oficial */ if (location.hostname.endsWith("github.io")) location.replace("https://www.adrianoarruda.com" + location.pathname.replace(/^\/site/, "") + location.search + location.hash);</script>
+<link rel="canonical" href="https://www.adrianoarruda.com/ideias/jornada-atendimento/">
+<meta name="description" content="Ideia de painel: jornada de atendimento por canal, com cards que se abrem ao passar o mouse.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Jornada de atendimento por canal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --laranja: #ff6a00;
+    --laranja-escuro: #e85d00;
+    --laranja-claro: #ffe9d6;
+    --laranja-trilha: #ffd7b5;
+    --tinta: #1d1d1f;
+    --cinza: #6e6e73;
+    --cinza-claro: #e6e8ec;
+    --fundo: #f2f5fa;
+    --branco: #ffffff;
+    --sobe: #17803d;
+    --desce: #d1333a;
+    --raio-card: 18px;
+    --raio-ctrl: 10px;
+    --gap: 14px;
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+    --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+    --dur-abrir: .62s;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    color: var(--tinta);
+    background: var(--fundo);
+    min-height: 100vh;
+    display: grid;
+    place-items: start center;
+    padding: 44px 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .pagina { width: 100%; max-width: 1480px; }
+  .cabecalho { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 26px; }
+  .cabecalho h1 { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+  .cabecalho p { font-size: 13px; color: var(--cinza); margin-top: 4px; max-width: 70ch; }
+  .atalho { font-size: 11.5px; color: var(--cinza); white-space: nowrap; }
+  .atalho kbd { font: inherit; font-weight: 700; background: var(--branco); border: 1px solid #dcdfe4; border-radius: 5px; padding: 1px 6px; }
+
+  /* ---------- Grade: trilhos da jornada + cards ---------- */
+  .vitrine {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    column-gap: var(--gap);
+    row-gap: 12px;
+    transition: grid-template-columns var(--dur-abrir) var(--ease-out);
+  }
+
+  .trilho { grid-row: 1; min-width: 0; padding: 0 4px; }
+  .trilho .rot { display: grid; row-gap: 1px; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; }
+  .trilho .rot span { font-size: 11px; color: var(--cinza); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .trilho { display: flex; flex-direction: column; justify-content: flex-end; }
+  .trilho .linha {
+    margin-top: 8px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--laranja-trilha);
+    background-image: radial-gradient(circle, var(--laranja) 1.6px, transparent 2px);
+    background-size: 14px 4px;
+    background-repeat: repeat-x;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .trilho .linha.pronta { transform: scaleX(1); transition: transform .9s var(--ease-out); animation: fluxo 1.4s linear infinite; }
+  @keyframes fluxo { to { background-position: 14px 0; } }
+  /* A intensidade do trilho sobe junto com a gravidade do contato */
+  .trilho[data-nivel="2"] .linha { background-color: #ffc596; }
+  .trilho[data-nivel="3"] .linha { background-color: #ffad6b; background-image: radial-gradient(circle, #b84500 1.6px, transparent 2px); }
+
+  /* ---------- Card ---------- */
+  .card {
+    grid-row: 2;
+    position: relative;
+    min-width: 0;
+    min-height: var(--alt, 560px);
+    background: var(--branco);
+    border: 2px solid transparent;
+    border-radius: var(--raio-card);
+    box-shadow: 0 1px 2px rgba(20, 30, 60, .04), 0 10px 30px -12px rgba(20, 30, 60, .12);
+    overflow: hidden;
+    cursor: pointer;
+    outline: none;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: border-color .3s, box-shadow .35s var(--ease-out);
+  }
+  .card.entrou { animation: entrada .8s var(--ease-out) forwards; animation-delay: var(--atraso, 0ms); }
+  @keyframes entrada { to { opacity: 1; transform: none; } }
+  .card.pronto { opacity: 1; transform: none; animation: none; }
+  .card:not(.ativo):hover { box-shadow: 0 1px 2px rgba(20,30,60,.04), 0 18px 36px -14px rgba(20,30,60,.22); }
+  .card.ativo { border-color: var(--laranja); cursor: default; box-shadow: 0 1px 2px rgba(20,30,60,.04), 0 24px 48px -18px rgba(255, 106, 0, .35); }
+  .card:focus-visible { outline: 2px solid var(--laranja); outline-offset: 3px; }
+
+  .selo {
+    position: absolute;
+    top: 0; left: 0;
+    background: var(--laranja);
+    color: var(--branco);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 5px 11px 6px 13px;
+    border-radius: 0 0 12px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 2;
+    white-space: nowrap;
+  }
+  .selo svg { width: 11px; height: 11px; }
+
+  /* ---------- Visão compacta ---------- */
+  .compacto {
+    position: absolute;
+    inset: 0;
+    padding: 30px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    transition: opacity .25s .2s, transform .45s .15s var(--ease-out);
+  }
+  .card.ativo .compacto { opacity: 0; transform: translateX(-16px); pointer-events: none; transition: opacity .15s, transform .3s var(--ease-out); }
+
+  .compacto .grupo { font-size: 11px; color: var(--cinza); font-weight: 500; }
+  .compacto h2 { font-size: 18px; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .compacto h2 svg { width: 18px; height: 18px; color: var(--laranja); flex: none; }
+  .c-vol { margin-top: 22px; }
+  .c-vol strong { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
+  .c-vol small { font-size: 11px; color: var(--cinza); }
+  .c-vol .var { display: block; font-size: 12px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+  .c-anel { margin-top: 22px; display: flex; align-items: center; gap: 10px; background: var(--laranja-claro); border-radius: 12px; padding: 10px; }
+  .c-anel .anel { width: 46px; height: 46px; }
+  .c-anel .anel b { font-size: 11px; }
+  .c-anel div:last-child { font-size: 11px; line-height: 1.25; color: var(--cinza); min-width: 0; }
+  .c-anel div:last-child b { display: block; color: var(--tinta); font-size: 12px; }
+
+  .c-etapas { margin-top: 20px; display: grid; gap: 10px; }
+  .c-etapas div { font-size: 11px; color: var(--cinza); font-weight: 600; display: flex; justify-content: space-between; gap: 6px; }
+  .c-etapas div span:last-child { color: var(--tinta); font-variant-numeric: tabular-nums; }
+  .c-etapas i { display: block; height: 4px; border-radius: 2px; background: #f0f1f4; margin-top: 5px; overflow: hidden; }
+  .c-etapas i::after { content: ""; display: block; height: 100%; width: 100%; background: var(--laranja); transform-origin: left; transform: scaleX(var(--p)); border-radius: 2px; }
+
+  .c-pe { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 16px; border-top: 1px solid #f1f2f5; }
+  .c-pe b { display: block; font-size: 18px; font-weight: 800; color: var(--laranja); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .c-pe span { font-size: 10.5px; color: var(--cinza); }
+  .c-abrir {
+    width: 30px; height: 30px; flex: none;
+    border-radius: 50%;
+    background: #f0f1f4;
+    display: grid; place-items: center;
+    transition: background .2s, transform .35s var(--ease-spring);
+  }
+  .c-abrir svg { width: 14px; height: 14px; }
+  .card:not(.ativo):hover .c-abrir { background: var(--laranja); color: var(--branco); transform: rotate(90deg); }
+
+  /* ---------- Visão completa ---------- */
+  .completo {
+    position: absolute;
+    top: 0; left: 0;
+    width: var(--larg-completo, 560px);
+    padding: 26px 16px 16px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .2s, visibility 0s .2s;
+  }
+  .card.ativo .completo {
+    position: relative;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .35s .22s, visibility 0s;
+  }
+  /* Cada bloco entra deslizando em sequência quando o card abre */
+  .completo > * { transform: translateX(18px); transition: transform .5s var(--ease-out); }
+  .card.ativo .completo > * { transform: none; }
+  .card.ativo .completo > :nth-child(2) { transition-delay: .26s; }
+  .card.ativo .completo > :nth-child(3) { transition-delay: .32s; }
+  .card.ativo .completo > :nth-child(4) { transition-delay: .38s; }
+  .card.ativo .completo > :nth-child(5) { transition-delay: .44s; }
+
+  .topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .grupo { font-size: 11.5px; color: var(--cinza); font-weight: 500; }
+  .periodo { font-size: 11px; font-weight: 600; background: #f0f1f4; border-radius: var(--raio-ctrl); padding: 6px 10px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .canal { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+  .canal h2 { font-size: 21px; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 9px; }
+  .canal h2 svg { width: 21px; height: 21px; color: var(--laranja); }
+  .canal > span { font-size: 12px; font-weight: 600; }
+
+  .corpo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
+  .valores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .valores small { display: block; font-size: 11px; color: var(--cinza); margin-bottom: 2px; }
+  .valores strong { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+  .sobe { color: var(--sobe); }
+  .desce { color: var(--desce); }
+
+  .faixa { background: var(--laranja-claro); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 10px; }
+  .anel { position: relative; width: 56px; height: 56px; flex: none; }
+  .anel svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .anel circle { fill: none; stroke-width: 7; }
+  .anel .trilha-anel { stroke: var(--laranja-trilha); }
+  .anel .progresso { stroke: var(--laranja); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .anel .progresso.anima { transition: stroke-dashoffset 1.3s var(--ease-out); }
+  .anel b { position: absolute; inset: 0; display: grid; place-content: center; font-size: 13px; font-weight: 800; color: var(--laranja); font-variant-numeric: tabular-nums; }
+  .anel-txt { line-height: 1.25; min-width: 0; }
+  .anel-txt b { display: block; font-size: 13px; font-weight: 700; }
+  .anel-txt span { font-size: 11px; color: var(--cinza); }
+  .csat { margin-left: auto; text-align: right; }
+  .csat b { display: block; font-size: 20px; font-weight: 800; color: var(--laranja); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .csat span { font-size: 10.5px; color: var(--cinza); font-weight: 500; white-space: nowrap; }
+  .csat i { font-style: normal; font-weight: 700; }
+
+  .etapas { list-style: none; }
+  .etapa { display: grid; grid-template-columns: 1fr 58px auto; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f1f2f5; }
+  .etapa:first-child { padding-top: 0; }
+  .etapa:last-child { border-bottom: 0; }
+  .etapa .nome { font-size: 11px; color: var(--cinza); font-weight: 600; white-space: nowrap; }
+  .etapa .vol { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+  .etapa .var { font-size: 10.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .etapa .metrica { text-align: right; font-variant-numeric: tabular-nums; }
+  .etapa .metrica b { display: block; font-size: 14px; font-weight: 800; color: var(--laranja); }
+  .etapa .metrica span { font-size: 10px; color: var(--cinza); }
+
+  .faisca { width: 58px; height: 24px; overflow: visible; }
+  .faisca .area { fill: var(--laranja-claro); opacity: 0; transition: opacity .5s .7s; }
+  .faisca .linha-f { fill: none; stroke: var(--laranja); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .card.ativo .faisca .linha-f { stroke-dashoffset: 0; transition: stroke-dashoffset 1.2s .35s var(--ease-out); }
+  .card.ativo .faisca .area { opacity: 1; }
+
+  .motivos { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--cinza-claro); }
+  .motivos h3 { font-size: 12px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .motivos h3 span { font-size: 10.5px; font-weight: 700; color: var(--laranja); background: var(--laranja-claro); padding: 2px 8px; border-radius: 6px; }
+  .motivos ol { list-style: none; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, auto); grid-auto-flow: column; column-gap: 20px; row-gap: 8px; }
+  .motivos li { display: grid; grid-template-columns: 12px 1fr 40px 58px; gap: 7px; align-items: center; font-size: 11px; }
+  .motivos .pos { color: var(--laranja); font-weight: 800; }
+  .motivos .txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .motivos .barra { height: 5px; border-radius: 3px; background: #f0f1f4; overflow: hidden; }
+  .motivos .barra i { display: block; height: 100%; width: 100%; border-radius: 3px; background: var(--laranja); transform: scaleX(0); transform-origin: left; }
+  .card.ativo .motivos .barra i { transform: scaleX(var(--p)); transition: transform .7s var(--ease-out); transition-delay: calc(.45s + var(--i) * 40ms); }
+  .motivos .qtd { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .rodape { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 16px; }
+  .nota { font-size: 10px; color: #9a9aa0; }
+  .btn-pri {
+    font: inherit; font-size: 13px; font-weight: 700;
+    border: 0; border-radius: var(--raio-ctrl);
+    padding: 11px 22px;
+    background: var(--laranja); color: var(--branco);
+    cursor: pointer; position: relative; overflow: hidden; white-space: nowrap;
+    transition: background .2s, transform .12s;
+  }
+  .btn-pri:hover { background: var(--laranja-escuro); }
+  .btn-pri:active { transform: scale(.98); }
+  .btn-pri:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+  .btn-pri .onda { position: absolute; border-radius: 50%; background: rgba(255,255,255,.45); transform: scale(0); animation: onda .6s ease-out forwards; pointer-events: none; }
+  @keyframes onda { to { transform: scale(4); opacity: 0; } }
+
+  /* ---------- Telas menores: acordeão vertical ---------- */
+  @media (max-width: 1080px) {
+    .cabecalho { flex-direction: column; align-items: flex-start; }
+    .atalho { display: none; }
+    .vitrine { grid-template-columns: 1fr !important; grid-template-rows: none; max-width: 620px; margin-inline: auto; }
+    .trilho { display: none; }
+    .card { grid-row: auto; grid-column: auto !important; min-height: 0; }
+    .compacto { position: relative; inset: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 24px 16px 16px; }
+    .compacto > :not(.cab-c):not(.c-pe) { display: none; }
+    .c-pe { margin: 0; padding: 0; border: 0; gap: 14px; }
+    .card.ativo .compacto { display: none; }
+    .completo { width: auto; position: absolute; }
+    .card.ativo .completo { width: auto; }
+    .corpo { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .motivos ol { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+    .rodape { flex-direction: column; align-items: stretch; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .card { opacity: 1 !important; transform: none !important; }
+    .trilho .linha { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="pagina">
+  <header class="cabecalho">
+    <div>
+      <h1>Jornada de atendimento</h1>
+      <p>Segmento Espontâneo. Volume, satisfação e principais motivos de cada canal de atendimento.</p>
+    </div>
+    <span class="atalho">Passe o mouse ou use <kbd>←</kbd> <kbd>→</kbd> para trocar de canal</span>
+  </header>
+  <main class="vitrine" id="vitrine" aria-label="Canais de atendimento"></main>
+</div>
+
+<template id="tpl-card">
+  <article class="card" tabindex="0">
+    <div class="compacto" aria-hidden="true">
+      <div class="cab-c">
+        <div class="grupo" data-c="grupo"></div>
+        <h2><span class="icone"></span><span data-c="canal"></span></h2>
+      </div>
+      <div class="c-vol"><strong data-c="total"></strong><small data-c="unidade"></small><span class="var" data-c="variacao"></span></div>
+      <div class="c-anel">
+        <div class="anel"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-c="anelPct"></b></div>
+        <div><b data-c="anelRotulo"></b><span data-c="anelDesc"></span></div>
+      </div>
+      <div class="c-etapas"></div>
+      <div class="c-pe">
+        <div><b data-c="csat"></b><span>CSAT geral</span></div>
+        <span class="c-abrir"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span>
+      </div>
+    </div>
+
+    <div class="completo">
+      <div>
+        <div class="topo"><span class="grupo" data-f="grupo"></span><span class="periodo" data-f="periodo"></span></div>
+        <div class="canal"><h2><span class="icone"></span><span data-f="canal"></span></h2><span data-f="qtdEtapas"></span></div>
+      </div>
+      <div class="corpo">
+        <div>
+          <div class="valores">
+            <div><small data-f="rotuloVolume"></small><strong data-f="total"></strong></div>
+            <div><small>Variação em 30 dias</small><strong data-f="variacao"></strong></div>
+          </div>
+          <div class="faixa">
+            <div class="anel" role="img"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-f="anelPct"></b></div>
+            <div class="anel-txt"><b data-f="anelRotulo"></b><span data-f="anelDesc"></span></div>
+            <div class="csat"><b data-f="csat"></b><span>CSAT geral <i data-f="csatVar"></i></span></div>
+          </div>
+        </div>
+        <ul class="etapas"></ul>
+      </div>
+      <div class="motivos">
+        <h3>Principais motivos <span data-f="topN"></span></h3>
+        <ol></ol>
+      </div>
+      <div class="rodape">
+        <p class="nota" data-f="nota"></p>
+        <button class="btn-pri" type="button">Ver jornada do canal</button>
+      </div>
+    </div>
+  </article>
+</template>
+
+<script>
+  // Versão pública: valores ilustrativos só para o desenho dos gráficos; os números na tela aparecem como 0.
+  const SEGMENTOS = [
+    { nome: "Autoatendimento digital", nivel: 1 },
+    { nome: "Atendimento assistido", nivel: 2 },
+    { nome: "Reclamação formal", nivel: 3 },
+    { nome: "Autoatendimento físico", nivel: 1 },
+  ];
+
+  const canais = [
+    {
+      seg: 0, grupo: "Autoatendimento digital", canal: "App", icone: "app", rotuloVolume: "Sessões no mês", unidade: "sessões no mês",
+      anel: { pct: 91, rotulo: "Resolução", desc: "sem contato humano" },
+      csat: 4.48, csatVar: +0.06,
+      etapas: [
+        { nome: "Consultas", vol: 3120000, var: 3.40, metrica: "97%", rotulo: "sucesso", semente: 2 },
+        { nome: "Transações", vol: 1380000, var: 5.20, metrica: "94%", rotulo: "sucesso", semente: 4 },
+        { nome: "Contratações", vol: 312000, var: -1.80, metrica: "12%", rotulo: "conversão", semente: 6 },
+      ],
+      motivos: [
+        ["Saldo e extrato", 1204310], ["Pix: enviar", 842115], ["Fatura do cartão", 455902], ["Pagamento de boleto", 318774],
+        ["Limite do cartão", 201346], ["Investimentos", 133580], ["Empréstimo: simulação", 98211], ["Atualização cadastral", 61045],
+      ],
+      nota: "Números substituídos por marcadores; gráficos ilustrativos.",
+    },
+    {
+      seg: 1, grupo: "Atendimento digital", canal: "Chat", icone: "chat", rotuloVolume: "Conversas no mês", unidade: "conversas no mês",
+      anel: { pct: 70, rotulo: "Retenção", desc: "resolvido na BIA" },
+      csat: 4.1, csatVar: +0.03,
+      etapas: [
+        { nome: "BIA", vol: 820000, var: 5.10, metrica: "70%", rotulo: "retenção", semente: 3 },
+        { nome: "Chat N1", vol: 190000, var: 2.30, metrica: "4,27", rotulo: "CSAT", semente: 7 },
+        { nome: "Chat N2", vol: 22000, var: -3.80, metrica: "4,17", rotulo: "CSAT", semente: 11 },
+      ],
+      motivos: [
+        ["Cartão de crédito: aumento de limite", 12000], ["Cliente inativo sem identificação de assunto", 9300],
+        ["Análise de simulação de crédito", 7100], ["Empréstimos: contratação", 5600],
+        ["Valor do saldo da conta", 5000], ["Conta bloqueada", 4100], ["Inin-Wrap-Up-Timeout", 3500], ["Cartão de crédito: adesão", 2900],
+      ],
+      nota: "Números substituídos por marcadores; gráficos ilustrativos.",
+    },
+    {
+      seg: 1, grupo: "Atendimento telefônico", canal: "Voz", icone: "voz", rotuloVolume: "Ligações no mês", unidade: "ligações no mês",
+      anel: { pct: 58, rotulo: "Retenção", desc: "resolvido na URA" },
+      csat: 3.97, csatVar: -0.05,
+      etapas: [
+        { nome: "URA", vol: 412300, var: 2.10, metrica: "58%", rotulo: "retenção", semente: 5 },
+        { nome: "Voz N1", vol: 186400, var: -3.25, metrica: "4,02", rotulo: "CSAT", semente: 13 },
+        { nome: "Voz N2", vol: 21700, var: 1.12, metrica: "3,88", rotulo: "CSAT", semente: 17 },
+      ],
+      motivos: [
+        ["Cartão de crédito: desbloqueio", 9842], ["Segunda via de fatura", 8120], ["Contestação de compra", 6403], ["Senha e acesso ao app", 5977],
+        ["Empréstimos: renegociação", 4310], ["Conta bloqueada", 3986], ["Pix: devolução", 3221], ["Cancelamento de cartão", 2874],
+      ],
+      nota: "Números substituídos por marcadores; gráficos ilustrativos.",
+    },
+    {
+      seg: 3, grupo: "Autoatendimento físico", canal: "Totem", icone: "totem", rotuloVolume: "Acessos no mês", unidade: "acessos no mês",
+      anel: { pct: 96, rotulo: "Disponibilidade", desc: "terminais operando" },
+      csat: 3.92, csatVar: -0.02,
+      etapas: [
+        { nome: "Saque e depósito", vol: 98400, var: -6.10, metrica: "99%", rotulo: "sucesso", semente: 8 },
+        { nome: "Extrato e saldo", vol: 61200, var: -9.40, metrica: "98%", rotulo: "sucesso", semente: 10 },
+        { nome: "Cartão e senha", vol: 23100, var: 2.30, metrica: "81%", rotulo: "sucesso", semente: 12 },
+      ],
+      motivos: [
+        ["Saque", 61380], ["Depósito", 37020], ["Extrato", 34775], ["Saldo", 26425],
+        ["Desbloqueio de cartão", 12940], ["Troca de senha", 10160], ["Pagamento de boleto", 7212], ["Comprovantes", 3845],
+      ],
+      nota: "Números substituídos por marcadores; gráficos ilustrativos.",
+    },
+    {
+      seg: 2, grupo: "Reclamações formais", canal: "Manifestações", icone: "doc", rotuloVolume: "Registros no mês", unidade: "registros no mês",
+      inverso: true,
+      anel: { pct: 88, rotulo: "No prazo", desc: "respondidas em dia" },
+      csat: 3.35, csatVar: -0.08,
+      etapas: [
+        { nome: "SAC formal", vol: 38200, var: 5.40, metrica: "3,41", rotulo: "CSAT", semente: 19 },
+        { nome: "Ouvidoria", vol: 6800, var: 3.10, metrica: "3,12", rotulo: "CSAT", semente: 23 },
+        { nome: "BACEN", vol: 1900, var: -4.20, metrica: "34%", rotulo: "procedentes", semente: 29 },
+      ],
+      motivos: [
+        ["Cobrança não reconhecida", 4210], ["Contestação de compra sem retorno", 3655], ["Conta bloqueada", 2980], ["Empréstimo não contratado", 2412],
+        ["Demora no atendimento", 1986], ["Pix: devolução negada", 1740], ["Tarifa indevida", 1388], ["Encerramento de conta", 1102],
+      ],
+      nota: "Números substituídos por marcadores; gráficos ilustrativos.",
+    },
+  ];
+
+  const ICONES = {
+    app: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>',
+    totem: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="2" width="14" height="13" rx="1.5"/><path d="M8 6h8M8 9h5M9 15v7h6v-7M7 22h10"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>',
+    voz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
+  };
+  const ESTRELA = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>';
+
+  const PERIODO = "02/07 a 31/07/2026";
+  const FR_ATIVO = 3;
+  const reduzMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const telaEstreita = matchMedia("(max-width: 1080px)");
+
+  // Versão pública: os gráficos usam valores ilustrativos, mas todo número na tela vira 0
+  const z = t => String(t).replace(/\d/g, "0");
+  const num = (v, casas = 1) => z(v.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas }));
+  const compacto = v => v >= 1e6 ? num(v / 1e6, 2) + " mi" : v >= 1e3 ? num(v / 1e3, 1) + " mil" : z(Math.round(v));
+  const pctSinal = v => (v > 0 ? "+" : "") + num(v, 2) + "%";
+  const classeVar = (v, inverso) => ((v > 0) !== !!inverso) ? "sobe" : "desce";
+  const seta = v => v > 0 ? "↗ " : "↘ ";
+
+  function serie(semente, n = 30) {
+    let s = semente;
+    const r = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+    return Array.from({ length: n }, (_, i) => 0.5 + 0.28 * Math.sin(i / 2.1 + semente) + (r() - 0.5) * 0.45);
+  }
+  function faisca(semente) {
+    const pts = serie(semente), w = 58, h = 24;
+    const min = Math.min(...pts), max = Math.max(...pts);
+    const d = pts.map((p, i) => (i ? "L" : "M") + ((i / (pts.length - 1)) * w).toFixed(1) + " " + (h - 2 - ((p - min) / (max - min)) * (h - 4)).toFixed(1)).join(" ");
+    return `<svg class="faisca" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path class="area" d="${d} L${w} ${h} L0 ${h} Z"/><path class="linha-f" d="${d}" pathLength="1"/></svg>`;
+  }
+
+  function contar(el, alvo, duracao, formatar) {
+    if (reduzMovimento) { el.textContent = formatar(alvo); return; }
+    const inicio = performance.now();
+    const passo = agora => {
+      const t = Math.min((agora - inicio) / duracao, 1);
+      el.textContent = formatar(alvo * (1 - Math.pow(1 - t, 4)));
+      if (t < 1) requestAnimationFrame(passo);
+    };
+    requestAnimationFrame(passo);
+  }
+
+  function animarAnel(anel, pct, atraso = 0) {
+    const c = anel.querySelector(".progresso");
+    c.classList.remove("anima");
+    c.style.strokeDashoffset = 1;
+    void c.getBoundingClientRect();
+    setTimeout(() => { c.classList.add("anima"); c.style.strokeDashoffset = 1 - pct / 100; }, reduzMovimento ? 0 : atraso);
+  }
+
+  // ---------- Montagem ----------
+  const vitrine = document.getElementById("vitrine");
+  const tpl = document.getElementById("tpl-card");
+  canais.forEach(c => {
+    c.total = c.etapas.reduce((s, e) => s + e.vol, 0);
+    const anterior = c.etapas.reduce((s, e) => s + e.vol / (1 + e.var / 100), 0);
+    c.variacao = (c.total / anterior - 1) * 100;
+  });
+  const maiorVolume = Math.max(...canais.map(c => c.total));
+
+  // Trilhos: um por segmento da jornada, ocupando as colunas dos seus canais
+  // Trilhos na ordem em que aparecem na tela (esquerda para a direita)
+  SEGMENTOS.map((s, k) => ({ s, k, idx: canais.map((c, i) => c.seg === k ? i : -1).filter(i => i >= 0) }))
+    .sort((a, b) => a.idx[0] - b.idx[0])
+    .forEach(({ s, idx }) => {
+    const soma = idx.reduce((t, i) => t + canais[i].total, 0);
+    const el = document.createElement("div");
+    el.className = "trilho";
+    el.dataset.nivel = s.nivel;
+    el.style.gridColumn = `${idx[0] + 1} / ${idx[idx.length - 1] + 2}`;
+    el.innerHTML = `<div class="rot">${s.nome}<span>${compacto(soma)} contatos</span></div><div class="linha"></div>`;
+    vitrine.appendChild(el);
+  });
+
+  const cards = canais.map((c, i) => {
+    const card = tpl.content.firstElementChild.cloneNode(true);
+    const C = k => card.querySelector(`[data-c="${k}"]`);
+    const F = k => card.querySelector(`[data-f="${k}"]`);
+    card.style.gridColumn = i + 1;
+    card.style.setProperty("--atraso", i * 90 + "ms");
+    card.setAttribute("aria-label", `${c.canal}: ${compacto(c.total)} ${c.unidade}`);
+    card.querySelectorAll(".icone").forEach(el => el.outerHTML = ICONES[c.icone]);
+
+    if (c.total === maiorVolume) card.insertAdjacentHTML("afterbegin", `<span class="selo">Maior volume ${ESTRELA}</span>`);
+
+    // Compacto
+    C("grupo").textContent = c.grupo;
+    C("canal").textContent = c.canal;
+    C("total").textContent = compacto(c.total);
+    C("unidade").textContent = c.unidade;
+    C("variacao").textContent = seta(c.variacao) + pctSinal(c.variacao);
+    C("variacao").classList.add(classeVar(c.variacao, c.inverso));
+    C("anelPct").textContent = z(c.anel.pct) + "%";
+    C("anelRotulo").textContent = c.anel.rotulo;
+    C("anelDesc").textContent = c.anel.desc;
+    C("csat").textContent = num(c.csat, 2);
+    const maxEtapa = Math.max(...c.etapas.map(e => e.vol));
+    card.querySelector(".c-etapas").innerHTML = c.etapas.map(e =>
+      `<div style="display:block"><div><span>${e.nome}</span><span>${compacto(e.vol)}</span></div><i style="--p:${(e.vol / maxEtapa).toFixed(3)}"></i></div>`).join("");
+
+    // Completo
+    F("grupo").textContent = c.grupo;
+    F("periodo").textContent = PERIODO;
+    F("canal").textContent = c.canal;
+    F("qtdEtapas").textContent = `${c.etapas.length} etapas`;
+    F("rotuloVolume").textContent = c.rotuloVolume;
+    F("variacao").className = classeVar(c.variacao, c.inverso);
+    F("anelRotulo").textContent = c.anel.rotulo;
+    F("anelDesc").textContent = c.anel.desc;
+    F("csat").textContent = num(c.csat, 2);
+    F("csatVar").textContent = `(${c.csatVar > 0 ? "+" : ""}${num(c.csatVar, 2)})`;
+    F("csatVar").className = c.csatVar >= 0 ? "sobe" : "desce";
+    F("topN").textContent = `Top ${c.motivos.length}`;
+    F("nota").textContent = c.nota;
+    card.querySelector(".faixa .anel").setAttribute("aria-label", `${z(c.anel.pct)}% ${c.anel.rotulo.toLowerCase()}, ${c.anel.desc}`);
+
+    card.querySelector(".etapas").innerHTML = c.etapas.map(e => `
+      <li class="etapa">
+        <div><div class="nome">${e.nome}</div><div class="vol">${compacto(e.vol)}</div>
+          <div class="var ${classeVar(e.var, c.inverso)}">${seta(e.var)}${pctSinal(e.var)}</div></div>
+        ${faisca(e.semente)}
+        <div class="metrica"><b>${z(e.metrica)}</b><span>${e.rotulo}</span></div>
+      </li>`).join("");
+
+    const maiorMotivo = c.motivos[0][1];
+    card.querySelector(".motivos ol").innerHTML = c.motivos.map(([txt, q], k) => `
+      <li><span class="pos">${k + 1}</span><span class="txt" title="${txt}">${txt}</span>
+        <span class="barra"><i style="--p:${(q / maiorMotivo).toFixed(3)};--i:${k}"></i></span>
+        <span class="qtd">${z(q.toLocaleString("pt-BR"))}</span></li>`).join("");
+
+    card.querySelector(".btn-pri").addEventListener("click", e => {
+      e.stopPropagation();
+      const b = e.currentTarget, r = b.getBoundingClientRect(), s = Math.max(r.width, r.height);
+      const onda = document.createElement("span");
+      onda.className = "onda";
+      onda.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`;
+      b.appendChild(onda);
+      onda.addEventListener("animationend", () => onda.remove());
+    });
+
+    vitrine.appendChild(card);
+    return card;
+  });
+
+  // ---------- Troca de canal ----------
+  let ativo = -1;
+  function ativar(i, { contar: recontar = true } = {}) {
+    if (i === ativo) return;
+    ativo = i;
+    const cols = canais.map((_, k) => k === i ? `${FR_ATIVO}fr` : "1fr").join(" ");
+    vitrine.style.gridTemplateColumns = cols;
+    cards.forEach((card, k) => {
+      const on = k === i;
+      card.classList.toggle("ativo", on);
+      card.setAttribute("aria-expanded", on);
+      card.querySelector(".completo").inert = !on;
+    });
+    const c = canais[i], card = cards[i];
+    const F = k => card.querySelector(`[data-f="${k}"]`);
+    animarAnel(card.querySelector(".faixa .anel"), c.anel.pct, 250);
+    if (recontar) {
+      setTimeout(() => {
+        contar(F("total"), c.total, 1000, compacto);
+        contar(F("variacao"), c.variacao, 1000, pctSinal);
+        contar(F("anelPct"), c.anel.pct, 1200, v => z(Math.round(v)) + "%");
+      }, reduzMovimento ? 0 : 220);
+    }
+  }
+
+  // Intenção de hover: evita que o card abra só porque o mouse cruzou por cima dele
+  let espera;
+  cards.forEach((card, i) => {
+    card.addEventListener("mouseenter", () => { clearTimeout(espera); espera = setTimeout(() => ativar(i), 110); });
+    card.addEventListener("mouseleave", () => clearTimeout(espera));
+    card.addEventListener("click", () => ativar(i));
+    card.addEventListener("focus", () => ativar(i));
+    card.addEventListener("keydown", e => {
+      if (e.target !== card) return;
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        const prox = (i + (e.key === "ArrowRight" ? 1 : -1) + cards.length) % cards.length;
+        cards[prox].focus();
+      }
+    });
+  });
+
+  // Largura fixa do conteúdo completo = largura do card aberto, para o texto não refluir enquanto o card cresce
+  function medir() {
+    if (telaEstreita.matches) { vitrine.style.removeProperty("--alt"); return; }
+    const W = vitrine.clientWidth;
+    const gaps = (canais.length - 1) * parseFloat(getComputedStyle(vitrine).columnGap);
+    const larg = (W - gaps) * FR_ATIVO / (canais.length - 1 + FR_ATIVO) - 4;
+    vitrine.style.setProperty("--larg-completo", larg + "px");
+    const alt = Math.max(...cards.map(c => c.querySelector(".completo").scrollHeight));
+    vitrine.style.setProperty("--alt", alt + 4 + "px");
+  }
+
+  // ---------- Entrada ----------
+  const inicial = canais.findIndex(c => c.total === maiorVolume);
+  document.fonts.ready.then(() => {
+    medir();
+    ativar(inicial, { contar: false });
+    vitrine.querySelectorAll(".trilho .linha").forEach((l, k) => setTimeout(() => l.classList.add("pronta"), reduzMovimento ? 0 : 150 + k * 160));
+    cards.forEach((card, i) => {
+      card.classList.add("entrou");
+      card.addEventListener("animationend", ev => {
+        if (ev.animationName === "entrada") { card.classList.remove("entrou"); card.classList.add("pronto"); }
+      });
+      animarAnel(card.querySelector(".c-anel .anel"), canais[i].anel.pct, 400 + i * 90);
+    });
+    const c = canais[inicial], F = k => cards[inicial].querySelector(`[data-f="${k}"]`);
+    setTimeout(() => {
+      contar(F("total"), c.total, 1200, compacto);
+      contar(F("variacao"), c.variacao, 1200, pctSinal);
+      contar(F("anelPct"), c.anel.pct, 1300, v => z(Math.round(v)) + "%");
+    }, reduzMovimento ? 0 : 450);
+  });
+  addEventListener("resize", medir);
+  telaEstreita.addEventListener("change", medir);
+</script>
+</body>
+</html>
