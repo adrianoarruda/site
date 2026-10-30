@@ -137,37 +137,11 @@
   .c-met strong { display: block; font-size: 20px; font-weight: 800; letter-spacing: -.01em; font-variant-numeric: tabular-nums; line-height: 1.15; }
   .c-met .var { font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-  /* CSAT: medidor circular de 1 a 5, de vermelho (crítico) a verde (meta), com marca na meta */
-  @property --a { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
-  .gauge { position: relative; flex: none; aspect-ratio: 1; }
-  .gauge-g { width: 128px; --esp: 11px; }
-  .gauge-p { width: 66px; --esp: 7px; }
-  .gauge-anel {
-    position: absolute; inset: 0; border-radius: 50%;
-    background:
-      conic-gradient(transparent 0 var(--a), #eceef2 var(--a) 100%),
-      conic-gradient(#e53935 0%, #f08c1a 45%, #1e9e4a 100%);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--esp)), #000 calc(100% - var(--esp) + 1px));
-            mask: radial-gradient(farthest-side, transparent calc(100% - var(--esp)), #000 calc(100% - var(--esp) + 1px));
-  }
-  .gauge-anel.anima { transition: --a 1.3s var(--ease-out); }
-  .gauge-meta { position: absolute; inset: 0; transform: rotate(calc(var(--m) * 1turn)); pointer-events: none; }
-  .gauge-meta::before { content: ""; position: absolute; left: 50%; top: -3px; width: 2px; margin-left: -1px; height: calc(var(--esp) + 6px); border-radius: 1px; background: var(--tinta); }
-  .gauge-centro { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.05; }
-  .gauge-centro span { font-size: 10.5px; font-weight: 600; color: var(--cinza); }
-  .gauge-centro b { font-size: 30px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-  .gauge-centro small { font-size: 11px; font-weight: 600; color: #9a9aa0; }
-  .gauge-p .gauge-centro b { font-size: 16px; }
-  .gauge-p .gauge-meta { display: none; }
-
-  .pill { display: inline-flex; align-items: center; gap: 3px; font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .pill.sobe { background: #e7f5ec; }
-  .pill.desce { background: #fde8e8; }
-
-  .c-csat { margin-top: 22px; display: flex; align-items: center; gap: 12px; border: 1px solid #eceef2; border-radius: 12px; padding: 10px 12px; }
-  .c-csat > div:last-child { display: grid; gap: 6px; justify-items: start; }
-  .c-csat-rot { font-size: 11px; font-weight: 600; color: var(--cinza); }
-  .c-csat .pill { font-size: 10.5px; }
+  /* Faixa do card fechado: CSAT em destaque */
+  .c-csat { margin-top: 22px; background: var(--destaque-claro); border-radius: 12px; padding: 12px 14px; }
+  .c-csat b { display: block; font-size: 26px; font-weight: 800; color: var(--destaque); font-variant-numeric: tabular-nums; letter-spacing: -.01em; line-height: 1.05; }
+  .c-csat span { font-size: 11px; color: var(--cinza); }
+  .c-csat i { font-style: normal; font-weight: 700; font-variant-numeric: tabular-nums; }
 
   .c-etapas { margin-top: 20px; display: grid; gap: 10px; }
   .c-etapas div { font-size: 11px; color: var(--cinza); font-weight: 600; display: flex; justify-content: space-between; gap: 6px; }
@@ -252,18 +226,13 @@
   .sobe { color: var(--sobe); }
   .desce { color: var(--desce); }
 
-  .faixa { border-radius: 12px; overflow: hidden; border: 1px solid #eceef2; }
-  .faixa-sec { border-top: 1px solid #eceef2; }
-  .csat-dest { padding: 14px; display: flex; align-items: center; gap: 16px; }
-  .csat-info { display: grid; gap: 12px; min-width: 0; }
-  .delta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 11px; color: var(--cinza); }
-  .legenda-csat { display: grid; gap: 4px; font-size: 10.5px; color: var(--cinza); white-space: nowrap; }
-  .legenda-csat span::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-  .legenda-csat .l-crit::before { background: #e53935; }
-  .legenda-csat .l-meta::before { background: #1e9e4a; }
-  .faixa-sec { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
-  .faixa-sec .anel { width: 44px; height: 44px; }
+  .faixa { background: var(--destaque-claro); border-radius: 12px; padding: 14px; }
+  .csat b { display: block; font-size: 30px; font-weight: 800; color: var(--destaque); font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1.05; }
+  .faixa-sec { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(204, 9, 47, .14); }
+  .faixa-sec .anel { width: 46px; height: 46px; }
   .faixa-sec .anel b { font-size: 11px; }
+  .csat span { font-size: 10.5px; color: var(--cinza); font-weight: 500; white-space: nowrap; }
+  .csat i { font-style: normal; font-weight: 700; }
   .anel { position: relative; width: 56px; height: 56px; flex: none; }
   .anel svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   .anel circle { fill: none; stroke-width: 7; }
@@ -308,6 +277,9 @@
   .card.ativo .motivos .barra i { transform: scaleX(var(--p)); transition: transform .7s var(--ease-out); transition-delay: calc(.45s + var(--i) * 40ms); }
   .motivos .qtd { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
 
+  /* Card aberto ocupa a altura toda da linha, com o botão sempre no rodapé */
+  .card.ativo .completo { min-height: calc(var(--alt, 0px) - 4px); display: flex; flex-direction: column; }
+  .card.ativo .rodape { margin-top: auto; padding-top: 16px; }
   .rodape { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 16px; }
   .nota { font-size: 10px; color: #9a9aa0; }
   .btn-pri {
@@ -333,7 +305,7 @@
     .card { grid-row: auto; grid-column: auto !important; min-height: 0; }
     .compacto { position: relative; inset: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 14px; align-items: center; padding: 24px 16px 16px; }
     .compacto > :not(.cab-c):not(.c-csat) { display: none; }
-    .c-csat { margin: 0; min-width: 170px; }
+    .c-csat { margin: 0; min-width: 150px; }
     .lado { justify-items: start; }
     .card.ativo .compacto { display: none; }
     .completo { width: auto; position: absolute; }
@@ -378,10 +350,7 @@
       </div>
       <div class="c-vol"><strong data-c="total"></strong><small data-c="unidade"></small><span class="var" data-c="variacao"></span></div>
       <div class="c-met"><small data-c="metNome"></small><strong data-c="metValor"></strong><span class="var" data-c="metVar"></span></div>
-      <div class="c-csat">
-        <div class="gauge gauge-p"><div class="gauge-anel"></div><div class="gauge-meta"></div><div class="gauge-centro"><b data-c="csat"></b></div></div>
-        <div><span class="c-csat-rot">CSAT geral</span><span class="pill" data-c="csatVar"></span></div>
-      </div>
+      <div class="c-csat"><b data-c="csat"></b><span>CSAT geral <i data-c="csatVar"></i></span></div>
       <div class="c-etapas"></div>
       <div class="c-pe">
         <div class="c-anel">
@@ -406,13 +375,7 @@
             <div class="met-var"><small>vs mês anterior</small><strong data-f="metVar"></strong></div>
           </div>
           <div class="faixa">
-            <div class="csat-dest">
-              <div class="gauge gauge-g" role="img"><div class="gauge-anel"></div><div class="gauge-meta"></div><div class="gauge-centro"><span>CSAT geral</span><b data-f="csat"></b><small>/ 5,0</small></div></div>
-              <div class="csat-info">
-                <div class="delta"><span class="pill" data-f="csatVar"></span>vs período anterior</div>
-                <div class="legenda-csat"><span class="l-crit" data-f="rotCritico"></span><span class="l-meta" data-f="rotMeta"></span></div>
-              </div>
-            </div>
+            <div class="csat"><b data-f="csat"></b><span>CSAT geral <i data-f="csatVar"></i></span></div>
             <div class="faixa-sec">
               <div class="anel" role="img"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-f="anelPct"></b></div>
               <div class="anel-txt"><b data-f="anelRotulo"></b><span data-f="anelDesc"></span></div>
@@ -551,17 +514,9 @@
   const classeVar = (v, inverso) => ((v > 0) !== !!inverso) ? "sobe" : "desce";
   const seta = v => v > 0 ? "↗ " : "↘ ";
 
-  // CSAT (escala de 1 a 5): abaixo da meta é crítico
+  // CSAT das etapas: na meta em verde, abaixo dela em vermelho
   const CSAT_META = 4.10, CSAT_MIN = 1, CSAT_MAX = 5;
   const naMeta = v => v >= CSAT_META;
-  const posEscala = v => Math.max(0, Math.min(1, (v - CSAT_MIN) / (CSAT_MAX - CSAT_MIN)));
-  const deltaPts = d => `${seta(d)}${d > 0 ? "+" : ""}${num(d, 2)} pts`;
-  function animarGauge(el, v, atraso = 0) {
-    el.classList.remove("anima");
-    el.style.setProperty("--a", "0%");
-    void el.getBoundingClientRect();
-    setTimeout(() => { el.classList.add("anima"); el.style.setProperty("--a", posEscala(v) * 100 + "%"); }, reduzMovimento ? 0 : atraso);
-  }
 
   function serie(semente, n = 30) {
     let s = semente;
@@ -641,14 +596,10 @@
     C("anelRotulo").textContent = c.anel.rotulo;
     C("anelDesc").textContent = c.anel.desc;
     C("csat").textContent = num(c.csat, 2);
-    card.querySelectorAll(".gauge").forEach(el => el.style.setProperty("--m", posEscala(CSAT_META)));
     card.querySelectorAll('[data-c="csatVar"], [data-f="csatVar"]').forEach(el => {
-      el.textContent = deltaPts(c.csatVar);
+      el.textContent = `(${c.csatVar > 0 ? "+" : ""}${num(c.csatVar, 2)})`;
       el.classList.add(c.csatVar >= 0 ? "sobe" : "desce");
     });
-    F("rotCritico").textContent = `Crítico: abaixo de ${num(CSAT_META, 2)}`;
-    F("rotMeta").textContent = `Meta: ${num(CSAT_META, 2)} ou mais`;
-    card.querySelector(".csat-dest .gauge").setAttribute("aria-label", `CSAT ${num(c.csat, 2)} de 5, ${naMeta(c.csat) ? "na meta" : "crítico"}`);
     const maxEtapa = Math.max(...c.etapas.map(e => e.vol));
     card.querySelector(".c-etapas").innerHTML = c.etapas.map(e =>
       `<div style="display:block"><div><span>${e.nome}</span><span>${compacto(e.vol)}</span></div><i style="--p:${(e.vol / maxEtapa).toFixed(3)}"></i></div>`).join("");
@@ -724,7 +675,6 @@
     const c = canais[i], card = cards[i];
     const F = k => card.querySelector(`[data-f="${k}"]`);
     animarAnel(card.querySelector(".faixa .anel"), c.anel.pct, 250);
-    animarGauge(card.querySelector(".csat-dest .gauge-anel"), c.csat, 250);
     if (recontar) {
       setTimeout(() => {
         contar(F("total"), c.total, 1000, compacto);
@@ -760,7 +710,8 @@
     const gaps = (canais.length - 1) * parseFloat(getComputedStyle(vitrine).columnGap);
     const larg = (W - gaps) * FR_ATIVO / (canais.length - 1 + FR_ATIVO) - 4;
     vitrine.style.setProperty("--larg-completo", larg + "px");
-    const alt = Math.max(...cards.map(c => c.querySelector(".completo").scrollHeight));
+    // A altura da linha atende o maior conteúdo: o card aberto ou o card fechado
+    const alt = Math.max(...cards.flatMap(c => [c.querySelector(".completo").scrollHeight, c.querySelector(".compacto").scrollHeight]));
     vitrine.style.setProperty("--alt", alt + 4 + "px");
   }
 
@@ -776,7 +727,6 @@
         if (ev.animationName === "entrada") { card.classList.remove("entrou"); card.classList.add("pronto"); }
       });
       animarAnel(card.querySelector(".c-anel .anel"), canais[i].anel.pct, 400 + i * 90);
-      animarGauge(card.querySelector(".c-csat .gauge-anel"), canais[i].csat, 400 + i * 90);
     });
     const c = canais[inicial], F = k => cards[inicial].querySelector(`[data-f="${k}"]`);
     setTimeout(() => {
