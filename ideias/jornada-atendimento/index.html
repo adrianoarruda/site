@@ -650,7 +650,7 @@
   }
 
   // ---------- Entrada ----------
-  const inicial = canais.findIndex(c => c.total === maiorVolume);
+  const inicial = canais.findIndex(c => c.canal === "Chat");
   document.fonts.ready.then(() => {
     medir();
     ativar(inicial, { contar: false });
