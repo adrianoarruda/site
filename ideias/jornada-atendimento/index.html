@@ -15,10 +15,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --laranja: #ff6a00;
-    --laranja-escuro: #e85d00;
-    --laranja-claro: #ffe9d6;
-    --laranja-trilha: #ffd7b5;
+    --destaque: #cc092f;
+    --destaque-escuro: #a3071f;
+    --destaque-claro: #fbe7ea;
+    --destaque-trilha: #f4c0c9;
     --tinta: #1d1d1f;
     --cinza: #6e6e73;
     --cinza-claro: #e6e8ec;
@@ -72,8 +72,8 @@
     margin-top: 8px;
     height: 4px;
     border-radius: 2px;
-    background-color: var(--laranja-trilha);
-    background-image: radial-gradient(circle, var(--laranja) 1.6px, transparent 2px);
+    background-color: var(--destaque-trilha);
+    background-image: radial-gradient(circle, var(--destaque) 1.6px, transparent 2px);
     background-size: 14px 4px;
     background-repeat: repeat-x;
     transform-origin: left;
@@ -82,8 +82,8 @@
   .trilho .linha.pronta { transform: scaleX(1); transition: transform .9s var(--ease-out); animation: fluxo 1.4s linear infinite; }
   @keyframes fluxo { to { background-position: 14px 0; } }
   /* A intensidade do trilho sobe junto com a gravidade do contato */
-  .trilho[data-nivel="2"] .linha { background-color: #ffc596; }
-  .trilho[data-nivel="3"] .linha { background-color: #ffad6b; background-image: radial-gradient(circle, #b84500 1.6px, transparent 2px); }
+  .trilho[data-nivel="2"] .linha { background-color: #eea3b0; }
+  .trilho[data-nivel="3"] .linha { background-color: #e47e90; background-image: radial-gradient(circle, #7d0519 1.6px, transparent 2px); }
 
   /* ---------- Card ---------- */
   .card {
@@ -106,13 +106,13 @@
   @keyframes entrada { to { opacity: 1; transform: none; } }
   .card.pronto { opacity: 1; transform: none; animation: none; }
   .card:not(.ativo):hover { box-shadow: 0 1px 2px rgba(20,30,60,.04), 0 18px 36px -14px rgba(20,30,60,.22); }
-  .card.ativo { border-color: var(--laranja); cursor: default; box-shadow: 0 1px 2px rgba(20,30,60,.04), 0 24px 48px -18px rgba(255, 106, 0, .35); }
-  .card:focus-visible { outline: 2px solid var(--laranja); outline-offset: 3px; }
+  .card.ativo { border-color: var(--destaque); cursor: default; box-shadow: 0 1px 2px rgba(20,30,60,.04), 0 24px 48px -18px rgba(204, 9, 47, .30); }
+  .card:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
 
   .selo {
     position: absolute;
     top: 0; left: 0;
-    background: var(--laranja);
+    background: var(--destaque);
     color: var(--branco);
     font-size: 10.5px;
     font-weight: 700;
@@ -139,27 +139,36 @@
 
   .compacto .grupo { font-size: 11px; color: var(--cinza); font-weight: 500; }
   .compacto h2 { font-size: 18px; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-  .compacto h2 svg { width: 18px; height: 18px; color: var(--laranja); flex: none; }
+  .compacto h2 svg { width: 18px; height: 18px; color: var(--destaque); flex: none; }
   .c-vol { margin-top: 22px; }
   .c-vol strong { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
   .c-vol small { font-size: 11px; color: var(--cinza); }
   .c-vol .var { display: block; font-size: 12px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
 
-  .c-anel { margin-top: 22px; display: flex; align-items: center; gap: 10px; background: var(--laranja-claro); border-radius: 12px; padding: 10px; }
-  .c-anel .anel { width: 46px; height: 46px; }
-  .c-anel .anel b { font-size: 11px; }
-  .c-anel div:last-child { font-size: 11px; line-height: 1.25; color: var(--cinza); min-width: 0; }
-  .c-anel div:last-child b { display: block; color: var(--tinta); font-size: 12px; }
+  /* Humor do CSAT: acima, neutro ou abaixo da referência */
+  .h-acima  { --humor: #17803d; --humor-claro: #e7f5ec; }
+  .h-neutro { --humor: #a86400; --humor-claro: #fdf2df; }
+  .h-abaixo { --humor: #c62828; --humor-claro: #fde8e8; }
+  .cara { flex: none; color: var(--humor); }
+
+  .c-csat { margin-top: 22px; display: flex; align-items: center; gap: 10px; background: var(--humor-claro); border-radius: 12px; padding: 10px 12px; }
+  .c-csat .cara { width: 34px; height: 34px; }
+  .c-csat b { display: block; font-size: 22px; font-weight: 800; color: var(--humor); font-variant-numeric: tabular-nums; line-height: 1.05; }
+  .c-csat span { font-size: 11px; color: var(--cinza); }
+  .c-csat em { font-style: normal; font-weight: 700; color: var(--humor); }
 
   .c-etapas { margin-top: 20px; display: grid; gap: 10px; }
   .c-etapas div { font-size: 11px; color: var(--cinza); font-weight: 600; display: flex; justify-content: space-between; gap: 6px; }
   .c-etapas div span:last-child { color: var(--tinta); font-variant-numeric: tabular-nums; }
   .c-etapas i { display: block; height: 4px; border-radius: 2px; background: #f0f1f4; margin-top: 5px; overflow: hidden; }
-  .c-etapas i::after { content: ""; display: block; height: 100%; width: 100%; background: var(--laranja); transform-origin: left; transform: scaleX(var(--p)); border-radius: 2px; }
+  .c-etapas i::after { content: ""; display: block; height: 100%; width: 100%; background: var(--destaque); transform-origin: left; transform: scaleX(var(--p)); border-radius: 2px; }
 
-  .c-pe { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 16px; border-top: 1px solid #f1f2f5; }
-  .c-pe b { display: block; font-size: 18px; font-weight: 800; color: var(--laranja); font-variant-numeric: tabular-nums; line-height: 1.1; }
-  .c-pe span { font-size: 10.5px; color: var(--cinza); }
+  .c-pe { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 14px; border-top: 1px solid #f1f2f5; }
+  .c-anel { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .c-anel .anel { width: 40px; height: 40px; }
+  .c-anel .anel b { font-size: 10px; }
+  .c-anel div:last-child { font-size: 10.5px; line-height: 1.2; color: var(--cinza); min-width: 0; }
+  .c-anel div:last-child b { display: block; color: var(--tinta); font-size: 11.5px; font-weight: 700; }
   .c-abrir {
     width: 30px; height: 30px; flex: none;
     border-radius: 50%;
@@ -168,7 +177,7 @@
     transition: background .2s, transform .35s var(--ease-spring);
   }
   .c-abrir svg { width: 14px; height: 14px; }
-  .card:not(.ativo):hover .c-abrir { background: var(--laranja); color: var(--branco); transform: rotate(90deg); }
+  .card:not(.ativo):hover .c-abrir { background: var(--destaque); color: var(--branco); transform: rotate(90deg); }
 
   /* ---------- Visão completa ---------- */
   .completo {
@@ -199,7 +208,7 @@
   .periodo { font-size: 11px; font-weight: 600; background: #f0f1f4; border-radius: var(--raio-ctrl); padding: 6px 10px; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .canal { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
   .canal h2 { font-size: 21px; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 9px; }
-  .canal h2 svg { width: 21px; height: 21px; color: var(--laranja); }
+  .canal h2 svg { width: 21px; height: 21px; color: var(--destaque); }
   .canal > span { font-size: 12px; font-weight: 600; }
 
   .corpo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
@@ -209,21 +218,28 @@
   .sobe { color: var(--sobe); }
   .desce { color: var(--desce); }
 
-  .faixa { background: var(--laranja-claro); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 10px; }
+  .faixa { border-radius: 12px; overflow: hidden; border: 1px solid #eef0f3; }
+  .csat-dest { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--humor-claro); }
+  .csat-dest .cara { width: 40px; height: 40px; }
+  .card.ativo .csat-dest .cara { animation: cara .55s var(--ease-spring) .3s both; }
+  @keyframes cara { from { transform: scale(.4) rotate(-20deg); opacity: 0; } }
+  .csat-dest b { display: block; font-size: 26px; font-weight: 800; color: var(--humor); font-variant-numeric: tabular-nums; line-height: 1; }
+  .csat-dest span { font-size: 11px; color: var(--cinza); font-weight: 500; white-space: nowrap; }
+  .csat-dest i { font-style: normal; font-weight: 700; }
+  .status { margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--humor); background: var(--branco); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .faixa-sec { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+  .faixa-sec .anel { width: 44px; height: 44px; }
+  .faixa-sec .anel b { font-size: 11px; }
   .anel { position: relative; width: 56px; height: 56px; flex: none; }
   .anel svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   .anel circle { fill: none; stroke-width: 7; }
-  .anel .trilha-anel { stroke: var(--laranja-trilha); }
-  .anel .progresso { stroke: var(--laranja); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .anel .trilha-anel { stroke: var(--destaque-trilha); }
+  .anel .progresso { stroke: var(--destaque); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
   .anel .progresso.anima { transition: stroke-dashoffset 1.3s var(--ease-out); }
-  .anel b { position: absolute; inset: 0; display: grid; place-content: center; font-size: 13px; font-weight: 800; color: var(--laranja); font-variant-numeric: tabular-nums; }
+  .anel b { position: absolute; inset: 0; display: grid; place-content: center; font-size: 13px; font-weight: 800; color: var(--destaque); font-variant-numeric: tabular-nums; }
   .anel-txt { line-height: 1.25; min-width: 0; }
   .anel-txt b { display: block; font-size: 13px; font-weight: 700; }
   .anel-txt span { font-size: 11px; color: var(--cinza); }
-  .csat { margin-left: auto; text-align: right; }
-  .csat b { display: block; font-size: 20px; font-weight: 800; color: var(--laranja); font-variant-numeric: tabular-nums; line-height: 1.1; }
-  .csat span { font-size: 10.5px; color: var(--cinza); font-weight: 500; white-space: nowrap; }
-  .csat i { font-style: normal; font-weight: 700; }
 
   .etapas { list-style: none; }
   .etapa { display: grid; grid-template-columns: 1fr 58px auto; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f1f2f5; }
@@ -233,24 +249,31 @@
   .etapa .vol { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
   .etapa .var { font-size: 10.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .etapa .metrica { text-align: right; font-variant-numeric: tabular-nums; }
-  .etapa .metrica b { display: block; font-size: 14px; font-weight: 800; color: var(--laranja); }
+  .etapa .metrica b { display: block; font-size: 14px; font-weight: 800; color: var(--destaque); }
   .etapa .metrica span { font-size: 10px; color: var(--cinza); }
+  .etapa .metrica[class*="h-"] b { color: var(--humor); display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+  .cara-p { width: 14px; height: 14px; }
+
+  .lado { display: grid; justify-items: end; gap: 8px; }
+  .legenda { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11.5px; color: var(--cinza); }
+  .legenda span { display: inline-flex; align-items: center; gap: 5px; }
+  .legenda .cara { width: 15px; height: 15px; }
 
   .faisca { width: 58px; height: 24px; overflow: visible; }
-  .faisca .area { fill: var(--laranja-claro); opacity: 0; transition: opacity .5s .7s; }
-  .faisca .linha-f { fill: none; stroke: var(--laranja); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .faisca .area { fill: var(--destaque-claro); opacity: 0; transition: opacity .5s .7s; }
+  .faisca .linha-f { fill: none; stroke: var(--destaque); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
   .card.ativo .faisca .linha-f { stroke-dashoffset: 0; transition: stroke-dashoffset 1.2s .35s var(--ease-out); }
   .card.ativo .faisca .area { opacity: 1; }
 
   .motivos { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--cinza-claro); }
   .motivos h3 { font-size: 12px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; }
-  .motivos h3 span { font-size: 10.5px; font-weight: 700; color: var(--laranja); background: var(--laranja-claro); padding: 2px 8px; border-radius: 6px; }
+  .motivos h3 span { font-size: 10.5px; font-weight: 700; color: var(--destaque); background: var(--destaque-claro); padding: 2px 8px; border-radius: 6px; }
   .motivos ol { list-style: none; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, auto); grid-auto-flow: column; column-gap: 20px; row-gap: 8px; }
   .motivos li { display: grid; grid-template-columns: 12px 1fr 40px 58px; gap: 7px; align-items: center; font-size: 11px; }
-  .motivos .pos { color: var(--laranja); font-weight: 800; }
+  .motivos .pos { color: var(--destaque); font-weight: 800; }
   .motivos .txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .motivos .barra { height: 5px; border-radius: 3px; background: #f0f1f4; overflow: hidden; }
-  .motivos .barra i { display: block; height: 100%; width: 100%; border-radius: 3px; background: var(--laranja); transform: scaleX(0); transform-origin: left; }
+  .motivos .barra i { display: block; height: 100%; width: 100%; border-radius: 3px; background: var(--destaque); transform: scaleX(0); transform-origin: left; }
   .card.ativo .motivos .barra i { transform: scaleX(var(--p)); transition: transform .7s var(--ease-out); transition-delay: calc(.45s + var(--i) * 40ms); }
   .motivos .qtd { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
 
@@ -260,13 +283,13 @@
     font: inherit; font-size: 13px; font-weight: 700;
     border: 0; border-radius: var(--raio-ctrl);
     padding: 11px 22px;
-    background: var(--laranja); color: var(--branco);
+    background: var(--destaque); color: var(--branco);
     cursor: pointer; position: relative; overflow: hidden; white-space: nowrap;
     transition: background .2s, transform .12s;
   }
-  .btn-pri:hover { background: var(--laranja-escuro); }
+  .btn-pri:hover { background: var(--destaque-escuro); }
   .btn-pri:active { transform: scale(.98); }
-  .btn-pri:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+  .btn-pri:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
   .btn-pri .onda { position: absolute; border-radius: 50%; background: rgba(255,255,255,.45); transform: scale(0); animation: onda .6s ease-out forwards; pointer-events: none; }
   @keyframes onda { to { transform: scale(4); opacity: 0; } }
 
@@ -278,8 +301,9 @@
     .trilho { display: none; }
     .card { grid-row: auto; grid-column: auto !important; min-height: 0; }
     .compacto { position: relative; inset: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 24px 16px 16px; }
-    .compacto > :not(.cab-c):not(.c-pe) { display: none; }
-    .c-pe { margin: 0; padding: 0; border: 0; gap: 14px; }
+    .compacto > :not(.cab-c):not(.c-csat) { display: none; }
+    .c-csat { margin: 0; }
+    .lado { justify-items: start; }
     .card.ativo .compacto { display: none; }
     .completo { width: auto; position: absolute; }
     .card.ativo .completo { width: auto; }
@@ -305,7 +329,10 @@
       <h1>Jornada de atendimento</h1>
       <p>Segmento Espontâneo. Volume, satisfação e principais motivos de cada canal de atendimento.</p>
     </div>
-    <span class="atalho">Passe o mouse ou use <kbd>←</kbd> <kbd>→</kbd> para trocar de canal</span>
+    <div class="lado">
+      <div class="legenda" id="legenda" aria-label="Legenda do CSAT"></div>
+      <span class="atalho">Passe o mouse ou use <kbd>←</kbd> <kbd>→</kbd> para trocar de canal</span>
+    </div>
   </header>
   <main class="vitrine" id="vitrine" aria-label="Canais de atendimento"></main>
 </div>
@@ -318,13 +345,16 @@
         <h2><span class="icone"></span><span data-c="canal"></span></h2>
       </div>
       <div class="c-vol"><strong data-c="total"></strong><small data-c="unidade"></small><span class="var" data-c="variacao"></span></div>
-      <div class="c-anel">
-        <div class="anel"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-c="anelPct"></b></div>
-        <div><b data-c="anelRotulo"></b><span data-c="anelDesc"></span></div>
+      <div class="c-csat">
+        <span class="cara-slot"></span>
+        <div><b data-c="csat"></b><span>CSAT geral <em data-c="status"></em></span></div>
       </div>
       <div class="c-etapas"></div>
       <div class="c-pe">
-        <div><b data-c="csat"></b><span>CSAT geral</span></div>
+        <div class="c-anel">
+          <div class="anel"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-c="anelPct"></b></div>
+          <div><b data-c="anelRotulo"></b><span data-c="anelDesc"></span></div>
+        </div>
         <span class="c-abrir"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span>
       </div>
     </div>
@@ -341,9 +371,15 @@
             <div><small>Variação em 30 dias</small><strong data-f="variacao"></strong></div>
           </div>
           <div class="faixa">
-            <div class="anel" role="img"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-f="anelPct"></b></div>
-            <div class="anel-txt"><b data-f="anelRotulo"></b><span data-f="anelDesc"></span></div>
-            <div class="csat"><b data-f="csat"></b><span>CSAT geral <i data-f="csatVar"></i></span></div>
+            <div class="csat-dest">
+              <span class="cara-slot"></span>
+              <div><b data-f="csat"></b><span>CSAT geral <i data-f="csatVar"></i></span></div>
+              <span class="status" data-f="status"></span>
+            </div>
+            <div class="faixa-sec">
+              <div class="anel" role="img"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-f="anelPct"></b></div>
+              <div class="anel-txt"><b data-f="anelRotulo"></b><span data-f="anelDesc"></span></div>
+            </div>
           </div>
         </div>
         <ul class="etapas"></ul>
@@ -471,6 +507,16 @@
   const classeVar = (v, inverso) => ((v > 0) !== !!inverso) ? "sobe" : "desce";
   const seta = v => v > 0 ? "↗ " : "↘ ";
 
+  // CSAT (escala de 1 a 5): acima de 4,0 é bom, de 3,5 a 4,0 é neutro, abaixo de 3,5 é ruim
+  const CSAT_REF = { acima: 4.0, neutro: 3.5 };
+  const humor = v => v >= CSAT_REF.acima ? "acima" : v >= CSAT_REF.neutro ? "neutro" : "abaixo";
+  const ROT_HUMOR = { acima: "Acima", neutro: "Neutro", abaixo: "Abaixo" };
+  const BOCAS = { acima: "M8 14c1 1.6 2.4 2.4 4 2.4s3-.8 4-2.4", neutro: "M8.5 15h7", abaixo: "M8 16.4c1-1.6 2.4-2.4 4-2.4s3 .8 4 2.4" };
+  const cara = (h, cls = "") => `<svg class="cara ${cls} h-${h}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9 9.5v.6M15 9.5v.6"/><path d="${BOCAS[h]}"/></svg>`;
+  const humorEtapa = e => e.rotulo === "CSAT" ? humor(parseFloat(e.metrica.replace(",", "."))) : null;
+  document.getElementById("legenda").innerHTML =
+    `<span>${cara("acima")}CSAT acima de 4,0</span><span>${cara("neutro")}entre 3,5 e 4,0</span><span>${cara("abaixo")}abaixo de 3,5</span>`;
+
   function serie(semente, n = 30) {
     let s = semente;
     const r = () => (s = (s * 9301 + 49297) % 233280) / 233280;
@@ -548,6 +594,11 @@
     C("anelRotulo").textContent = c.anel.rotulo;
     C("anelDesc").textContent = c.anel.desc;
     C("csat").textContent = num(c.csat, 2);
+    const h = humor(c.csat);
+    C("status").textContent = ROT_HUMOR[h].toLowerCase();
+    card.querySelector(".c-csat").classList.add("h-" + h);
+    card.querySelector(".csat-dest").classList.add("h-" + h);
+    card.querySelectorAll(".cara-slot").forEach(el => el.outerHTML = cara(h));
     const maxEtapa = Math.max(...c.etapas.map(e => e.vol));
     card.querySelector(".c-etapas").innerHTML = c.etapas.map(e =>
       `<div style="display:block"><div><span>${e.nome}</span><span>${compacto(e.vol)}</span></div><i style="--p:${(e.vol / maxEtapa).toFixed(3)}"></i></div>`).join("");
@@ -559,11 +610,16 @@
     F("qtdEtapas").textContent = `${c.etapas.length} etapas`;
     F("rotuloVolume").textContent = c.rotuloVolume;
     F("variacao").className = classeVar(c.variacao, c.inverso);
+    // Valores finais já no lugar: a altura medida do card é a mesma de quando ele está aberto
+    F("total").textContent = compacto(c.total);
+    F("variacao").textContent = pctSinal(c.variacao);
+    F("anelPct").textContent = C("anelPct").textContent;
     F("anelRotulo").textContent = c.anel.rotulo;
     F("anelDesc").textContent = c.anel.desc;
     F("csat").textContent = num(c.csat, 2);
     F("csatVar").textContent = `(${c.csatVar > 0 ? "+" : ""}${num(c.csatVar, 2)})`;
     F("csatVar").className = c.csatVar >= 0 ? "sobe" : "desce";
+    F("status").textContent = ROT_HUMOR[h];
     F("topN").textContent = `Top ${c.motivos.length}`;
     F("nota").textContent = c.nota;
     card.querySelector(".faixa .anel").setAttribute("aria-label", `${z(c.anel.pct)}% ${c.anel.rotulo.toLowerCase()}, ${c.anel.desc}`);
@@ -573,7 +629,7 @@
         <div><div class="nome">${e.nome}</div><div class="vol">${compacto(e.vol)}</div>
           <div class="var ${classeVar(e.var, c.inverso)}">${seta(e.var)}${pctSinal(e.var)}</div></div>
         ${faisca(e.semente)}
-        <div class="metrica"><b>${z(e.metrica)}</b><span>${e.rotulo}</span></div>
+        ${(he => `<div class="metrica${he ? " h-" + he : ""}"><b>${he ? cara(he, "cara-p") : ""}`)(humorEtapa(e))}${z(e.metrica)}</b><span>${e.rotulo}</span></div>
       </li>`).join("");
 
     const maiorMotivo = c.motivos[0][1];
@@ -616,6 +672,7 @@
       setTimeout(() => {
         contar(F("total"), c.total, 1000, compacto);
         contar(F("variacao"), c.variacao, 1000, pctSinal);
+        contar(F("csat"), c.csat, 1100, v => num(v, 2));
         contar(F("anelPct"), c.anel.pct, 1200, v => z(Math.round(v)) + "%");
       }, reduzMovimento ? 0 : 220);
     }
@@ -666,6 +723,7 @@
     setTimeout(() => {
       contar(F("total"), c.total, 1200, compacto);
       contar(F("variacao"), c.variacao, 1200, pctSinal);
+      contar(F("csat"), c.csat, 1200, v => num(v, 2));
       contar(F("anelPct"), c.anel.pct, 1300, v => z(Math.round(v)) + "%");
     }, reduzMovimento ? 0 : 450);
   });
