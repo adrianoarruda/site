@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* Cópia no GitHub Pages: leva para o domínio oficial */ if (location.hostname.endsWith("github.io")) location.replace("https://www.adrianoarruda.com" + location.pathname.replace(/^\/site/, "") + location.search + location.hash);</script>
+<link rel="canonical" href="https://www.adrianoarruda.com/ideias/jornada-atendimento/v5/">
+<meta name="description" content="Ideia de painel: jornada de atendimento por canal, com menu superior e cards que se abrem ao passar o mouse.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Painel da Jornada de Atendimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+<header class="topo-app">
+  <div class="linha-topo">
+    <div class="barra-1">
+      <a class="marca" href="index.html"><span class="marca-ic"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M7 16v-4M12 16V7M17 16v-7"/></svg></span><span class="marca-txt">Painel da Jornada de Atendimento</span></a>
+      <div class="acoes-topo">
+        <a class="ic-btn" href="alertas.html" aria-label="Alertas"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 1 4 0 7 7 0 0 1 4 6v3a4 4 0 0 0 2 3H4a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6M9 17v1a3 3 0 0 0 6 0v-1"/></svg></a>
+        <div class="usuario"><span class="avatar">AA</span><span class="u-txt"><b>Adriano Arruda</b><small>Analytics</small></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="linha-topo">
+    <nav class="barra-2" aria-label="Navegação principal">
+      <ul class="nav">
+        <li><a class="nav-link ativo" href="index.html" aria-current="page"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"/></svg>Visão geral</a></li>
+        <li class="menu-wrap">
+          <button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>Canais<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown">
+            <li><a class="dd-item" href="canais/app.html">App<small>Autoatendimento digital</small></a></li>
+            <li><a class="dd-item" href="canais/chat.html">Chat<small>Atendimento digital</small></a></li>
+            <li><a class="dd-item" href="canais/voz.html">Voz<small>Atendimento telefônico</small></a></li>
+            <li><a class="dd-item" href="canais/totem.html">Totem<small>Autoatendimento físico</small></a></li>
+            <li><a class="dd-item" href="canais/manifestacoes.html">Manifestações<small>Reclamações formais</small></a></li>
+          </ul>
+        </li>
+        <li class="menu-wrap">
+          <button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="16" r="3"/><path d="m20.2 18.2 1.8 1.8"/></svg>Grupos<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown">
+            <li><a class="dd-item" href="grupos/cartoes.html">Cartões</a></li>
+            <li><a class="dd-item" href="grupos/credito.html">Crédito e empréstimos</a></li>
+            <li><a class="dd-item" href="grupos/pix-pagamentos.html">Pix e pagamentos</a></li>
+            <li><a class="dd-item" href="grupos/conta-acesso.html">Conta e acesso</a></li>
+            <li><a class="dd-item" href="grupos/investimentos.html">Investimentos</a></li>
+            <li><a class="dd-item" href="grupos/atendimento.html">Atendimento</a></li>
+          </ul>
+        </li>
+        <li class="menu-wrap">
+          <button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.1a4 4 0 0 1 0 7.8M21 21v-2a4 4 0 0 0-3-3.9"/></svg>Segmentos<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown">
+            <li><a class="dd-item" href="segmentos/espontaneo.html">Espontâneo<small>Cliente digital nato</small></a></li>
+          </ul>
+        </li>
+      </ul>
+      <span class="periodo-nav"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 11h16"/></svg>Julho de 2026</span>
+    </nav>
+  </div>
+</header>
+
+<div class="pagina">
+  <header class="cabecalho">
+    <div>
+      <h1>Visão geral dos canais</h1>
+      <p>Como o cliente foi atendido em julho: volume, satisfação e principais motivos em cada canal, do app à reclamação formal.</p>
+    </div>
+    <div class="lado">
+      <span class="atalho">Passe o mouse ou use <kbd>←</kbd> <kbd>→</kbd> para trocar de canal</span>
+    </div>
+  </header>
+  <main class="vitrine" id="vitrine" aria-label="Canais de atendimento"></main>
+</div>
+
+<template id="tpl-card">
+  <article class="card" tabindex="0">
+    <div class="compacto" aria-hidden="true">
+      <div class="cab-c">
+        <div class="grupo" data-c="grupo"></div>
+        <h2><span class="icone"></span><span data-c="canal"></span></h2>
+      </div>
+      <div class="c-vol"><strong data-c="total"></strong><small data-c="unidade"></small><span class="var" data-c="variacao"></span></div>
+      <div class="c-met"><small data-c="metNome"></small><strong data-c="metValor"></strong><span class="var" data-c="metVar"></span></div>
+      <div class="c-csat"><b data-c="csat"></b><span>CSAT geral <i data-c="csatVar"></i></span></div>
+      <div class="c-etapas"></div>
+      <div class="c-pe">
+        <div class="c-anel">
+          <div class="anel"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-c="anelPct"></b></div>
+          <div><b data-c="anelRotulo"></b><span data-c="anelDesc"></span></div>
+        </div>
+        <span class="c-abrir"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg></span>
+      </div>
+    </div>
+
+    <div class="completo">
+      <div>
+        <div class="topo"><span class="grupo" data-f="grupo"></span><span class="periodo" data-f="periodo"></span></div>
+        <div class="canal"><h2><span class="icone"></span><span data-f="canal"></span></h2><span data-f="qtdEtapas"></span></div>
+      </div>
+      <div class="corpo">
+        <div>
+          <div class="valores">
+            <div><small data-f="rotuloVolume"></small><strong data-f="total"></strong></div>
+            <div><small>Variação em 30 dias</small><strong data-f="variacao"></strong></div>
+            <div><small><span data-f="metNome"></span><button class="ajuda" type="button" data-f="metAjuda">?</button></small><strong data-f="metValor"></strong></div>
+            <div class="met-var"><small>vs mês anterior</small><strong data-f="metVar"></strong></div>
+          </div>
+          <div class="faixa">
+            <div class="csat"><b data-f="csat"></b><span>CSAT geral <i data-f="csatVar"></i></span></div>
+            <div class="faixa-sec">
+              <div class="anel" role="img"><svg viewBox="0 0 56 56"><circle class="trilha-anel" cx="28" cy="28" r="23"/><circle class="progresso" cx="28" cy="28" r="23" pathLength="1"/></svg><b data-f="anelPct"></b></div>
+              <div class="anel-txt"><b data-f="anelRotulo"></b><span data-f="anelDesc"></span></div>
+            </div>
+          </div>
+        </div>
+        <ul class="etapas"></ul>
+      </div>
+      <div class="motivos">
+        <h3>Principais motivos <span data-f="topN"></span></h3>
+        <ol></ol>
+      </div>
+      <div class="rodape">
+        <p class="nota" data-f="nota"></p>
+        <button class="btn-pri" type="button">Ver jornada do canal</button>
+      </div>
+    </div>
+  </article>
+</template>
+
+<script src="js/app.js"></script>
+</body>
+</html>
