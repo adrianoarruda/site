@@ -529,6 +529,72 @@
     -webkit-mask-image: linear-gradient(225deg, #000 0%, rgba(0,0,0,.15) 36%, transparent 48%, rgba(0,0,0,.15) 60%, #000 100%); mask-image: linear-gradient(225deg, #000 0%, rgba(0,0,0,.15) 36%, transparent 48%, rgba(0,0,0,.15) 60%, #000 100%); }
   html body .hero-bg::after { opacity: 0; }
 </style>
+
+<style id="menu-v5">
+  /* ---------- Menu superior no estilo da v5 dos cards de canais (proposta) ---------- */
+  .topo-app { position: fixed; inset: 0 0 auto; z-index: 50; background: rgba(255,255,255,.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid #e6e6e9; transition: background-color .3s, border-color .3s; font-family: var(--sans); }
+  .linha-topo + .linha-topo { border-top: 1px solid #efefef; transition: border-color .3s; }
+  .barra-1, .barra-2 { max-width: 1320px; margin: 0 auto; }
+  .barra-1 { height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; }
+  .uma .barra-1 { height: 72px; }
+  .marca { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); white-space: nowrap; }
+  .marca .brand { font-size: 24px; transition: color .3s; }
+  .marca-ic { width: 32px; height: 32px; border-radius: 9px; background: #ff3b1f; color: #000; display: grid; place-items: center; font: 800 18px/1 var(--sans); flex: none; }
+  .acoes-topo { display: flex; align-items: center; gap: 8px; }
+  .ic-btn { width: 40px; height: 40px; border-radius: 12px; color: #444; display: grid; place-items: center; transition: background .2s, color .2s; }
+  .ic-btn:hover { background: #f1f1f1; color: #000; }
+  .ic-btn svg { width: 20px; height: 20px; }
+  .topo-app .btn.dark { display: inline-flex; align-items: center; text-decoration: none; font-weight: 500; height: 40px; border-radius: 9999px; font-size: 14px; padding-inline: 18px; background: #ff3b1f; color: #000; }
+  .topo-app .btn.dark:hover { background: #e5301a; }
+
+  .barra-2 { height: 48px; display: flex; align-items: stretch; justify-content: space-between; gap: 12px; padding: 0 12px; }
+  .uma .barra-2 { height: 100%; padding: 0; margin: 0 auto; }
+  .nav { list-style: none; display: flex; align-items: stretch; gap: 2px; margin: 0; padding: 0; }
+  .nav > li { display: flex; }
+  .nav-link, .periodo-nav { font: 500 14px/1 var(--sans); color: #444; display: flex; align-items: center; gap: 8px; padding: 0 12px; text-decoration: none; transition: color .2s; }
+  .nav-link { position: relative; border: 0; background: none; cursor: pointer; }
+  .nav-link .ic, .periodo-nav .ic { width: 18px; height: 18px; color: #8a8a8a; transition: color .2s; }
+  .nav-link .chev { width: 13px; height: 13px; margin-left: -2px; transition: transform .25s cubic-bezier(.22,1,.36,1); }
+  .nav-link::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 2px; border-radius: 2px; background: #ff3b1f; transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+  .nav-link:hover, .menu-wrap:hover > .nav-link, .menu-wrap:focus-within > .nav-link, .periodo-nav:hover { color: #000; }
+  .nav-link.ativo { color: #000; font-weight: 600; }
+  .nav-link.ativo .ic { color: #ff3b1f; }
+  .nav-link.ativo::after, .menu-wrap:hover > .nav-link::after { transform: scaleX(1); }
+  .nav-link:focus-visible, .ic-btn:focus-visible, .dd-item:focus-visible { outline: 2px solid #ff3b1f; outline-offset: -2px; border-radius: 8px; }
+
+  /* Submenus abrem com o mouse ou com o foco do teclado, sem JavaScript */
+  .menu-wrap { position: relative; }
+  .dropdown { position: absolute; top: 100%; left: 0; z-index: 60; list-style: none; margin: 0; min-width: 250px; padding: 6px; background: #fff; border: 1px solid #e6e6e9; border-radius: 14px; box-shadow: 0 16px 36px -14px rgba(0,0,0,.3); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .16s, transform .22s cubic-bezier(.22,1,.36,1), visibility 0s .22s; }
+  .menu-wrap:hover > .dropdown, .menu-wrap:focus-within > .dropdown { opacity: 1; visibility: visible; transform: none; transition: opacity .16s, transform .22s cubic-bezier(.22,1,.36,1), visibility 0s; }
+  .menu-wrap:hover .chev, .menu-wrap:focus-within .chev { transform: rotate(180deg); }
+  .dd-item { display: block; padding: 9px 12px; border-radius: 9px; font: 600 14px/1.3 var(--sans); color: #000; text-decoration: none; transition: background .15s; }
+  .dd-item:hover { background: #f3f3f3; }
+  .dd-item small { display: block; font-size: 12px; font-weight: 500; color: #8a8a8a; margin-top: 2px; }
+
+  /* Sobre o topo preto: barras transparentes, texto claro (o submenu continua branco) */
+  .topo-app.on-black { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; border-color: rgba(255,255,255,.12); }
+  .topo-app.on-black .linha-topo + .linha-topo { border-color: rgba(255,255,255,.12); }
+  .topo-app.on-black .brand { color: #fff; }
+  .topo-app.on-black .nav-link, .topo-app.on-black .periodo-nav { color: #979797; }
+  .topo-app.on-black .nav-link .ic, .topo-app.on-black .periodo-nav .ic { color: #6f6f6f; }
+  .topo-app.on-black .nav-link:hover, .topo-app.on-black .menu-wrap:hover > .nav-link, .topo-app.on-black .nav-link.ativo, .topo-app.on-black .periodo-nav:hover { color: #fff; }
+  .topo-app.on-black .nav-link.ativo .ic { color: #ff3b1f; }
+  .topo-app.on-black .ic-btn { color: #bdbdbd; }
+  .topo-app.on-black .ic-btn:hover { background: #1a1a1a; color: #fff; }
+
+  /* Nas outras páginas (blog): barra preta presa no topo, sem trocar de cor */
+  .topo-app.fixo { position: sticky; top: 0; background: #000; }
+
+  /* A versão de duas barras é mais alta: o texto do topo desce o mesmo tanto */
+  .duas ~ .hero .copy { inset: 140px 0 auto; }
+
+  @media (max-width: 900px) {
+    .barra-1 { padding: 0 16px; }
+    .marca .brand { font-size: 20px; }
+    .duas .linha-topo + .linha-topo, .uma .barra-2 { display: none; }
+    .duas ~ .hero .copy { inset: auto; padding-top: 96px; }
+  }
+</style>
 </head>
 <body>
 <style>
@@ -567,13 +633,7 @@
   @media (max-width: 900px) { .trio.four-up .c, .trio.four-up .c.on { width: auto; height: 400px; } }
 </style>
 
-<nav class="top">
-  <div class="wrap">
-    <a class="logo" href="#"><span class="brand">Adriano Arruda</span></a>
-    <div class="menu"><a href="#areas">Áreas</a><a href="#trajetoria">Trajetória</a><a href="#como">Como trabalho</a><a href="#analises">Análises</a><a href="https://www.adrianoarruda.com/blog/">Blog</a></div>
-    <a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn</a>
-  </div>
-</nav>
+<header class="topo-app uma"><div class="barra-1"><a class="marca" href="#"><span class="marca-ic">A</span><span class="brand">Adriano Arruda</span></a><nav class="barra-2" aria-label="Navegação principal"><ul class="nav"><li><a class="nav-link ativo" href="#" aria-current="page"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"/></svg>Início</a></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Sobre<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="#areas">Áreas<small>Design, desenvolvimento, dados e IA</small></a></li><li><a class="dd-item" href="#trajetoria">Trajetória<small>21 anos, da Catho ao Bradesco</small></a></li><li><a class="dd-item" href="#como">Como trabalho<small>Do dado bruto à decisão</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M4 15l4-5 4 3 6-8"/></svg>Análises<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="#analises">Juro real no Brasil<small>Selic × IPCA, atualizado todo mês</small></a></li><li><a class="dd-item" href="/blog/?tema=An%C3%A1lises">Todas as análises<small>Feitas em Python, com dados públicos</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Blog<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/blog/">Todos os posts</a></li><li><a class="dd-item" href="/blog/?tema=Dados">Dados</a></li><li><a class="dd-item" href="/blog/?tema=IA">IA</a></li><li><a class="dd-item" href="/blog/?tema=Design">Design</a></li><li><a class="dd-item" href="/blog/?tema=Desenvolvimento">Desenvolvimento</a></li></ul></li></ul></nav><div class="acoes-topo"><a class="ic-btn" href="https://github.com/adrianoarruda" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.7s.8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .6 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.3 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg></a><a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn</a></div></div></header>
 
 <!-- HERO: as quatro áreas flutuam soltas e, ao rolar, se juntam num painel só -->
 <section class="hero" id="hero">
@@ -942,7 +1002,7 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
 <script>
   // v3: a navegação fica clara sobre o hero preto e escura sobre as seções brancas
   (function () {
-    const nav = document.querySelector("nav.top"), hero = document.getElementById("hero");
+    const nav = document.querySelector(".topo-app"), hero = document.getElementById("hero");
     const upd = () => nav.classList.toggle("on-black", hero.getBoundingClientRect().bottom > 64);
     addEventListener("scroll", upd, { passive: true }); upd();
   })();
