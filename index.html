@@ -450,7 +450,8 @@
   .core .three span { background: transparent; box-shadow: inset 0 0 0 .8px rgba(255,255,255,.28); border-radius: 99px; height: 34px; font-family: var(--mono); font-size: 10px; text-transform: uppercase; }
   .four b { font-family: var(--cond); font-stretch: 68%; text-transform: uppercase; font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
   .four span { color: #979797; }
-  .four { grid-template-columns: repeat(2, minmax(0, 360px)); gap: 48px; }
+  .four { grid-template-columns: repeat(3, minmax(0, 360px)); gap: 48px; }
+  @media (max-width: 900px) { .four { grid-template-columns: 1fr; gap: 28px; } }
 
   /* Análises */
   .deep { background: #fff; }
@@ -668,7 +669,7 @@
     <div class="copy" id="copy">
       <a class="news" href="#analises"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13 6 8l3 3 5-7" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>Nova análise: dez anos de balanço dos grandes bancos <span class="arr"><i>→</i></span></a>
       <h1 class="display">Design, código<br><span class="dim">e dados num lugar só</span></h1>
-      <p class="sub">Trabalho com dados. Antes, passei por design e desenvolvimento, e hoje uso IA no dia a dia. Junto tudo isso para construir análises bonitas, confiáveis e que as pessoas realmente usam.</p>
+      <p class="sub">Trabalho com dados. Antes, passei por design e desenvolvimento, e hoje uso IA no dia a dia. Junto tudo isso para construir painéis bonitos, confiáveis e que respondem perguntas: em vez de só olhar o gráfico, você pergunta aos dados.</p>
       <div class="ctas"><a class="btn dark yellow" href="#trajetoria">Ver trajetória <span class="arr"><i>→</i></span></a><a class="btn ghost" href="#analises">Ver análises <span class="arr"><i>→</i></span></a></div>
     </div>
 
@@ -737,7 +738,7 @@
     <div class="c"><h3>Design</h3><div class="yrs">desde 2006</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><rect x="30" y="30" width="90" height="70" rx="6"/><path d="M30 46h90"/><circle cx="40" cy="38" r="2"/><circle cx="48" cy="38" r="2"/><rect x="42" y="58" width="30" height="30" rx="3"/><path d="M80 60h28M80 70h20M80 80h24"/><path d="M96 104l14 22 4-10 10-4Z"/></svg></div><p>Comecei como web designer. Ficou o olho para hierarquia, tipografia e para o detalhe que faz uma tela ser fácil de ler.</p><div class="tools"><span>Web design</span><span>UI</span><span>Design de publicidade</span></div></div>
     <div class="c"><h3>Desenvolvimento</h3><div class="yrs">front-end e back-end</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><path d="M44 40 22 62l22 22M90 40l22 22-22 22M76 32 58 92"/><ellipse cx="104" cy="104" rx="24" ry="8"/><path d="M80 104v18c0 4 11 8 24 8s24-4 24-8v-18"/></svg></div><p>Liderei um time de desenvolvimento na Catho. Da tela à API: a interface que funciona e o que roda por trás dela.</p><div class="tools"><span>HTML/CSS</span><span>JavaScript</span><span>React</span><span>APIs</span><span>Cloud Functions</span></div></div>
     <div class="c on"><h3>Dados</h3><div class="yrs">desde 2018 · o meu trabalho hoje</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><path d="M25 115V35M25 115h100"/><path d="M35 100l22-20 18 10 22-30 22-14"/><circle cx="119" cy="46" r="4"/><rect x="38" y="104" width="8" height="11"/><rect x="58" y="96" width="8" height="19"/><rect x="78" y="100" width="8" height="15"/><rect x="98" y="88" width="8" height="27"/></svg></div><p>Digital analytics, BI e insights: coleta, pipelines, modelagem, painéis e testes A/B, do dado bruto à decisão.</p><div class="tools"><span>SQL</span><span>Python</span><span>BigQuery</span><span>Databricks</span><span>Power BI</span><span>GA / GTM</span></div></div>
-    <div class="c"><h3>IA</h3><div class="yrs">no dia a dia</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><path d="M75 25l8 22 22 8-22 8-8 22-8-22-22-8 22-8Z"/><path d="M110 85l4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/><path d="M40 95l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"/></svg></div><p>Agentes, automações, análises que respondem perguntas e dashboards interativos com motion graphics. A IA entra para acelerar o trabalho com dados.</p><div class="tools"><span>Genie Code</span><span>Agents Databricks</span><span>Claude Code</span><span>ChatGPT Codex</span><span>GitHub Copilot</span></div></div>
+    <div class="c"><h3>IA</h3><div class="yrs">no dia a dia</div><div class="art"><svg viewBox="0 0 150 150" fill="none" stroke-width="1.4"><path d="M75 25l8 22 22 8-22 8-8 22-8-22-22-8 22-8Z"/><path d="M110 85l4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/><path d="M40 95l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"/></svg></div><p>Dashboards em que você pergunta aos dados e recebe a resposta com o número e a fonte. Além disso, agentes, automações e painéis interativos com motion graphics.</p><div class="tools"><span>Genie Code</span><span>Agents Databricks</span><span>Claude Code</span><span>ChatGPT Codex</span><span>GitHub Copilot</span></div></div>
   </div>
 </section>
 
@@ -765,7 +766,7 @@
             <span class="when">maio de 2022 – hoje · Osasco</span><h4>Bradesco</h4>
             <div class="role"><div class="rh"><b>Digital Analytics · BI · Insights</b><em>mai 2022 – hoje</em></div>
             <p class="lead-in">Trabalho com os dados do atendimento de um dos maiores bancos do país: entender por onde o cliente passa, onde a experiência quebra e o que fazer antes que o problema vire reclamação.</p>
-            <ul><li>Jornada do cliente entre os canais de atendimento (chat com IA generativa, voz e app), agrupada por perfil de comportamento.</li><li>Métricas de experiência por canal (NPS, CSAT e resolutividade) para mostrar onde cada jornada trava.</li><li>Mapas de jornada visuais e interativos, gerados a partir dos dados e exibidos dentro do Databricks.</li><li>IA aplicada ao atendimento: similaridade semântica para comparar diálogos, com Genie Code e agentes no dia a dia.</li></ul></div>
+            <ul><li>Jornada do cliente entre os canais de atendimento (chat com IA generativa, voz e app), agrupada por perfil de comportamento.</li><li>Métricas de experiência por canal (NPS, CSAT e resolutividade) para mostrar onde cada jornada trava.</li><li>Mapas de jornada visuais e interativos, gerados a partir dos dados e exibidos dentro do Databricks.</li><li>IA aplicada ao atendimento: similaridade semântica para comparar diálogos, com Genie Code e agentes no dia a dia.</li><li>Painéis em que o time faz perguntas sobre os dados em linguagem natural, com Genie e agentes no Databricks.</li></ul></div>
             <div class="chipsrow"><span>Databricks</span><span>SQL</span><span>Python</span><span>AI Functions</span><span>Genie Code</span><span>Jornada do cliente</span><span>NPS · CSAT</span></div></div></div>
           <div><div class="tl">
             <span class="when">maio de 2021 – abril de 2022 · cliente Santander</span><h4>MATH</h4>
@@ -801,7 +802,7 @@
           <div><div class="tl">
             <span class="when">2024 – hoje</span><h4>Dados com IA</h4>
             <div class="roles"><span><b>IA aplicada a dados</b><em>no dia a dia</em></span></div>
-            <ul><li>Agentes e rotinas automáticas que fazem coleta, triagem e relatórios sozinhos.</li><li>Análises públicas em Python, como a de juro real deste site.</li><li>No Databricks, Genie Code e agentes para explorar dados, escrever SQL e montar pipelines.</li><li>Claude Code, ChatGPT Codex e GitHub Copilot para programar e automatizar.</li><li>Este site: design, Next.js, Python e IA trabalhando juntos.</li></ul>
+            <ul><li>Agentes e rotinas automáticas que fazem coleta, triagem e relatórios sozinhos.</li><li>Análises públicas em Python, como a de juro real e a dos balanços dos bancos deste site.</li><li>Painéis com "Pergunte aos dados": a pergunta vira resposta com o número e a fonte.</li><li>No Databricks, Genie Code e agentes para explorar dados, escrever SQL e montar pipelines.</li><li>Claude Code, ChatGPT Codex e GitHub Copilot para programar e automatizar.</li><li>Este site: design, HTML e JavaScript, Python e IA trabalhando juntos.</li></ul>
             <div class="chipsrow"><span>Genie Code</span><span>Agents Databricks</span><span>Claude Code</span><span>ChatGPT Codex</span><span>GitHub Copilot</span></div></div></div>
         </div>
       </div>
@@ -847,7 +848,7 @@
         <button role="tab" aria-selected="true"><b>Coleta</b><span>Data layer, tags e eventos bem definidos desde a origem.</span><i></i></button>
         <button role="tab" aria-selected="false"><b>Engenharia</b><span>Pipelines em BigQuery, Databricks e Python, com dado confiável.</span><i></i></button>
         <button role="tab" aria-selected="false"><b>Visualização</b><span>Painéis com hierarquia de designer: o que importa aparece primeiro.</span><i></i></button>
-        <button role="tab" aria-selected="false"><b>IA</b><span>Agentes e automações que respondem perguntas sobre os dados.</span><i></i></button>
+        <button role="tab" aria-selected="false"><b>IA</b><span>Dashboards que respondem perguntas, agentes e automações sobre os dados.</span><i></i></button>
       </div>
       <div class="diagram">
         <svg class="wires" viewBox="0 0 800 470" preserveAspectRatio="none" aria-hidden="true">
@@ -861,12 +862,13 @@
         </svg>
         <div class="src"><span><i style="background:#4a8af4"></i>BigQuery</span><span><i style="background:#ff3621"></i>Databricks</span><span><i style="background:#fbbc04"></i>Google Ads</span><span><i style="background:#0866ff"></i>Meta Ads</span><span><i style="background:#3776ab"></i>APIs públicas</span><span><i style="background:#9aa0a6"></i>Planilhas</span></div>
         <div class="core"><b>Modelo de dados</b><span>Python · SQL</span><div class="model">Métricas confiáveis</div><div class="three"><span>Tratar</span><span>Validar</span><span>Documentar</span></div></div>
-        <div class="outs"><b style="font-weight:500;padding:0 6px 4px">Entregas</b><span>▢ Painéis</span><span>▢ Relatórios</span><span>▢ Testes A/B</span><span>▢ Agentes de IA</span><span>▢ Sites e apps</span></div>
+        <div class="outs"><b style="font-weight:500;padding:0 6px 4px">Entregas</b><span>▢ Painéis</span><span>▢ Pergunte aos dados</span><span>▢ Relatórios</span><span>▢ Testes A/B</span><span>▢ Agentes de IA</span><span>▢ Sites e apps</span></div>
       </div>
     </div>
     <div class="four reveal">
       <div><b>Testes A/B e CRO</b><span>Decisão baseada em experimento, não em opinião.</span></div>
       <div><b>Storytelling com dados</b><span>O número certo, na ordem certa, para a pessoa certa.</span></div>
+      <div><b>Pergunte aos dados</b><span>O painel responde à pergunta com o número e o trimestre, sem precisar procurar no gráfico.</span></div>
     </div>
   </div>
 </section>
