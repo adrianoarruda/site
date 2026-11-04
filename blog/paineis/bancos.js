@@ -56,6 +56,7 @@
     catch (e) { el.innerHTML = `<p class="vazio">Não consegui carregar os dados agora.</p>`; return; }
     const T = d.trimestres, n = T.length, ult = T[n - 1];
     const INICIAL = { balanco: "roe_12m", clientes: "clientes_mi", acoes: "retorno_total", ano: "lucro_liquido_bi" };
+    // Na aba Balanço, a visão do ano troca para os valores do trimestre (lucro, PDD...); nas outras, os mesmos indicadores
     // ano vigente (o do último trimestre com dado) e o ano anterior, para comparar o mesmo trimestre
     const AA = ult.slice(2), AANT = String(+AA - 1).padStart(2, "0");
     const QS = [1, 2, 3, 4].map(q => ({ q, rot: `${q}T${AA}`, j: T.indexOf(`${q}T${AA}`), jAnt: T.indexOf(`${q}T${AANT}`) }));
@@ -86,7 +87,7 @@
 
     const sel = el.querySelector("select"), svg = el.querySelector("svg"), tip = el.querySelector(".tip");
     const tabela = () => {
-      const ano = abaEf() === "ano", qs = QS.filter(q => q.j >= 0);
+      const ano = visao === "ano", qs = QS.filter(q => q.j >= 0);
       el.querySelector(".pb-raio").textContent = ano ? `20${AA} trimestre a trimestre · clique numa linha para ver no gráfico` : `Raio-X do ${ult} · clique numa linha para ver a história`;
       el.querySelector(".pb-tab thead").innerHTML = ano
         ? `<tr><th rowspan="2">Indicador</th>${d.bancos.map(b => `<th colspan="${qs.length}"><i style="background:${CORES[b]}"></i>${esc(b)}</th>`).join("")}</tr><tr>${d.bancos.map(() => qs.map(q => `<th>${q.rot}</th>`).join("")).join("")}</tr>`
@@ -97,7 +98,7 @@
           ano ? qs.map(q => `<td>${fmt(d.series[b][i.k][q.j], i.un)}</td>`).join("") : `<td>${fmt(d.series[b][i.k][n - 1], i.un)}</td>`).join("")}</tr>`).join("")).join("");
     };
     const topo = () => {
-      const i = IND(), ano = abaEf() === "ano";
+      const i = IND(), ano = visao === "ano";
       el.querySelector(".oque").textContent = i.oque; el.querySelector(".ler").textContent = i.ler;
       const qu = QS.filter(q => q.j >= 0).pop();
       el.querySelector(".pb-kpis").innerHTML = d.bancos.map(b => { const s = d.series[b][atual];
@@ -148,7 +149,7 @@
       svg.onmouseleave = () => { tip.hidden = true; };
     };
     const desenha = () => {
-      if (abaEf() === "ano") return desenhaAno();
+      if (visao === "ano") return desenhaAno();
       const i = IND(), q = Math.min(janela, n), ini = n - q;
       const W = Math.max(320, Math.round(svg.parentElement.clientWidth || 900)), H = W < 600 ? 260 : 340;
       const m = { t: 18, r: W < 600 ? 12 : 118, b: 28, l: 52 };
@@ -199,25 +200,22 @@
       sel.innerHTML = gruposAba().map(g => `<optgroup label="${esc(g)}">${doAba().filter(i => i.grupo === g).map(i => `<option value="${i.k}">${esc(i.nome)}</option>`).join("")}</optgroup>`).join("");
       el.querySelectorAll(".pb-abas button").forEach(b => b.setAttribute("aria-selected", b.dataset.aba === aba));
       el.querySelectorAll(".pb-so-balanco").forEach(e => { e.hidden = aba !== "balanco"; });
-      el.querySelector(".per [data-ano]").hidden = aba !== "balanco";
-      el.querySelectorAll(".per button").forEach(z => z.setAttribute("aria-pressed", abaEf() === "ano" ? !!z.dataset.ano : (!z.dataset.ano && +z.dataset.n === janela)));
-      el.querySelector(".pb-traco").hidden = abaEf() !== "ano";
+      el.querySelectorAll(".per button").forEach(z => z.setAttribute("aria-pressed", visao === "ano" ? !!z.dataset.ano : (!z.dataset.ano && +z.dataset.n === janela)));
+      el.querySelector(".pb-traco").hidden = visao !== "ano";
       el.querySelector(".pb-aviso").hidden = aba !== "acoes";
       el.querySelector(".pb-fonte").textContent = "Fonte: " + d.fontes[aba] + ".";
     };
     const escolhe = kk => { atual = kk; sel.value = kk; topo(); tabela(); desenha(); };
     el.querySelector(".pb-abas").addEventListener("click", e => {
       const b = e.target.closest("button[data-aba]"); if (!b || b.dataset.aba === aba) return;
-      aba = b.dataset.aba; if (aba !== "balanco") visao = "historico"; montaAba(); escolhe(INICIAL[abaEf()]);
+      aba = b.dataset.aba; montaAba(); escolhe(INICIAL[abaEf()]);
     });
     sel.addEventListener("change", () => escolhe(sel.value));
     el.querySelector(".pb-tab").addEventListener("click", e => { const r = e.target.closest("tr.ind"); if (!r) return; escolhe(r.dataset.k); svg.scrollIntoView({ behavior: "smooth", block: "center" }); });
     el.querySelector(".per").addEventListener("click", e => {
       const b = e.target.closest("button"); if (!b) return;
-      const antes = abaEf();
       if (b.dataset.ano) visao = "ano"; else { visao = "historico"; janela = +b.dataset.n; }
-      if (abaEf() !== antes) { montaAba(); escolhe(doAba().some(i => i.k === atual) ? atual : INICIAL[abaEf()]); }
-      else { montaAba(); desenha(); }
+      montaAba(); escolhe(doAba().some(i => i.k === atual) ? atual : INICIAL[abaEf()]);
     });
     addEventListener("resize", desenha);
     montaAba(); escolhe(atual);
