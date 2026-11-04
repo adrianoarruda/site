@@ -327,6 +327,14 @@ const PAINEIS = {
       atual = +b.dataset.n; desenha(atual);
     });
   },
+  // Balanços dos grandes bancos: dados/bancos_balancos.json (analises/bancos/); o painel mora em paineis/bancos.js
+  "bancos": el => new Promise(ok => {
+    const roda = () => { window.painelBancos(el); ok(); };
+    if (window.painelBancos) return roda();
+    const s = document.createElement("script"); s.src = "/blog/paineis/bancos.js"; s.onload = roda;
+    s.onerror = () => { el.innerHTML = `<p class="vazio">Não consegui carregar o painel agora.</p>`; ok(); };
+    document.head.appendChild(s);
+  }),
 };
 
 function slugAtual() {
