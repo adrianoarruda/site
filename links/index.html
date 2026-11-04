@@ -90,6 +90,8 @@
   .novo .btn.soft { background: #1a1a1a; color: #fff; }
   .novo .btn.soft:hover { background: #262626; }
   .novo .erro { color: #ff8a73; }
+  .novo .dica { font-size: 12px; color: #6f6f6f; }
+  .fonte { justify-self: start; font-size: 10.5px; color: #fff; background: var(--blue, #4686ac); border-radius: 9999px; padding: 3px 9px; }
 
   /* Lista por categoria */
   .cat { margin-bottom: 44px; }
@@ -172,6 +174,7 @@
           <label class="f"><span>Categoria</span><input type="text" id="n-cat" list="cats" maxlength="60" placeholder="Design, Dashboards, IA…"></label>
           <datalist id="cats"></datalist>
           <label class="f full"><span>Para que serve</span><textarea id="n-d" maxlength="400"></textarea></label>
+          <label class="f full"><span>Feed (opcional): para o blog ler este site</span><input type="url" id="n-feed" maxlength="2000" placeholder="https://…/feed ou …/rss"><small class="dica">Com o feed, o site entra nas fontes da rotina de rascunhos de segunda. Costuma ser o endereço do site + /feed, /rss ou /rss.xml.</small></label>
         </div>
         <div class="acoes">
           <button class="btn green" id="salvar" type="submit">Salvar link</button>
@@ -232,6 +235,7 @@ function desenha() {
         <article class="card" data-busca="${esc((l.t + " " + l.url + " " + l.cat + " " + l.d).toLowerCase())}">
           <a class="t" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.t)}</a>
           <span class="host mono">${esc(host(l.url))}</span>
+          ${l.feed ? `<span class="fonte mono" title="${esc(l.feed)}">Fonte do blog</span>` : ""}
           ${l.d ? `<p>${esc(l.d)}</p>` : ""}
           <div class="pe"><span class="mono">salvo em ${esc(l.add)}</span><button class="rm" type="button" data-id="${esc(l.id)}" data-t="${esc(l.t)}">Remover</button></div>
         </article>`).join("")}</div>
@@ -294,7 +298,7 @@ $("novo").addEventListener("submit", async e => {
   $("salvar").disabled = true;
   $("novo-erro").textContent = "";
   try {
-    const { link } = await api("POST", { url: $("n-url").value, t: $("n-t").value, cat: $("n-cat").value, d: $("n-d").value });
+    const { link } = await api("POST", { url: $("n-url").value, t: $("n-t").value, cat: $("n-cat").value, d: $("n-d").value, feed: $("n-feed").value.trim() });
     links.push(link);
     $("novo").reset();
     $("novo").hidden = true;
