@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<script>/* Cópia no GitHub Pages: leva para o domínio oficial */ if (location.hostname.endsWith("github.io")) location.replace("https://www.adrianoarruda.com" + location.pathname.replace(/^\/site/, "") + location.search + location.hash);</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<title>Currículo · Adriano Arruda</title>
+<link rel="canonical" href="https://www.adrianoarruda.com/curriculo/">
+<meta name="description" content="Currículo de Adriano Arruda: dados e IA aplicada, com passagem por design, desenvolvimento, growth e digital analytics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
+<style>
+  /* Mesma identidade do site: preto e branco, laranja de destaque e azul como cor alternativa */
+  :root {
+    --ink: #000; --slate: #8a8a8a; --soft: #5c5c5c; --line: #e5e5e5; --card: #f3f3f3; --paper: #fff;
+    --yellow: #ff3b1f; --blue: #4686ac;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, Consolas, monospace;
+    --cond: "Archivo", "Arial Narrow", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font: 15px/1.5 var(--sans); letter-spacing: -.005em; color: var(--ink); background: #ececec; }
+  a { color: inherit; }
+  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; }
+  .cond { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; }
+  .brand { color: #fff; text-decoration: none; font-size: 26px; letter-spacing: -.02em; }
+
+  /* Barra acima da folha: título e botão de baixar */
+  .acoes { max-width: 1000px; margin: 40px auto 18px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .acoes h1 { margin: 0; font-size: 44px; line-height: .9; letter-spacing: -.02em; }
+  .acoes p { margin: 6px 0 0; color: var(--soft); font-size: 14px; }
+  .baixar { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 20px; border: 0; border-radius: 9999px; background: var(--yellow); color: #000; font: 500 14px var(--sans); cursor: pointer; white-space: nowrap; }
+  .baixar:hover { background: #e5301a; }
+  .baixar svg { width: 17px; height: 17px; }
+
+  /* A folha (proporção de A4) */
+  .folha { max-width: 1000px; margin: 0 auto 64px; background: var(--paper); display: grid; grid-template-columns: 330px 1fr; box-shadow: 0 30px 60px -30px rgba(0,0,0,.35); border-radius: 6px; overflow: hidden; }
+  .lado { background: #0b0b0b; color: #fff; padding: 40px 30px; display: grid; gap: 30px; align-content: start; }
+  .principal { padding: 40px 44px; display: grid; gap: 26px; align-content: start; }
+
+  .mono-a { width: 120px; height: 120px; border-radius: 28px; background: var(--yellow); color: #000; display: grid; place-items: center; font: 800 64px/1 var(--sans); margin: 0 auto 4px; }
+  .lado h2, .principal h2 { margin: 0 0 12px; padding-bottom: 8px; font-size: 13px; font-weight: 500; border-bottom: 1px solid rgba(255,255,255,.22); }
+  .principal h2 { border-bottom-color: var(--line); color: #000; }
+  .lado h2 { color: #fff; }
+
+  .destaque { display: grid; grid-template-columns: 22px 1fr; gap: 4px 10px; margin-bottom: 14px; }
+  .destaque svg { width: 18px; height: 18px; color: var(--yellow); margin-top: 2px; }
+  .destaque b { font-size: 14.5px; font-weight: 600; }
+  .destaque p { grid-column: 2; margin: 0; font-size: 13px; line-height: 1.45; color: #bdbdbd; }
+
+  .item-lado { margin-bottom: 12px; }
+  .item-lado b { display: block; font-size: 14px; font-weight: 600; }
+  .item-lado span { display: block; font-size: 13px; color: #bdbdbd; }
+  .item-lado small { display: block; font: 400 11px/1.6 var(--mono); color: #8a8a8a; letter-spacing: .04em; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .tags span { font-size: 12px; padding: 4px 9px; border-radius: 9999px; background: #1f1f1f; color: #e5e5e5; }
+  .tags-titulo { font: 400 11px/1 var(--mono); color: #8a8a8a; letter-spacing: .05em; text-transform: uppercase; margin: 4px 0 8px; }
+
+  .nome { margin: 0; font-size: 56px; line-height: .9; letter-spacing: -.02em; }
+  .cargo { margin: 10px 0 0; font-size: 17px; font-weight: 500; color: var(--yellow); }
+  .contato { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; font-size: 13.5px; color: var(--soft); }
+  .contato a, .contato span { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+  .contato a:hover { color: #000; text-decoration: underline; }
+  .contato svg { width: 15px; height: 15px; color: var(--slate); }
+  .resumo { margin: 0; font-size: 14.5px; line-height: 1.6; color: #222; }
+
+  .exp { margin-bottom: 18px; }
+  .exp:last-child { margin-bottom: 0; }
+  .exp-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .exp-topo b { font-size: 16px; font-weight: 600; }
+  .exp-topo small, .exp-sub small { font: 400 11.5px/1.4 var(--mono); color: var(--slate); letter-spacing: .03em; white-space: nowrap; }
+  .exp-sub { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 2px; }
+  .exp-sub span { font-size: 14px; font-weight: 500; color: var(--blue); }
+  .exp ul { margin: 8px 0 0; padding-left: 18px; font-size: 13.5px; line-height: 1.5; color: #222; }
+  .exp li { margin-bottom: 3px; }
+  .exp li::marker { color: var(--yellow); }
+  .fases { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 13.5px; color: #222; }
+  .fases li { display: grid; grid-template-columns: 112px 1fr; gap: 10px; }
+  .fases small { font: 400 11.5px/1.6 var(--mono); color: var(--slate); }
+
+  @media screen and (max-width: 860px) {
+    .acoes { flex-direction: column; align-items: flex-start; margin-top: 28px; }
+    .folha { grid-template-columns: 1fr; border-radius: 0; }
+    .principal { order: -1; padding: 28px 20px; } .lado { padding: 28px 20px; }
+    .nome { font-size: 44px; }
+    .exp-topo, .exp-sub { flex-direction: column; gap: 2px; }
+    .fases li { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  /* Impressão / PDF: só a folha, em A4 */
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 11px; line-height: 1.4; }
+    .topo-app, .acoes { display: none !important; }
+    .folha { max-width: none; margin: 0; box-shadow: none; border-radius: 0; min-height: 297mm; grid-template-columns: 68mm 1fr; }
+    .lado { padding: 7mm 7mm; gap: 3.2mm; } .principal { padding: 7mm 9mm; gap: 3mm; }
+    .exp, .destaque, .item-lado, .fases li { break-inside: avoid; }
+    .mono-a { width: 52px; height: 52px; font-size: 28px; border-radius: 13px; }
+    .lado h2, .principal h2 { margin-bottom: 7px; padding-bottom: 5px; font-size: 10.5px; }
+    .nome { font-size: 34px; } .cargo { font-size: 13px; margin-top: 6px; } .contato { font-size: 10.5px; margin-top: 8px; gap: 4px 12px; }
+    .resumo { font-size: 10px; line-height: 1.45; }
+    .exp { margin-bottom: 7px; } .exp-topo b { font-size: 12px; } .exp-sub span { font-size: 11px; }
+    .exp-topo small, .exp-sub small, .fases small { font-size: 9px; }
+    .exp ul, .fases { font-size: 9.8px; line-height: 1.36; margin-top: 4px; } .exp li { margin-bottom: 1px; } .fases { gap: 3px; } .fases li { grid-template-columns: 70px 1fr; }
+    .destaque { margin-bottom: 6px; } .destaque b { font-size: 11.5px; } .destaque p { font-size: 9.6px; line-height: 1.35; } .destaque svg { width: 14px; height: 14px; }
+    .item-lado { margin-bottom: 5px; } .item-lado b { font-size: 11px; } .item-lado span { font-size: 10px; } .item-lado small { font-size: 9px; }
+    .tags { gap: 4px; margin-bottom: 7px; } .tags span { font-size: 9.5px; padding: 2px 7px; } .tags-titulo { font-size: 9px; margin: 2px 0 5px; }
+  }
+</style>
+
+<style id="menu-v5">
+  /* ---------- Menu superior no estilo da v5 dos cards de canais (proposta) ---------- */
+  .topo-app { position: fixed; inset: 0 0 auto; z-index: 50; background: rgba(255,255,255,.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid #e6e6e9; transition: background-color .3s, border-color .3s; font-family: var(--sans); }
+  .linha-topo + .linha-topo { border-top: 1px solid #efefef; transition: border-color .3s; }
+  .barra-1, .barra-2 { max-width: 1320px; margin: 0 auto; }
+  .barra-1 { height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; }
+  .uma .barra-1 { height: 72px; }
+  .marca { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); white-space: nowrap; }
+  .marca .brand { font-size: 24px; transition: color .3s; }
+  .marca-ic { width: 32px; height: 32px; border-radius: 9px; background: #ff3b1f; color: #000; display: grid; place-items: center; font: 800 18px/1 var(--sans); flex: none; }
+  .acoes-topo { display: flex; align-items: center; gap: 8px; }
+  .ic-btn { width: 40px; height: 40px; border-radius: 12px; color: #444; display: grid; place-items: center; transition: background .2s, color .2s; }
+  .ic-btn:hover { background: #f1f1f1; color: #000; }
+  .ic-btn svg { width: 20px; height: 20px; }
+  .topo-app .btn.dark { display: inline-flex; align-items: center; text-decoration: none; font-weight: 500; height: 40px; border-radius: 9999px; font-size: 14px; padding-inline: 18px; background: #ff3b1f; color: #000; }
+  .topo-app .btn.dark:hover { background: #e5301a; }
+
+  .barra-2 { height: 48px; display: flex; align-items: stretch; justify-content: space-between; gap: 12px; padding: 0 12px; }
+  .uma .barra-2 { height: 100%; padding: 0; margin: 0 auto; }
+  .nav { list-style: none; display: flex; align-items: stretch; gap: 2px; margin: 0; padding: 0; }
+  .nav > li { display: flex; }
+  .nav-link, .periodo-nav { font: 500 14px/1 var(--sans); color: #444; display: flex; align-items: center; gap: 8px; padding: 0 12px; text-decoration: none; transition: color .2s; }
+  .nav-link { position: relative; border: 0; background: none; cursor: pointer; }
+  .nav-link .ic, .periodo-nav .ic { width: 18px; height: 18px; color: #8a8a8a; transition: color .2s; }
+  .nav-link .chev { width: 13px; height: 13px; margin-left: -2px; transition: transform .25s cubic-bezier(.22,1,.36,1); }
+  .nav-link::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 2px; border-radius: 2px; background: #ff3b1f; transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+  .nav-link:hover, .menu-wrap:hover > .nav-link, .menu-wrap:focus-within > .nav-link, .periodo-nav:hover { color: #000; }
+  .nav-link.ativo { color: #000; font-weight: 600; }
+  .nav-link.ativo .ic { color: #ff3b1f; }
+  .nav-link.ativo::after, .menu-wrap:hover > .nav-link::after { transform: scaleX(1); }
+  .nav-link:focus-visible, .ic-btn:focus-visible, .dd-item:focus-visible { outline: 2px solid #ff3b1f; outline-offset: -2px; border-radius: 8px; }
+
+  /* Submenus abrem com o mouse ou com o foco do teclado, sem JavaScript */
+  .menu-wrap { position: relative; }
+  .dropdown { position: absolute; top: 100%; left: 0; z-index: 60; list-style: none; margin: 0; min-width: 250px; padding: 6px; background: #fff; border: 1px solid #e6e6e9; border-radius: 14px; box-shadow: 0 16px 36px -14px rgba(0,0,0,.3); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .16s, transform .22s cubic-bezier(.22,1,.36,1), visibility 0s .22s; }
+  .menu-wrap:hover > .dropdown, .menu-wrap:focus-within > .dropdown { opacity: 1; visibility: visible; transform: none; transition: opacity .16s, transform .22s cubic-bezier(.22,1,.36,1), visibility 0s; }
+  .menu-wrap:hover .chev, .menu-wrap:focus-within .chev { transform: rotate(180deg); }
+  .dd-item { display: block; padding: 9px 12px; border-radius: 9px; font: 600 14px/1.3 var(--sans); color: #000; text-decoration: none; transition: background .15s; }
+  .dd-item:hover { background: #f3f3f3; }
+  .dd-item small { display: block; font-size: 12px; font-weight: 500; color: #8a8a8a; margin-top: 2px; }
+
+  /* Sobre o topo preto: barras transparentes, texto claro (o submenu continua branco) */
+  .topo-app.on-black { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; border-color: rgba(255,255,255,.12); }
+  .topo-app.on-black .linha-topo + .linha-topo { border-color: rgba(255,255,255,.12); }
+  .topo-app.on-black .brand { color: #fff; }
+  .topo-app.on-black .nav-link, .topo-app.on-black .periodo-nav { color: #979797; }
+  .topo-app.on-black .nav-link .ic, .topo-app.on-black .periodo-nav .ic { color: #6f6f6f; }
+  .topo-app.on-black .nav-link:hover, .topo-app.on-black .menu-wrap:hover > .nav-link, .topo-app.on-black .nav-link.ativo, .topo-app.on-black .periodo-nav:hover { color: #fff; }
+  .topo-app.on-black .nav-link.ativo .ic { color: #ff3b1f; }
+  .topo-app.on-black .ic-btn { color: #bdbdbd; }
+  .topo-app.on-black .ic-btn:hover { background: #1a1a1a; color: #fff; }
+
+  /* Nas outras páginas (blog): barra preta presa no topo, sem trocar de cor */
+  .topo-app.fixo { position: sticky; top: 0; background: #000; }
+
+  /* A versão de duas barras é mais alta: o texto do topo desce o mesmo tanto */
+  .duas ~ .hero .copy { inset: 140px 0 auto; }
+
+  @media (max-width: 900px) {
+    .barra-1 { padding: 0 16px; }
+    .marca .brand { font-size: 20px; }
+    .duas .linha-topo + .linha-topo, .uma .barra-2 { display: none; }
+    .duas ~ .hero .copy { inset: auto; padding-top: 96px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topo-app uma fixo on-black"><div class="barra-1"><a class="marca" href="/"><span class="marca-ic">A</span><span class="brand cond">Adriano Arruda</span></a><nav class="barra-2" aria-label="Navegação principal"><ul class="nav"><li><a class="nav-link" href="/"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"/></svg>Início</a></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Sobre<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/#areas">Áreas<small>Design, desenvolvimento, dados e IA</small></a></li><li><a class="dd-item" href="/#trajetoria">Trajetória<small>21 anos, da Catho ao Bradesco</small></a></li><li><a class="dd-item" href="/#como">Como trabalho<small>Do dado bruto à decisão</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M4 15l4-5 4 3 6-8"/></svg>Análises<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/#analises">Juro real no Brasil<small>Selic × IPCA, atualizado todo mês</small></a></li><li><a class="dd-item" href="/blog/?tema=An%C3%A1lises">Todas as análises<small>Feitas em Python, com dados públicos</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Blog<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/blog/">Todos os posts</a></li><li><a class="dd-item" href="/blog/?tema=Dados">Dados</a></li><li><a class="dd-item" href="/blog/?tema=IA">IA</a></li><li><a class="dd-item" href="/blog/?tema=Design">Design</a></li><li><a class="dd-item" href="/blog/?tema=Desenvolvimento">Desenvolvimento</a></li></ul></li><li><a class="nav-link ativo" href="/curriculo/" aria-current="page"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="9" r="2.5"/><path d="M8.5 15.5a3.5 3.5 0 0 1 7 0M9 18.5h6"/></svg>Currículo</a></li></ul></nav><div class="acoes-topo"><a class="ic-btn" href="https://github.com/adrianoarruda" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.7s.8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .6 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.3 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg></a><a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn</a></div></div></header>
+
+<div class="acoes">
+  <div><h1 class="cond">Currículo</h1><p>Atualizado em novembro de 2026.</p></div>
+  <button class="baixar" type="button" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Baixar em PDF</button>
+</div>
+
+<main class="folha">
+  <aside class="lado">
+    <div class="mono-a" aria-hidden="true">A</div>
+
+    <section>
+      <h2 class="mono">Destaques</h2>
+      <div class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h4l3-8 4 16 3-8h2"/></svg><b>IA aplicada ao atendimento</b><p>Jornada do cliente entre chat com IA generativa, voz e app, com similaridade semântica para comparar diálogos.</p></div>
+      <div class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg><b>Método de experimentos</b><p>Na Catho, transformou a agência interna em time de growth, com experimentos em aquisição, produto e atendimento.</p></div>
+      <div class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M4 15l4-5 4 3 6-8"/></svg><b>Gerador de currículo</b><p>Produto de aquisição da Catho: mais de 10 mil leads em 3 meses.</p></div>
+      <div class="destaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg><b>Dados no Google Cloud</b><p>Pipelines de engajamento digital e de mídia para o Santander, com BigQuery, Cloud Functions e Python.</p></div>
+    </section>
+
+    <section>
+      <h2 class="mono">Formação</h2>
+      <div class="item-lado"><b>Pós-graduação, Gestão e Estratégia em Comércio Eletrônico</b><span>BSP – Business School São Paulo</span><small>2014 – 2015</small></div>
+      <div class="item-lado"><b>Graduação, Design de Publicidade</b><span>Escola Panamericana de Arte e Design</span><small>2005 – 2007</small></div>
+      <div class="item-lado"><b>Propaganda e Marketing</b><span>Universidade Paulista</span><small>2001 – 2004</small></div>
+    </section>
+
+    <section>
+      <h2 class="mono">Certificações</h2>
+      <div class="item-lado"><b>Ciência de Dados</b><span>USP/Esalq</span></div>
+      <div class="item-lado"><b>CSPO, Certified Scrum Product Owner</b><span>Adaptworks · 2014</span></div>
+      <div class="item-lado"><b>Google Ads</b><span>Google · 2015</span></div>
+      <div class="item-lado"><b>IBM Watson Commerce</b><span>IBM · 2018</span></div>
+    </section>
+
+    <section>
+      <h2 class="mono">Competências</h2>
+      <p class="tags-titulo">IA</p>
+      <div class="tags"><span>IA generativa</span><span>Agentes</span><span>LLMs</span><span>Genie Code</span><span>AI Functions</span><span>Claude Code</span><span>GitHub Copilot</span></div>
+      <p class="tags-titulo">Dados</p>
+      <div class="tags"><span>Databricks</span><span>SQL</span><span>Python</span><span>BigQuery</span><span>GCP</span><span>Power BI</span><span>ETL</span></div>
+      <p class="tags-titulo">Analytics e experiência</p>
+      <div class="tags"><span>Jornada do cliente</span><span>NPS · CSAT</span><span>Teste A/B</span><span>CRO</span><span>GA4</span><span>GTM</span></div>
+      <p class="tags-titulo">Antes dos dados</p>
+      <div class="tags"><span>Growth</span><span>UX</span><span>Web design</span><span>Front-end</span><span>Liderança</span></div>
+    </section>
+  </aside>
+
+  <div class="principal">
+    <header>
+      <h1 class="nome cond">Adriano Arruda</h1>
+      <p class="cargo">Dados & IA aplicada | Jornada do cliente | Databricks · SQL · Python</p>
+      <div class="contato">
+        <a href="https://www.adrianoarruda.com/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>adrianoarruda.com</a>
+        <a href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 11v5M8 8v.01M12 16v-5M16 16v-3a2 2 0 0 0-4 0"/></svg>linkedin.com/in/adrianoarruda</a>
+        <a href="https://github.com/adrianoarruda" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>github.com/adrianoarruda</a>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>São Paulo, SP</span>
+      </div>
+    </header>
+
+    <section>
+      <h2 class="mono">Resumo</h2>
+      <p class="resumo">Trabalho com dados e uso IA no dia a dia. Antes, passei por design e desenvolvimento. São 21 anos de mercado, 13 deles na Catho, de web designer a coordenador de growth, com CRO e digital analytics na Jüssi e engenharia de dados no Google Cloud para o Santander. Hoje, no Bradesco, cuido dos dados do atendimento: entender por onde o cliente passa, onde a experiência quebra e o que fazer antes que o problema vire reclamação. Junto design, código, dados e IA para construir análises bonitas, confiáveis e que as pessoas realmente usam.</p>
+    </section>
+
+    <section>
+      <h2 class="mono">Experiência</h2>
+
+      <div class="exp">
+        <div class="exp-topo"><b>Digital Analytics | BI | Insights · Dados do Atendimento & IA</b><small>nov 2025 – hoje</small></div>
+        <div class="exp-sub"><span>Bradesco</span><small>Osasco, SP</small></div>
+        <ul>
+          <li>Jornada do cliente entre os canais de atendimento (chat com IA generativa, voz e app), agrupada por perfil de comportamento.</li>
+          <li>Métricas de experiência por canal (NPS, CSAT e resolutividade) para mostrar onde cada jornada trava.</li>
+          <li>Mapas de jornada visuais e interativos, gerados a partir dos dados e exibidos dentro do Databricks.</li>
+          <li>IA aplicada ao atendimento: similaridade semântica para comparar diálogos, com Genie Code e agentes no dia a dia.</li>
+        </ul>
+      </div>
+
+      <div class="exp">
+        <div class="exp-topo"><b>Digital Analytics | BI | Insights · Jornada do App Bradesco</b><small>mai 2022 – out 2025</small></div>
+        <div class="exp-sub"><span>Bradesco</span><small>Osasco, SP</small></div>
+        <ul>
+          <li>Dados da jornada do cliente no App Bradesco: como as pessoas usam o app, onde travam e o que melhora a experiência.</li>
+        </ul>
+      </div>
+
+      <div class="exp">
+        <div class="exp-topo"><b>Digital Analytics</b><small>mai 2021 – abr 2022</small></div>
+        <div class="exp-sub"><span>MATH · cliente Santander</span><small>São Paulo, SP</small></div>
+        <ul>
+          <li>Pipelines de dados, bases e APIs para extrair, ingerir e transportar os dados de engajamento digital e de mídia.</li>
+          <li>Google Cloud com BigQuery, Cloud Functions, Storage e Dataprep, e dashboards no Data Studio.</li>
+          <li>Python para automatizar e otimizar os processos de dados.</li>
+        </ul>
+      </div>
+
+      <div class="exp">
+        <div class="exp-topo"><b>Especialista em CRO e Digital Analytics</b><small>jul 2018 – abr 2021</small></div>
+        <div class="exp-sub"><span>Jüssi · clientes O Boticário, Localiza e Diageo</span><small>São Paulo, SP</small></div>
+        <ul>
+          <li>Data layer, eventos de web analytics e Solution Design Reference (SDR).</li>
+          <li>Jornada de compra: pontos de abandono, mapas de calor e gravações de navegação.</li>
+          <li>Tags no Google Tag Manager e testes A/B, com insights para marketing, desenvolvimento e UX.</li>
+        </ul>
+      </div>
+
+      <div class="exp">
+        <div class="exp-topo"><b>Catho · 13 anos</b><small>ago 2005 – jul 2018</small></div>
+        <div class="exp-sub"><span>De analista de marketing digital a coordenador de growth</span><small>Barueri, SP</small></div>
+        <ul class="fases">
+          <li><small>2017 – 2018</small><span><b>Coordenador de Growth Marketing.</b> Time multidisciplinar (UX, front-end, back-end, SEO e conteúdo), método de experimentos, landing pages mais rápidas, gerador de currículo e notificações push de vagas.</span></li>
+          <li><small>2012 – 2016</small><span><b>Coordenador da Agência Interna.</b> Projetos de marketing digital B2C, B2B e institucional, campanhas on-line e e-mail marketing.</span></li>
+          <li><small>2009 – 2012</small><span><b>Líder da Equipe de Desenvolvimento.</b> Front-end, padronização do site e desenvolvimento do time, junto com UX.</span></li>
+          <li><small>2006 – 2009</small><span><b>Web Designer, de júnior a especialista.</b> Layouts, landing pages, banners e e-mails, com foco em usabilidade.</span></li>
+          <li><small>2005 – 2006</small><span><b>Analista de Marketing Digital.</b> Mídia on-line, programa de afiliados e implantação do Google Analytics.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="mono">Projetos</h2>
+      <div class="exp">
+        <div class="exp-topo"><b>Dados com IA (projetos pessoais)</b><small>2024 – hoje</small></div>
+        <ul>
+          <li>Agentes e rotinas automáticas que fazem coleta, triagem e relatórios sozinhos.</li>
+          <li>Análises públicas em Python com dados abertos, como a de juro real (Banco Central e IBGE), atualizada todo mês.</li>
+          <li>Este site, feito com design, código, Python e IA trabalhando juntos: <a href="https://www.adrianoarruda.com/">adrianoarruda.com</a>.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</main>
+
+</body>
+</html>
