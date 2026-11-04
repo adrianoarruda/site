@@ -45,6 +45,22 @@
   .pb-abas button { font: 600 15px var(--sans); border: 0; background: none; padding: 10px 14px; cursor: pointer; color: var(--soft); position: relative; }
   .pb-abas button[aria-selected="true"] { color: #000; }
   .pb-abas button[aria-selected="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; border-radius: 2px; background: var(--orange); }
+  .pb-chat { background: #0b0b0b; color: #fff; border-radius: 20px; padding: 20px; display: grid; gap: 12px; }
+  .pb-chat h5 { margin: 0; font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; font-size: 24px; letter-spacing: -.01em; }
+  .pb-chat small { color: #8a8a8a; font-size: 12px; }
+  .pb-chat form { display: flex; gap: 8px; }
+  .pb-chat input { flex: 1; min-width: 0; font: 15px var(--sans); height: 44px; padding: 0 16px; border-radius: 9999px; border: 1px solid #333; background: #161616; color: #fff; }
+  .pb-chat input:focus { outline: none; border-color: var(--orange); }
+  .pb-chat button[type=submit] { font: 600 14px var(--sans); height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: var(--orange); color: #000; cursor: pointer; }
+  .pb-chat button[disabled] { opacity: .6; cursor: wait; }
+  .pb-sug { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pb-sug button { font: 13px var(--sans); border: 1px solid #333; background: none; color: #d0d0d0; border-radius: 9999px; padding: 6px 12px; cursor: pointer; }
+  .pb-sug button:hover { border-color: #fff; color: #fff; }
+  .pb-resp { font-size: 15px; line-height: 1.55; color: #eee; white-space: pre-wrap; }
+  .pb-resp:empty { display: none; }
+  .pb-resp b { color: #fff; }
+  .pb-sug button[aria-pressed="true"] { border-color: var(--orange); color: #fff; }
+  .pb-ver { margin-top: 10px; font: 600 13px var(--sans); border: 0; border-radius: 9999px; padding: 7px 14px; background: #fff; color: #000; cursor: pointer; }
   .pb-aviso { font-size: 13px; color: var(--soft); background: var(--card); border-radius: 12px; padding: 10px 14px; }
   @media (max-width: 900px) { .pb-kpis, .pb-rel { grid-template-columns: repeat(2, 1fr); } .pb-exp { grid-template-columns: 1fr; } }`;
 
@@ -83,6 +99,11 @@
       <div class="pb-rel pb-so-balanco">${d.bancos.map(b => { const r = d.releases_3t26[b];
         return r ? `<div><strong>${esc(b)}</strong><span>Lucro recorrente: R$ ${br(r.lucro_recorrente_bi, 1)} bi</span><span>ROAE: ${br(r.roae * 100, 1)}%</span><span>Inadimplência acima de 90 dias: ${br(r.inadimplencia_90d * 100, 1)}%</span><span class="pend">${esc(r.nota)} Divulgado em ${esc(r.data)}.</span></div>`
           : `<div><strong>${esc(b)}</strong><span class="pend">Ainda não divulgou o 3T26.</span></div>`; }).join("")}</div>
+      <div class="pb-chat">
+        <div><h5>Pergunte aos dados</h5><small>Escolha uma pergunta: a resposta é montada na hora com os números deste painel.</small></div>
+        <div class="pb-sug"></div>
+        <div class="pb-resp" aria-live="polite"></div>
+      </div>
       <div class="rodape"><span class="pb-fonte"></span><span class="pb-so-balanco">2T e 4T: o IF.data acumula o resultado no semestre; o trimestre sai por diferença.</span><span class="pb-so-balanco">Desde jan/2025 vale um novo padrão contábil (Resolução CMN 4.966), marcado no gráfico.</span><a href="https://github.com/adrianoarruda/site/tree/main/analises/bancos" target="_blank" rel="noopener">Ver o código em Python ↗</a></div>`;
 
     const sel = el.querySelector("select"), svg = el.querySelector("svg"), tip = el.querySelector(".tip");
@@ -218,6 +239,58 @@
       montaAba(); escolhe(doAba().some(i => i.k === atual) ? atual : INICIAL[abaEf()]);
     });
     addEventListener("resize", desenha);
+    // Pergunte aos dados: perguntas prontas, respondidas com os números do painel (sem IA).
+    // Quando houver a conta de API, o campo livre chama /api/pergunte (código guardado em analises/bancos/futuro_chat_ia).
+    const N = n - 1, A = n - 5, I0 = 0;
+    const un = k => d.indicadores.find(i => i.k === k).un;
+    const v = (k, b, j) => fmt(d.series[b][k][j], un(k));
+    const ordem = (k, j) => [...d.bancos].filter(b => d.series[b][k][j] != null).sort((a, b) => d.series[b][k][j] - d.series[a][k][j]);
+    const lista = (k, j) => { const o = ordem(k, j).map(b => `${b}: **${v(k, b, j)}**`); return o.slice(0, -1).join("; ") + " e " + o[o.length - 1]; };
+    const qu = QS.filter(q => q.j >= 0);
+    const PERG = [
+      { q: `Qual banco tem o maior ROE hoje?`, aba: "balanco", k: "roe_12m",
+        r: () => `ROE em 12 meses no ${ult}, do maior para o menor: ${lista("roe_12m", N)}. Há um ano (${T[A]}): ${lista("roe_12m", A)}.` },
+      { q: `Quem lucrou mais nos últimos 12 meses?`, aba: "balanco", k: "lucro_12m_bi",
+        r: () => `Lucro líquido contábil em 12 meses até o ${ult}: ${lista("lucro_12m_bi", N)}.` },
+      { q: `Como a PDD mudou em relação ao ano passado?`, aba: "balanco", k: "pdd_12m_bi",
+        r: () => `PDD em 12 meses no ${ult} contra o ${T[A]}: ` + d.bancos.map(b => { const a = d.series[b].pdd_12m_bi[N], o = d.series[b].pdd_12m_bi[A];
+          return `${b} **${fmt(a, "bi")}** (${a >= o ? "+" : "−"}${br(Math.abs(a / o - 1) * 100, 0)}%)`; }).join("; ") + "." },
+      { q: `Quanto da margem financeira vai para a PDD?`, aba: "balanco", k: "pdd_sobre_margem_12m",
+        r: () => `PDD sobre a margem financeira, em 12 meses até o ${ult}: ${lista("pdd_sobre_margem_12m", N)}. Quanto maior, menos sobra da margem para virar lucro.` },
+      { q: `Como foi o lucro trimestre a trimestre em 20${AA}?`, aba: "balanco", k: "lucro_liquido_bi", ano: true,
+        r: () => qu.map(q => `${q.rot}: ` + d.bancos.map(b => `${b} **${v("lucro_liquido_bi", b, q.j)}**` + (q.jAnt >= 0 ? ` (${v("lucro_liquido_bi", b, q.jAnt)} no ${T[q.jAnt]})` : "")).join(", ")).join(".\n") + "." },
+      { q: `Qual a carteira de crédito e quanto cresceu em 12 meses?`, aba: "balanco", k: "carteira_credito_bi",
+        r: () => `Carteira de crédito no ${ult}: ` + ordem("carteira_credito_bi", N).map(b => `${b} **${v("carteira_credito_bi", b, N)}** (${v("crescimento_carteira_12m", b, N)} em 12 meses)`).join("; ") + "." },
+      { q: `Qual banco está mais alavancado?`, aba: "balanco", k: "alavancagem_x",
+        r: () => `Ativo dividido pelo patrimônio líquido no ${ult}: ${lista("alavancagem_x", N)}. Bancos costumam operar entre 10 e 15 vezes.` },
+      { q: `Como está o capital (Basileia) dos quatro?`, aba: "balanco", k: "basileia",
+        r: () => `Índice de Basileia no ${ult}: ${lista("basileia", N)}. Capital principal: ${lista("capital_principal", N)}.` },
+      { q: `Quantos clientes cada banco tem?`, aba: "clientes", k: "clientes_mi",
+        r: () => `Clientes no ${ult} (cadastro do Banco Central): ` + ordem("clientes_mi", N).map(b => `${b} **${v("clientes_mi", b, N)}** (${v("crescimento_clientes_12m", b, N)} em 12 meses)`).join("; ") + "." },
+      { q: `Como mudou o número de agências desde 20${T[0].slice(2)}?`, aba: "clientes", k: "agencias",
+        r: () => `Agências no ${T[I0]} e no ${ult}: ` + d.bancos.map(b => `${b} ${v("agencias", b, I0)} → **${v("agencias", b, N)}**`).join("; ") + "." },
+      { q: `Qual o lucro por cliente?`, aba: "clientes", k: "lucro_por_cliente",
+        r: () => `Lucro de 12 meses por cliente no ${ult}: ${lista("lucro_por_cliente", N)} por ano.` },
+      { q: `Qual ação rendeu mais desde 20${T[0].slice(2)}?`, aba: "acoes", k: "retorno_total",
+        r: () => `Retorno total com dividendos reinvestidos, base 100 no ${T[0]}, até o ${ult}: ${lista("retorno_total", N)}. Ou seja, cada R$ 100 viraram esses valores em reais. Não é recomendação de investimento.` },
+      { q: `Qual o P/L e o P/VP de cada banco?`, aba: "acoes", k: "pvp",
+        r: () => `No ${ult}, P/VP: ${lista("pvp", N)}. P/L: ${lista("pl", N)}. Não é recomendação de investimento.` },
+      { q: `Quem pagou mais dividendos nos últimos 12 meses?`, aba: "acoes", k: "dividend_yield_12m",
+        r: () => `Dividend yield em 12 meses até o ${ult}: ${lista("dividend_yield_12m", N)}. Payout: ${lista("payout_12m", N)}. Não é recomendação de investimento.` },
+    ];
+    const chat = el.querySelector(".pb-chat"), sug = chat.querySelector(".pb-sug"), saida = chat.querySelector(".pb-resp");
+    sug.innerHTML = PERG.map((p, i) => `<button type="button" data-i="${i}" aria-pressed="false">${esc(p.q)}</button>`).join("");
+    sug.addEventListener("click", e => {
+      const b = e.target.closest("button[data-i]"); if (!b) return;
+      const p = PERG[+b.dataset.i];
+      sug.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+      let texto; try { texto = p.r(); } catch (er) { texto = "Ainda não há dados para responder essa pergunta."; }
+      saida.innerHTML = `<b>${esc(p.q)}</b>\n` + esc(texto).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>") + `\n<button type="button" class="pb-ver">Ver no gráfico</button>`;
+      saida.querySelector(".pb-ver").onclick = () => {
+        aba = p.aba; visao = p.ano ? "ano" : "historico"; montaAba(); escolhe(p.k);
+        el.querySelector(".pb-abas").scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+    });
     montaAba(); escolhe(atual);
   };
 })();
