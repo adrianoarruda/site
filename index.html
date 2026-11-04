@@ -595,6 +595,31 @@
     .duas ~ .hero .copy { inset: auto; padding-top: 96px; }
   }
 </style>
+
+<style id="foto-painel">
+  /* Mini painel no lugar da foto: o juro real se desenha quando a seção aparece */
+  .photo.painel-vivo { filter: none; background: #0b0b0b; color: #fff; padding: 30px 32px 26px; display: grid; grid-template-rows: auto auto auto 1fr auto auto; box-shadow: 0 30px 60px -30px rgba(0,0,0,.6); }
+  .photo.me.painel-vivo::after { content: none; }
+  .pv-topo, .pv-pe, .pv-kpis span { font: 400 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: #8a8a8a; }
+  .pv-topo { display: flex; justify-content: space-between; align-items: center; }
+  .pv-vivo { display: flex; align-items: center; gap: 7px; } .pv-vivo b { font-weight: 400; color: #bdbdbd; }
+  .pv-vivo i { width: 7px; height: 7px; border-radius: 50%; background: #ff3b1f; box-shadow: 0 0 0 0 rgba(255,59,31,.6); animation: pv-pulso 2s infinite; }
+  @keyframes pv-pulso { 70% { box-shadow: 0 0 0 9px rgba(255,59,31,0); } 100% { box-shadow: 0 0 0 0 rgba(255,59,31,0); } }
+  .pv-num { margin-top: 22px; font-family: var(--cond); font-stretch: 68%; font-weight: 700; line-height: .85; letter-spacing: -.03em; }
+  .pv-num b { font-size: 128px; font-weight: 700; } .pv-num em { font-style: normal; font-size: 64px; color: #ff3b1f; margin-left: 4px; }
+  .pv-sub { margin: 12px 0 0; font-size: 15px; line-height: 1.4; color: #bdbdbd; max-width: 320px; }
+  .pv-graf { width: 100%; height: 100%; min-height: 90px; margin-top: 14px; overflow: visible; }
+  #pv-l { stroke-dasharray: var(--len, 2000); stroke-dashoffset: var(--len, 2000); }
+  #pv-a { opacity: 0; transition: opacity 1s ease .9s; }
+  .painel-vivo.in #pv-l { transition: stroke-dashoffset 1.8s cubic-bezier(.65,0,.35,1) .2s; stroke-dashoffset: 0; }
+  .painel-vivo.in #pv-a { opacity: 1; }
+  .pv-ponto { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: #ff3b1f; border: 2px solid #0b0b0b; opacity: 0; transform: scale(.4); transition: opacity .3s ease 1.9s, transform .4s cubic-bezier(.22,1,.36,1) 1.9s; }
+  .painel-vivo.in .pv-ponto { opacity: 1; transform: none; }
+  .pv-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.12); }
+  .pv-kpis div { display: grid; gap: 7px; } .pv-kpis b { font: 600 20px/1 var(--sans); letter-spacing: -.02em; }
+  .pv-pe { margin-top: 18px; color: #6f6f6f; }
+  @media (max-width: 900px) { .photo.me.painel-vivo { aspect-ratio: auto; height: auto; padding: 22px; } .pv-graf { height: 120px; } .pv-num b { font-size: 96px; } .pv-num em { font-size: 48px; } }
+</style>
 </head>
 <body>
 <style>
@@ -793,7 +818,20 @@
       <div class="ctas"><a class="btn dark" href="#como">Como eu trabalho <span class="arr"><i>→</i></span></a></div>
       <div class="logos"><span class="on">design</span><span>dev</span><span>dados</span><span>IA</span></div>
     </div>
-    <div class="photo me reveal"></div>
+    <div class="photo me painel-vivo reveal" id="pv" aria-label="Juro real no Brasil nos últimos 12 meses">
+      <div class="pv-topo"><span>Juro real · 12 meses</span><span class="pv-vivo"><i></i><b id="pv-mes">set/2026</b></span></div>
+      <div class="pv-num"><b id="pv-real">9,5</b><em>%</em></div>
+      <p class="pv-sub">ao ano, acima da inflação. Mais que o dobro da média de 10 anos.</p>
+      <svg class="pv-graf" viewBox="0 0 400 150" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="pv-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4686ac" stop-opacity=".45"/><stop offset="1" stop-color="#4686ac" stop-opacity="0"/></linearGradient></defs>
+        <path id="pv-a" fill="url(#pv-area)"/>
+        <line id="pv-media" x1="0" x2="400" stroke="#6f6f6f" stroke-dasharray="4 5" stroke-width="1"/>
+        <path id="pv-l" fill="none" stroke="#4686ac" stroke-width="2.2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <div class="pv-ponto" id="pv-ponto"></div>
+      <div class="pv-kpis"><div><span>Selic</span><b id="pv-selic">14,5%</b></div><div><span>IPCA</span><b id="pv-ipca">4,6%</b></div><div><span>Média 10 anos</span><b id="pv-med">4,2%</b></div></div>
+      <div class="pv-pe">Python · dados públicos do Banco Central</div>
+    </div>
   </div>
 </section>
 
@@ -1079,6 +1117,37 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
       l.hidden = false;
     }
   } catch (e) {}
+})();
+</script>
+
+<script>
+/* Mini painel da foto: mesmos dados da seção "Pergunte aos dados" */
+(async () => {
+  const el = document.getElementById("pv"); if (!el) return;
+  const br = (v, c = 1) => v.toLocaleString("pt-BR", { minimumFractionDigits: c, maximumFractionDigits: c });
+  let d; try { d = await (await fetch("dados/juros_inflacao.json", { cache: "no-cache" })).json(); } catch (e) { return; }
+  const s = d.serie.slice(-120), r = d.resumo, W = 400, H = 150;
+  const vals = s.map(p => p.juro_real), lo = Math.min(0, ...vals) - 1, hi = Math.max(...vals) + 1;
+  const X = i => i / (s.length - 1) * W, Y = v => H - (v - lo) / (hi - lo) * H;
+  const pts = s.map((p, i) => X(i).toFixed(1) + " " + Y(p.juro_real).toFixed(1));
+  const l = document.getElementById("pv-l"), a = document.getElementById("pv-a"), m = document.getElementById("pv-media");
+  l.setAttribute("d", "M" + pts.join(" L")); a.setAttribute("d", "M0 " + H + " L" + pts.join(" L") + " L" + W + " " + H + "Z");
+  m.setAttribute("y1", Y(r.juro_real_medio_10a)); m.setAttribute("y2", Y(r.juro_real_medio_10a));
+  l.style.setProperty("--len", Math.ceil(l.getTotalLength() * 1.5));
+  const [ano, mes] = d.ultimo_mes.split("-"), nomes = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+  document.getElementById("pv-mes").textContent = nomes[mes - 1] + "/" + ano;
+  document.getElementById("pv-selic").textContent = br(r.selic_12m) + "%";
+  document.getElementById("pv-ipca").textContent = br(r.ipca_12m) + "%";
+  document.getElementById("pv-med").textContent = br(r.juro_real_medio_10a) + "%";
+  const ponto = () => { const g = el.querySelector(".pv-graf").getBoundingClientRect(), b = el.getBoundingClientRect(), p = document.getElementById("pv-ponto");
+    p.style.left = (g.left - b.left + g.width) + "px"; p.style.top = (g.top - b.top + Y(vals[vals.length - 1]) / H * g.height) + "px"; };
+  ponto(); addEventListener("resize", ponto);
+  const num = document.getElementById("pv-real"), alvo = r.juro_real_12m;
+  let feito = false;
+  new IntersectionObserver(([e]) => { if (!e.isIntersecting || feito) return; feito = true;
+    const t0 = performance.now(); const passo = t => { const k = Math.min(1, (t - t0) / 1800), q = 1 - Math.pow(1 - k, 3);
+      num.textContent = br(alvo * q); if (k < 1) requestAnimationFrame(passo); }; requestAnimationFrame(passo);
+  }, { threshold: .4 }).observe(el);
 })();
 </script>
 </body>
