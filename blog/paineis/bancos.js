@@ -62,7 +62,14 @@
   .pb-sug button[aria-pressed="true"] { border-color: var(--orange); color: #fff; }
   .pb-ver { margin-top: 10px; font: 600 13px var(--sans); border: 0; border-radius: 9999px; padding: 7px 14px; background: #fff; color: #000; cursor: pointer; }
   .pb-aviso { font-size: 13px; color: var(--soft); background: var(--card); border-radius: 12px; padding: 10px 14px; }
-  @media (max-width: 900px) { .pb-kpis, .pb-rel { grid-template-columns: repeat(2, 1fr); } .pb-exp { grid-template-columns: 1fr; } }`;
+  .pb-dica { display: none; }
+  @media (max-width: 900px) { .pb-kpis, .pb-rel { grid-template-columns: repeat(2, 1fr); } .pb-exp { grid-template-columns: 1fr; } }
+  /* Celular (05/11/2026): a tabela rola para o lado; o nome do indicador fica parado e um aviso mostra que há mais bancos */
+  @media (max-width: 700px) {
+    .pb-dica { display: block; font: 400 11px var(--mono); text-transform: uppercase; letter-spacing: .04em; color: var(--orange); margin: -4px 0 -6px; }
+    .pb-tab th:first-child, .pb-tab td:first-child { position: sticky; left: 0; z-index: 1; background: #fff; min-width: 112px; }
+    .pb-tab tbody tr.ativo td:first-child { background: #fff3f0; }
+  }`;
 
   window.painelBancos = async (el, src = "/dados/bancos_balancos.json") => {
     if (!document.getElementById("pb-css")) document.head.insertAdjacentHTML("beforeend", `<style id="pb-css">${CSS}</style>`);
@@ -85,7 +92,7 @@
     el.innerHTML = `
       <div class="ph"><div><h4>Balanços dos grandes bancos</h4><small class="mono">IF.data · ${esc(T[0])} a ${esc(ult)} · resultados em 12 meses · valores contábeis</small></div>
         <div class="per" role="group" aria-label="Período">${[[12, "3 anos"], [20, "5 anos"], [n, "10 anos"]].map(([q, t]) =>
-          `<button type="button" data-n="${q}" aria-pressed="${q === n}">${t}</button>`).join("")}<button type="button" data-ano="1" aria-pressed="false">20${AA} por trimestre</button></div></div>
+          `<button type="button" data-n="${q}" aria-pressed="${q === n}">${t}</button>`).join("")}<button type="button" data-ano="1" aria-pressed="false" title="20${AA} por trimestre">20${AA}<span class="so-pc"> por trimestre</span></button></div></div>
       <div class="pb-abas" role="tablist">${d.abas.map(a => `<button type="button" role="tab" data-aba="${a.k}" aria-selected="${a.k === aba}">${esc(a.nome)}</button>`).join("")}</div>
       <div class="pb-aviso" hidden>Só números, a partir de dados públicos. Não é recomendação de investimento.</div>
       <div class="pb-ctrl"><select aria-label="Indicador"></select></div>
@@ -94,7 +101,7 @@
       <div class="legenda">${d.bancos.map(b => `<span><i style="background:${CORES[b]}"></i>${esc(b)}</span>`).join("")}<span class="pb-traco" hidden><i style="background:none;border-top:2px dashed #000;height:0"></i>mesmo trimestre de 20${AANT}</span></div>
       <div class="grafico"><svg role="img"></svg><div class="tip" hidden></div></div>
       <div class="pb-h pb-raio"></div>
-      <div class="pb-scroll"><table class="pb-tab"><thead></thead><tbody></tbody></table></div>
+      <div class="pb-dica">Arraste para o lado para ver todos os bancos →</div><div class="pb-scroll"><table class="pb-tab"><thead></thead><tbody></tbody></table></div>
       <div class="pb-h pb-so-balanco">3T26: o que os bancos já divulgaram (números gerenciais, não comparáveis com os contábeis acima)</div>
       <div class="pb-rel pb-so-balanco">${d.bancos.map(b => { const r = d.releases_3t26[b];
         return r ? `<div><strong>${esc(b)}</strong><span>Lucro recorrente: R$ ${br(r.lucro_recorrente_bi, 1)} bi</span><span>ROAE: ${br(r.roae * 100, 1)}%</span><span>Inadimplência acima de 90 dias: ${br(r.inadimplencia_90d * 100, 1)}%</span><span class="pend">${esc(r.nota)} Divulgado em ${esc(r.data)}.</span></div>`
@@ -185,7 +192,7 @@
       let g = "";
       for (let v = lo; v <= hi + 1e-9; v += passo) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v / k)}" y2="${y(v / k)}" stroke="${Math.abs(v) < 1e-9 ? "#b5b5b5" : "#eee"}"/><text class="eixo" x="${m.l - 8}" y="${y(v / k) + 4}" text-anchor="end">${rot(v)}</text>`;
       for (let j = ini; j < n; j++) if (T[j].startsWith("1T") && (W >= 600 || q <= 20 || +T[j].slice(2) % 2 === 1)) g += `<text class="eixo" x="${x(j)}" y="${H - 8}" text-anchor="middle">20${T[j].slice(2)}</text>`;
-      d.marcos.filter(mc => mc.i >= ini && (!mc.aba || mc.aba === aba) && (!mc.indicador || mc.indicador === atual)).forEach(mc => { g += `<line x1="${x(mc.i)}" x2="${x(mc.i)}" y1="${m.t}" y2="${H - m.b}" stroke="#b5b5b5" stroke-dasharray="3 4"/><text class="pb-marco" x="${x(mc.i) + 5}" y="${m.t + 8}">${esc(mc.rotulo)}</text>`; });
+      d.marcos.filter(mc => mc.i >= ini && (!mc.aba || mc.aba === aba) && (!mc.indicador || mc.indicador === atual)).forEach(mc => { g += `<line x1="${x(mc.i)}" x2="${x(mc.i)}" y1="${m.t}" y2="${H - m.b}" stroke="#b5b5b5" stroke-dasharray="3 4"/>${(() => { const fora = x(mc.i) + 5 + mc.rotulo.length * 6.4 > W; return `<text class="pb-marco" x="${x(mc.i) + (fora ? -5 : 5)}" y="${m.t + (fora ? 22 : 8)}"${fora ? ' text-anchor="end"' : ""}>${esc(mc.rotulo)}</text>`; })()}`; });
       // linhas: a série escolhida, sem interpolar trimestres faltando
       const fins = [];
       d.bancos.forEach(b => {
