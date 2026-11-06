@@ -132,6 +132,32 @@
   .painel .rodape a:hover { color: var(--orange); text-decoration: underline; }
   @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, 1fr); } .kpi.destaque { grid-column: 1 / -1; } article.post .painel { width: 100%; } }
   @media (max-width: 720px) { .painel { padding: 16px; border-radius: 18px; } .kpi b { font-size: 32px; } }
+
+  /* Comentários (05/11/2026): abertos, sem aprovação */
+  .coments { max-width: 720px; margin-top: 56px; padding-top: 40px; border-top: 1px solid var(--line); }
+  .coments h2 { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; font-size: 40px; line-height: .95; letter-spacing: -.03em; margin: 0 0 8px; }
+  .coments h2 small { font-family: var(--mono); font-stretch: 100%; font-weight: 400; font-size: 13px; color: var(--slate); margin-left: 8px; }
+  .coments .convite { color: var(--soft); margin: 0 0 24px; }
+  .com-lista { display: grid; gap: 12px; margin-bottom: 28px; }
+  .com { background: var(--card); border-radius: 16px; padding: 16px 18px; display: grid; gap: 6px; }
+  .com.autor { background: #fff3f0; border: 1px solid #ffd3c9; }
+  .com .quem { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; font-size: 14px; }
+  .com .quem b { font-weight: 600; }
+  .com .quem .tag { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; background: var(--orange); color: #000; border-radius: 9999px; padding: 2px 8px; }
+  .com .quem time { color: var(--slate); font-size: 12.5px; }
+  .com .quem .apagar { margin-left: auto; background: none; border: 0; color: var(--slate); font: 13px var(--sans); cursor: pointer; text-decoration: underline; padding: 0; }
+  .com p { margin: 0; font-size: 16px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .com-form { display: grid; gap: 10px; background: var(--card); border-radius: 20px; padding: 20px; }
+  .com-form input, .com-form textarea { font: 16px var(--sans); color: var(--ink); background: #fff; border: 1px solid transparent; border-radius: 12px; padding: 11px 14px; width: 100%; box-sizing: border-box; }
+  .com-form textarea { min-height: 110px; resize: vertical; }
+  .com-form input:focus, .com-form textarea:focus { outline: none; border-color: #000; }
+  .com-form .linha { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .com-form button { font: 500 15px var(--sans); border: 0; cursor: pointer; height: 44px; padding-inline: 20px; background: var(--orange); color: #000; border-radius: 9999px; }
+  .com-form button:hover { background: var(--orange-h); }
+  .com-form button:disabled { opacity: .5; cursor: wait; }
+  .com-form .msg { font-size: 14px; color: var(--soft); }
+  .com-form .escondido { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .com-form .nota { font-size: 12.5px; color: var(--slate); margin: 0; }
 </style>
 
 <style id="menu-v5">
@@ -423,6 +449,56 @@ async function post(slug) {
     if (!$("painel")) document.querySelector("article.post .lead, article.post > :first-child").insertAdjacentHTML("afterend", `<div class="painel" id="painel"></div>`);
     PAINEIS[p.dashboard]($("painel"));
   }
+  comentarios(p.slug);
+}
+
+// Comentários: abertos e sem aprovação. Com a sessão pessoal da Área privada, o Adriano comenta como autor e pode apagar.
+async function comentarios(slug) {
+  const caixa = document.createElement("section");
+  caixa.className = "coments"; caixa.id = "comentarios";
+  caixa.innerHTML = `<h2>Comentários <small id="com-n"></small></h2>
+    <p class="convite">Concorda, discorda, viu algo errado? Escreva. Crítica também é bem-vinda.</p>
+    <div class="com-lista" id="com-lista"></div>
+    <form class="com-form" id="com-form" autocomplete="off">
+      <input id="com-nome" maxlength="60" placeholder="Seu nome (opcional)" aria-label="Seu nome">
+      <textarea id="com-texto" maxlength="2000" placeholder="Seu comentário" aria-label="Seu comentário" required></textarea>
+      <div class="escondido" aria-hidden="true"><label>Site <input id="com-site" tabindex="-1"></label></div>
+      <div class="linha"><button type="submit" id="com-enviar">Comentar</button><span class="msg" id="com-msg" role="status"></span></div>
+      <p class="nota">O comentário aparece na hora, com o nome que você escrever. Não peço e-mail.</p>
+    </form>`;
+  document.querySelector("article.post").after(caixa);
+  let autor = false;
+  const desenha = lista => {
+    $("com-n").textContent = lista.length ? lista.length : "";
+    $("com-lista").innerHTML = lista.length ? lista.map(c => `
+      <div class="com${c.do_autor ? " autor" : ""}">
+        <div class="quem"><b>${esc(c.nome)}</b>${c.do_autor ? `<span class="tag">autor</span>` : ""}<time>${esc(c.quando)}</time>${autor ? `<button class="apagar" type="button" data-id="${c.id}">Apagar</button>` : ""}</div>
+        <p>${esc(c.texto)}</p>
+      </div>`).join("") : "";
+  };
+  let lista = [];
+  try { const j = await (await fetch("/api/comentarios?slug=" + encodeURIComponent(slug))).json(); lista = j.comentarios || []; autor = !!j.autor; } catch (e) {}
+  if (autor) { $("com-nome").hidden = true; $("com-texto").placeholder = "Responder como Adriano Arruda (autor)"; }
+  desenha(lista);
+  $("com-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    $("com-enviar").disabled = true; $("com-msg").textContent = "";
+    try {
+      const r = await fetch("/api/comentarios", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug, nome: $("com-nome").value, texto: $("com-texto").value, site: $("com-site").value }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.erro || "Não deu certo. Tente de novo.");
+      if (j.comentario) { lista.push(j.comentario); desenha(lista); }
+      $("com-texto").value = ""; $("com-msg").textContent = "Publicado. Obrigado!";
+    } catch (err) { $("com-msg").textContent = err.message; }
+    finally { $("com-enviar").disabled = false; }
+  });
+  $("com-lista").addEventListener("click", async e => {
+    const b = e.target.closest(".apagar");
+    if (!b || !confirm("Apagar este comentário?")) return;
+    const r = await fetch("/api/comentarios?id=" + b.dataset.id, { method: "DELETE" });
+    if (r.ok) { lista = lista.filter(c => String(c.id) !== b.dataset.id); desenha(lista); }
+  });
 }
 
 // Botão "Copiar" dos blocos de código
