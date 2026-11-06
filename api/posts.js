@@ -1,19 +1,10 @@
 // Blog: rascunhos escritos pela rotina semanal do Claude, revisados e publicados pelo Adriano.
 // GET público: posts publicados (lista ou ?slug=).
 // GET ?fontes=1 e POST (novos rascunhos): só a rotina, com o token NOTICIAS_TOKEN no cabeçalho x-token.
-// GET ?rascunhos=1 e PATCH (editar, publicar, descartar): só o Adriano, com a senha LINKS_SENHA no cabeçalho x-senha.
-import { neon } from "@neondatabase/serverless";
-import { timingSafeEqual } from "node:crypto";
+// GET ?rascunhos=1 e PATCH (editar, publicar, descartar): só o Adriano, pela sessão da área privada (ver _sessao.js).
+import { sql, confere, perfilDe } from "./_sessao.js";
 
-const sql = neon(process.env.DATABASE_URL);
-
-function confere(valorEsperado, recebido) {
-  const a = Buffer.from(valorEsperado || "");
-  const b = Buffer.from(String(recebido || ""));
-  return a.length > 0 && a.length === b.length && timingSafeEqual(a, b);
-}
 const tokenOk = req => confere(process.env.NOTICIAS_TOKEN, req.headers["x-token"]);
-const senhaOk = req => confere(process.env.LINKS_SENHA, req.headers["x-senha"]);
 const limpa = (v, max) => String(v ?? "").trim().slice(0, max);
 const corpoDe = req => (typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {}));
 const urlOk = u => /^https?:\/\/\S+$/i.test(u);
@@ -81,7 +72,7 @@ export default async function handler(req, res) {
     }
 
     // Adriano: revisar
-    if (!senhaOk(req)) return negado(res);
+    if (!perfilDe(req)) return negado(res);
     if (req.method === "GET") {
       const rascunhos = await sql`select ${CAMPOS} from posts where status = 'rascunho' order by criado_em desc`;
       const publicados = await sql`select ${CAMPOS} from posts where status = 'publicado' order by publicado_em desc limit 20`;

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<script>/* Cópia no GitHub Pages: leva para o domínio oficial */ if (location.hostname.endsWith("github.io")) location.replace("https://www.adrianoarruda.com" + location.pathname.replace(/^\/site/, "") + location.search + location.hash);</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<title>Área privada · Adriano Arruda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
+<style>
+  /* Mesma identidade da v3: preto e branco, verde neon como única cor de destaque */
+  :root {
+    --ink: #000; --slate: #8a8a8a; --soft: #5c5c5c; --line: #e5e5e5; --card: #f3f3f3; --paper: #fff;
+    --green: #ff3b1f; --green-h: #e5301a; --blue: #4686ac; --red: #d4321c;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, Consolas, monospace;
+    --cond: "Archivo", "Arial Narrow", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body { font: 16px/1.5 var(--sans); letter-spacing: -.01em; color: var(--ink); background: var(--paper); }
+  a { color: inherit; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: 24px; }
+  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+  .cond { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; }
+
+  nav.top { height: 72px; background: #000; }
+  nav.top .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { color: #fff; text-decoration: none; font-size: 26px; letter-spacing: -.02em; }
+  .voltar { color: #979797; font-size: 14px; text-decoration: none; }
+  .voltar:hover { color: #fff; }
+
+  header.hero { background: #000; color: #fff; padding: 56px 0 96px; }
+  .crumb { font-size: 12px; color: #979797; }
+  .crumb::before { content: "— "; }
+  h1 { margin: 16px 0 0; font-size: clamp(64px, 11vw, 132px); line-height: .92; letter-spacing: -.04em; }
+  h1 .dim { color: #5c5c5c; }
+  .hero p { margin: 22px 0 0; max-width: 56ch; color: #cdcdcd; font-size: 18px; letter-spacing: -.02em; }
+
+  main { background: var(--paper); border-radius: 64px 64px 0 0; margin-top: -64px; position: relative; padding: 56px 0 96px; min-height: 50vh; }
+
+  .btn { font: 500 15px var(--sans); letter-spacing: -.01em; border: 0; cursor: pointer; height: 44px; padding-inline: 20px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+  .btn.green { background: var(--green); color: #000; border-radius: 9999px; }
+  .btn.green:hover { background: var(--green-h); }
+  .btn.dark { background: #000; color: #fff; border-radius: 12px; }
+  .btn.dark:hover { background: #222; }
+  .btn.soft { background: var(--card); color: #000; border-radius: 12px; }
+  .btn.soft:hover { background: #e9e9e9; }
+  .btn:disabled { opacity: .5; cursor: wait; }
+
+  input, textarea { font: 16px var(--sans); color: var(--ink); background: var(--card); border: 1px solid transparent; border-radius: 12px; padding: 11px 14px; width: 100%; }
+  input:focus, textarea:focus { outline: none; border-color: #000; background: #fff; }
+  textarea { resize: vertical; min-height: 84px; }
+  label.f { display: grid; gap: 6px; font-size: 13px; color: var(--soft); }
+  label.f span { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; font-size: 11px; }
+  :focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+  /* Portão da senha */
+  .gate { max-width: 420px; display: grid; gap: 14px; }
+  .gate h2 { margin: 0; font-size: 44px; line-height: .9; letter-spacing: -.03em; }
+  .gate p { margin: 0; color: var(--soft); }
+  .gate .row { display: flex; gap: 8px; }
+  .gate .row input { flex: 1; }
+  .lembrar { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--soft); cursor: pointer; }
+  .erro, .gate .erro { color: var(--red); font-size: 14px; margin: 0; min-height: 21px; }
+
+  /* Barra de ferramentas */
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 36px; }
+  .bar input[type=search] { flex: 1 1 260px; max-width: 420px; border-radius: 9999px; padding-left: 18px; }
+  .bar .n { font-size: 12px; color: var(--slate); margin-left: auto; }
+  .bar .sair { background: none; border: 0; color: var(--slate); font: 14px var(--sans); cursor: pointer; text-decoration: underline; }
+
+  /* Formulário de inclusão */
+  .novo { background: #000; color: #fff; border-radius: 24px; padding: 28px; margin-bottom: 40px; display: grid; gap: 16px; }
+  .novo[hidden] { display: none; }
+  .novo h3 { margin: 0; font-size: 36px; line-height: .9; letter-spacing: -.03em; }
+  .novo .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .novo .full { grid-column: 1 / -1; }
+  .novo label.f { color: #979797; }
+  .novo input, .novo textarea { background: #1a1a1a; color: #fff; }
+  .novo input:focus, .novo textarea:focus { border-color: var(--green); background: #111; }
+  .novo .acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .novo .btn.soft { background: #1a1a1a; color: #fff; }
+  .novo .btn.soft:hover { background: #262626; }
+  .novo .erro { color: #ff8a73; }
+  .novo .dica { font-size: 12px; color: #6f6f6f; }
+  .fonte { justify-self: start; font-size: 10.5px; color: #fff; background: var(--blue, #4686ac); border-radius: 9999px; padding: 3px 9px; }
+
+  /* Lista por categoria */
+  .cat { margin-bottom: 44px; }
+  .cat[hidden] { display: none; }
+  .cat h2 { margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px; font-size: 40px; line-height: .9; letter-spacing: -.03em; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .cat h2 small { font-family: var(--mono); font-stretch: 100%; font-weight: 400; font-size: 12px; color: var(--slate); letter-spacing: .04em; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+  .card { background: var(--card); border-radius: 16px; padding: 20px; display: grid; gap: 8px; align-content: start; position: relative; transition: background-color .2s; }
+  .card:hover { background: #ececec; }
+  .card[hidden] { display: none; }
+  .card a.t { font-weight: 600; font-size: 18px; letter-spacing: -.02em; text-decoration: none; }
+  .card a.t::after { content: ""; position: absolute; inset: 0; border-radius: 16px; }
+  .card a.t:hover { text-decoration: underline; }
+  .card .host { font-size: 11px; color: var(--slate); word-break: break-all; }
+  .card p { margin: 0; color: var(--soft); font-size: 15px; }
+  .card .pe { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; }
+  .card .pe .mono { font-size: 11px; color: var(--slate); }
+  .card .rm { position: relative; z-index: 1; background: none; border: 0; color: var(--slate); font: 13px var(--sans); cursor: pointer; padding: 2px 0; }
+  .card .rm:hover { color: var(--red); text-decoration: underline; }
+  .vazio { color: var(--soft); }
+
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--slate); font-size: 12px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding-inline: 16px; }
+    header.hero { padding: 40px 0 88px; }
+    main { border-radius: 40px 40px 0 0; margin-top: -48px; padding-top: 40px; }
+    .novo { padding: 20px; border-radius: 20px; }
+    .novo .grid { grid-template-columns: 1fr; }
+    .cat h2 { font-size: 32px; }
+    .gate .row { flex-direction: column; }
+    .bar .n { margin-left: 0; width: 100%; }
+  }
+
+  /* Área privada: entrada única */
+  .areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+  .area-card { background: var(--card); border-radius: 20px; padding: 26px; display: grid; gap: 10px; align-content: start; position: relative; text-decoration: none; transition: background-color .2s; }
+  .area-card:hover { background: #ececec; }
+  .area-card h3 { margin: 0; font-size: 40px; line-height: .9; letter-spacing: -.03em; }
+  .area-card p { margin: 0; color: var(--soft); }
+  .area-card .ir { font-weight: 500; }
+  .area-card .so { justify-self: start; font-size: 11px; color: #fff; background: var(--blue); border-radius: 9999px; padding: 3px 10px; }
+  .perfil { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 28px; color: var(--soft); }
+  .perfil b { color: var(--ink); }
+  .perfil .tag { font-size: 11px; color: #000; background: var(--green); border-radius: 9999px; padding: 3px 10px; }
+  .perfil .tag.trab { background: var(--blue); color: #fff; }
+  .perfil .sair { background: none; border: 0; color: var(--slate); font: 14px var(--sans); cursor: pointer; text-decoration: underline; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand cond" href="/">Adriano Arruda</a>
+    <a class="voltar" href="/">← Voltar ao site</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="crumb mono">Área privada</div>
+    <h1 class="cond">Área<br><span class="dim">privada</span></h1>
+    <p>Meu Dia, links úteis e rascunhos do blog. Uma senha abre os três.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <form class="gate" id="gate" autocomplete="on" hidden>
+      <h2 class="cond">Precisa de senha</h2>
+      <p>Esta área é só minha.</p>
+      <input type="text" name="username" value="adrianoarruda.com" autocomplete="username" hidden>
+      <div class="row">
+        <input type="password" id="senha" name="password" autocomplete="current-password" placeholder="Senha" required aria-label="Senha">
+        <button class="btn green" id="entrar" type="submit">Entrar →</button>
+      </div>
+      <label class="lembrar"><input type="checkbox" id="lembrar" style="width:auto"> Manter conectado neste aparelho por 30 dias</label>
+      <p class="erro" id="gate-erro" role="alert"></p>
+    </form>
+
+    <section id="area" hidden>
+      <div class="perfil">
+        <span>Conectado com a senha</span><span class="tag mono" id="tag"></span>
+        <button class="sair" id="sair" type="button">Sair</button>
+      </div>
+      <div class="areas">
+        <a class="area-card" href="/meudia/">
+          <h3 class="cond">Meu Dia</h3>
+          <p id="d-meudia">Pendências, compromissos, pagamentos e salvos.</p>
+          <span class="so mono" id="so-trab" hidden>Versão do trabalho</span>
+          <span class="ir">Abrir →</span>
+        </a>
+        <a class="area-card" href="/links/">
+          <h3 class="cond">Links úteis</h3>
+          <p>Ferramentas e referências de design, dados, desenvolvimento e IA.</p>
+          <span class="ir">Abrir →</span>
+        </a>
+        <a class="area-card" href="/rascunhos/">
+          <h3 class="cond">Rascunhos</h3>
+          <p>Posts que o Claude escreve toda segunda, para revisar e publicar no blog.</p>
+          <span class="ir">Abrir →</span>
+        </a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer><div class="wrap mono">Adriano Arruda · área privada</div></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+// Depois de entrar, volta para a página que pediu a senha (só caminhos deste site)
+const volta = (() => { const v = new URLSearchParams(location.search).get("volta") || ""; return /^\/[a-z]/.test(v) ? v : ""; })();
+
+function mostra(perfil) {
+  if (volta) { location.replace(volta); return; }
+  $("gate").hidden = true;
+  $("area").hidden = false;
+  const trab = perfil === "trabalho";
+  $("tag").textContent = trab ? "do trabalho" : "pessoal";
+  $("tag").classList.toggle("trab", trab);
+  $("so-trab").hidden = !trab;
+  if (trab) $("d-meudia").textContent = "Compromissos sem detalhes, tarefas do site e dos estudos, e salvos. Saúde, dinheiro, Detran e cartões ficam de fora.";
+}
+
+$("gate").addEventListener("submit", async e => {
+  e.preventDefault();
+  $("entrar").disabled = true;
+  $("gate-erro").textContent = "";
+  try {
+    const r = await fetch("/api/entrar", { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ senha: $("senha").value, lembrar: $("lembrar").checked }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(r.status === 401 ? "Senha incorreta." : (j.erro || "Não deu certo (erro " + r.status + ")"));
+    mostra(j.perfil);
+  } catch (err) {
+    $("gate-erro").textContent = err.message;
+  } finally {
+    $("entrar").disabled = false;
+  }
+});
+
+$("sair").addEventListener("click", async () => { await fetch("/api/entrar", { method: "DELETE" }); location.replace("/privado/"); });
+
+fetch("/api/entrar").then(r => r.ok ? r.json() : null).then(j => {
+  if (j) mostra(j.perfil); else { $("gate").hidden = false; $("senha").focus(); }
+}).catch(() => { $("gate").hidden = false; });
+</script>
+</body>
+</html>

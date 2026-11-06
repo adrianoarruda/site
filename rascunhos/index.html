@@ -111,7 +111,7 @@
 <nav class="top">
   <div class="wrap">
     <a class="brand cond" href="/">Adriano Arruda</a>
-    <div class="navlinks"><a href="/blog/">Blog</a><a href="/links/">Links úteis</a></div>
+    <div class="navlinks"><a href="/blog/">Blog</a><a href="/privado/">Área privada</a></div>
   </div>
 </nav>
 
@@ -125,17 +125,6 @@
 
 <main>
   <div class="wrap">
-    <form class="gate" id="gate">
-      <h2 class="cond">Precisa de senha</h2>
-      <p>A mesma senha da página de links úteis.</p>
-      <input type="text" name="username" value="links" autocomplete="username" hidden>
-      <div class="row">
-        <input type="password" id="senha" name="password" autocomplete="current-password" placeholder="Senha" required>
-        <button class="btn orange" id="entrar" type="submit">Entrar →</button>
-      </div>
-      <label class="lembrar"><input type="checkbox" id="lembrar"> Lembrar neste aparelho</label>
-      <p class="erro" id="gate-erro" role="alert"></p>
-    </form>
 
     <section id="area" hidden>
       <h2 class="sec cond">Para revisar <small id="n-rasc"></small></h2>
@@ -152,17 +141,13 @@
 const API = "/api/posts";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-let senha = "";
-
-function lida() { try { return sessionStorage.getItem("links-senha") || localStorage.getItem("links-senha") || ""; } catch (e) { return ""; } }
-function guarda(s, lembrar) { try { sessionStorage.setItem("links-senha", s); if (lembrar) localStorage.setItem("links-senha", s); } catch (e) {} }
-function esquece() { try { sessionStorage.removeItem("links-senha"); localStorage.removeItem("links-senha"); } catch (e) {} }
-
 async function api(method, body) {
   const r = await fetch(API + (method === "GET" ? "?rascunhos=1" : ""), {
-    method, headers: { "x-senha": senha, ...(body ? { "content-type": "application/json" } : {}) },
+    method, headers: body ? { "content-type": "application/json" } : {},
     body: body ? JSON.stringify(body) : undefined,
   });
+  // Sem sessão: entra pela área privada e volta para cá
+  if (r.status === 401) { location.replace("/privado/?volta=/rascunhos/"); throw new Error("Entre pela área privada"); }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(j.erro || "Não deu certo (erro " + r.status + ")"); e.status = r.status; throw e; }
   return j;
@@ -211,18 +196,9 @@ function desenha({ rascunhos, publicados }) {
 
 async function carrega() { desenha(await api("GET")); }
 
-async function entra(s, lembrar) {
-  senha = s; $("entrar").disabled = true; $("gate-erro").textContent = "";
-  try {
-    await carrega(); guarda(s, lembrar);
-    $("gate").hidden = true; $("area").hidden = false;
-  } catch (e) {
-    senha = ""; esquece();
-    $("gate-erro").textContent = e.status === 401 ? "Senha incorreta." : e.message;
-  } finally { $("entrar").disabled = false; }
+async function entra() {
+  try { await carrega(); $("area").hidden = false; } catch (e) {}
 }
-
-$("gate").addEventListener("submit", e => { e.preventDefault(); entra($("senha").value, $("lembrar").checked); });
 
 async function envia(e) {
   e.preventDefault();
@@ -251,8 +227,7 @@ async function envia(e) {
 $("rascunhos").addEventListener("submit", envia);
 $("publicados").addEventListener("submit", envia);
 
-const salva = lida();
-if (salva) entra(salva, (() => { try { return !!localStorage.getItem("links-senha"); } catch (e) { return false; } })());
+entra();
 </script>
 </body>
 </html>

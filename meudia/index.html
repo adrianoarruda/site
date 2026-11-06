@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<script>/* Cópia no GitHub Pages: leva para o domínio oficial */ if (location.hostname.endsWith("github.io")) location.replace("https://www.adrianoarruda.com" + location.pathname.replace(/^\/site/, "") + location.search + location.hash);</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<title>Meu Dia · Adriano Arruda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<!-- Esta página é só a casca: o painel (estilo, conteúdo e script) vem da API depois da senha. -->
+<style>
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  #carregando { font: 15px "Figtree", Arial, sans-serif; color: #6b7280; padding: 40px 16px; text-align: center; }
+  /* O painel nasceu para o artifact (largura do claude.ai). No celular, sem isto, a grade passa da tela. */
+  #app .wrap, #app .view { grid-template-columns: minmax(0, 1fr); }
+  #app .wrap :where(section, div, details, ul, li, article, header, p, label) { min-width: 0; }
+  #app .item .d, #app .pay .d { overflow-wrap: anywhere; }
+  @media (max-width: 600px) { #app .views { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  /* Linha discreta do site no topo do painel, depois de entrar */
+  #barra-site { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 12px;
+    font: 13px "Figtree", Arial, sans-serif; color: #6b7280; padding-bottom: 12px; margin-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,.08); }
+  #barra-site a, #barra-site button { color: inherit; background: none; border: 0; font: inherit; cursor: pointer; text-decoration: none; padding: 0; }
+  #barra-site a:hover, #barra-site button:hover { color: #111; text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<p id="carregando">Abrindo o Meu Dia…</p>
+
+<div id="barra-site" hidden>
+  <a href="/privado/">← Área privada</a>
+  <span><span id="perfil"></span><span id="enviado"></span> · <button id="sair" type="button">Sair</button></span>
+</div>
+<div id="app"></div>
+
+<script>
+(() => {
+  const API = "/api/meudia";
+  const $ = id => document.getElementById(id);
+
+  async function api(query, opts = {}) {
+    const r = await fetch(API + "?" + query, {
+      method: opts.method || "GET",
+      headers: opts.body ? { "content-type": "application/json" } : {},
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+    // Sem sessão (ou ela venceu): entra pela área privada e volta para cá
+    if (r.status === 401) { location.replace("/privado/?volta=/meudia/" + location.hash); throw new Error("Entre pela área privada"); }
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error(j.erro || "Não deu certo (erro " + r.status + ")"); e.status = r.status; throw e; }
+    return j;
+  }
+
+  // O painel foi feito para o banco do artifact (window.claude.use("db")). Aqui a mesma interface
+  // fala com a API do site: get, doc(id).set e onSnapshot (que relê a cada 30 s e ao voltar para a aba).
+  const comoSnap = m => ({ docs: Object.entries(m).map(([id, d]) => ({ id, data: () => d })) });
+  let gravando = 0;
+  const colecao = {
+    async get() { return comoSnap((await api("parte=marcas")).marcas); },
+    doc(id) {
+      return { async set(dados) {
+        gravando++;
+        try { await api("parte=marca&id=" + encodeURIComponent(id), { method: "PUT", body: dados }); }
+        finally { gravando--; }
+      } };
+    },
+    onSnapshot(cb, erro) {
+      const rele = async () => {
+        if (document.hidden || gravando || document.querySelector(".wrap textarea:focus")) return;
+        try { cb(comoSnap((await api("parte=marcas")).marcas)); } catch (e) { if (erro) erro(e); }
+      };
+      setInterval(rele, 30000);
+      document.addEventListener("visibilitychange", rele);
+    },
+  };
+  window.claude = { use: async () => ({ collection: () => colecao }) };
+
+  // Miniaturas dos salvos: vêm em páginas (o arquivo inteiro passa do limite de resposta do Vercel)
+  window.meudiaThumbs = async () => {
+    const todas = {};
+    for (let p = 0; ; p++) {
+      const { thumbs, mais } = await api("parte=thumbs&pagina=" + p);
+      Object.assign(todas, thumbs);
+      if (!mais) return todas;
+    }
+  };
+
+  $("sair").addEventListener("click", async () => { await fetch("/api/entrar", { method: "DELETE" }); location.replace("/privado/"); });
+
+  api("parte=conteudo").then(c => {
+    $("carregando").remove();
+    const estilo = document.createElement("style");
+    estilo.textContent = c.css;
+    document.head.appendChild(estilo);
+    $("app").innerHTML = c.html;
+    $("perfil").textContent = c.perfil === "trabalho" ? "versão do trabalho · " : "";
+    $("enviado").textContent = c.enviado ? "enviado ao site em " + c.enviado : "";
+    $("barra-site").hidden = false;
+    const topo = document.querySelector("#app .wrap");
+    if (topo) topo.prepend($("barra-site"));
+    const script = document.createElement("script");
+    script.textContent = c.js;
+    document.body.appendChild(script);
+  }).catch(e => { if ($("carregando")) $("carregando").textContent = e.message; });
+})();
+</script>
+</body>
+</html>

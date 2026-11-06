@@ -132,7 +132,7 @@
 <nav class="top">
   <div class="wrap">
     <a class="brand cond" href="../">Adriano Arruda</a>
-    <a class="voltar" href="../">← Voltar ao site</a>
+    <a class="voltar" href="/privado/">← Área privada</a>
   </div>
 </nav>
 
@@ -146,17 +146,6 @@
 
 <main>
   <div class="wrap">
-    <form class="gate" id="gate" autocomplete="on">
-      <h2 class="cond">Precisa de senha</h2>
-      <p>Esta página é só minha. Digite a senha para ver e incluir links.</p>
-      <input type="text" name="username" value="links" autocomplete="username" hidden>
-      <div class="row">
-        <input type="password" id="senha" name="password" autocomplete="current-password" placeholder="Senha" required>
-        <button class="btn green" id="entrar" type="submit">Entrar →</button>
-      </div>
-      <label class="lembrar"><input type="checkbox" id="lembrar" style="width:auto"> Lembrar neste aparelho</label>
-      <p class="erro" id="gate-erro" role="alert"></p>
-    </form>
 
     <section id="area" hidden>
       <div class="bar">
@@ -194,28 +183,14 @@
 <script>
 const API = "/api/links";
 const $ = id => document.getElementById(id);
-let senha = "";
-let links = [];
-
-function guarda(s, lembrar) {
-  try {
-    sessionStorage.setItem("links-senha", s);
-    if (lembrar) localStorage.setItem("links-senha", s); else localStorage.removeItem("links-senha");
-  } catch (e) {}
-}
-function lida() {
-  try { return sessionStorage.getItem("links-senha") || localStorage.getItem("links-senha") || ""; } catch (e) { return ""; }
-}
-function esquece() {
-  try { sessionStorage.removeItem("links-senha"); localStorage.removeItem("links-senha"); } catch (e) {}
-}
-
 async function api(method, body, query = "") {
   const r = await fetch(API + query, {
     method,
-    headers: { "x-senha": senha, ...(body ? { "content-type": "application/json" } : {}) },
+    headers: body ? { "content-type": "application/json" } : {},
     body: body ? JSON.stringify(body) : undefined,
   });
+  // Sem sessão: entra pela área privada e volta para cá
+  if (r.status === 401) { location.replace("/privado/?volta=/links/"); throw new Error("Entre pela área privada"); }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(j.erro || "Não deu certo (erro " + r.status + ")"); e.status = r.status; throw e; }
   return j;
@@ -257,28 +232,16 @@ function filtra() {
   $("vazio").hidden = algum || !links.length;
 }
 
-async function entra(s, lembrar) {
-  senha = s;
-  $("entrar").disabled = true;
-  $("gate-erro").textContent = "";
+async function entra() {
   try {
     links = (await api("GET")).links;
-    guarda(s, lembrar);
-    $("gate").hidden = true;
     $("area").hidden = false;
     desenha();
-  } catch (e) {
-    senha = "";
-    esquece();
-    $("gate-erro").textContent = e.status === 401 ? "Senha incorreta." : e.message;
-  } finally {
-    $("entrar").disabled = false;
-  }
+  } catch (e) {}
 }
 
-$("gate").addEventListener("submit", e => { e.preventDefault(); entra($("senha").value, $("lembrar").checked); });
 $("busca").addEventListener("input", filtra);
-$("sair").addEventListener("click", () => { esquece(); location.reload(); });
+$("sair").addEventListener("click", async () => { await fetch("/api/entrar", { method: "DELETE" }); location.replace("/privado/"); });
 
 $("abrir-novo").addEventListener("click", () => { $("novo").hidden = false; $("n-url").focus(); });
 $("cancelar").addEventListener("click", () => { $("novo").reset(); $("novo").hidden = true; $("novo-erro").textContent = ""; });
@@ -324,8 +287,7 @@ $("lista").addEventListener("click", async e => {
   }
 });
 
-const salva = lida();
-if (salva) entra(salva, (() => { try { return !!localStorage.getItem("links-senha"); } catch (e) { return false; } })());
+entra();
 </script>
 </body>
 </html>

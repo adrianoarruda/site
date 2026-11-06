@@ -1,15 +1,7 @@
 // Links úteis: lista, inclui e remove links guardados no Neon (Postgres).
-// Tudo exige a senha (variável LINKS_SENHA no Vercel), enviada no cabeçalho x-senha.
-import { neon } from "@neondatabase/serverless";
-import { timingSafeEqual, randomUUID } from "node:crypto";
-
-const sql = neon(process.env.DATABASE_URL);
-
-function senhaOk(req) {
-  const esperada = Buffer.from(process.env.LINKS_SENHA || "");
-  const recebida = Buffer.from(String(req.headers["x-senha"] || ""));
-  return esperada.length > 0 && esperada.length === recebida.length && timingSafeEqual(esperada, recebida);
-}
+// Acesso pela sessão da área privada (os dois perfis) ou, nos scripts do Claude, pela LINKS_SENHA no cabeçalho x-senha.
+import { randomUUID } from "node:crypto";
+import { sql, perfilDe } from "./_sessao.js";
 
 function limpa(v, max) {
   return String(v ?? "").trim().slice(0, max);
@@ -19,11 +11,7 @@ export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Robots-Tag", "noindex");
 
-  if (!senhaOk(req)) {
-    // Atraso curto para dificultar tentativa e erro da senha
-    await new Promise(r => setTimeout(r, 800));
-    return res.status(401).json({ erro: "Senha incorreta" });
-  }
+  if (!perfilDe(req)) return res.status(401).json({ erro: "Entre pela área privada" });
 
   try {
     if (req.method === "GET") {
