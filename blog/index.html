@@ -70,6 +70,11 @@
   .fonte span { font-size: 11px; color: var(--slate); }
   .fonte a { font-weight: 600; text-decoration: none; word-break: break-word; }
   .fonte a:hover { color: var(--orange); text-decoration: underline; }
+  .fonte.pratica { text-decoration: none; color: inherit; background: #000; transition: background .2s; }
+  .fonte.pratica span { color: #979797; }
+  .fonte.pratica b { color: #fff; font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+  .fonte.pratica:hover { background: #1a1a1a; }
+  .fonte.pratica:hover b { color: var(--orange); }
   .todos { display: inline-flex; margin-top: 36px; background: var(--orange); color: #000; border-radius: 9999px; height: 44px; align-items: center; padding-inline: 20px; text-decoration: none; font-weight: 500; }
   .todos:hover { background: var(--orange-h); }
 
@@ -441,7 +446,10 @@ async function post(slug) {
   $("conteudo").innerHTML = `<article class="post">
       ${p.resumo ? `<p class="lead">${esc(p.resumo)}</p>` : ""}
       ${formata(p.corpo)}
-      <div class="fonte"><span class="mono">Fonte original${p.fonte ? " · " + esc(p.fonte) : ""}</span><a href="${esc(p.fonte_url)}" target="_blank" rel="noopener noreferrer">${esc(p.fonte_url)}</a></div>
+      ${/^https?:\/\/(www\.)?adrianoarruda\.com\//.test(p.fonte_url || "")
+        // Post autoral que aponta para algo do próprio site: é um exemplo, não uma fonte
+        ? `<a class="fonte pratica" href="${esc(p.fonte_url.replace(/^https?:\/\/(www\.)?adrianoarruda\.com/, ""))}"><span class="mono">Veja na prática</span><b>${esc(p.fonte || "Abrir")} →</b></a>`
+        : `<div class="fonte"><span class="mono">Fonte original${p.fonte ? " · " + esc(p.fonte) : ""}</span><a href="${esc(p.fonte_url)}" target="_blank" rel="noopener noreferrer">${esc(p.fonte_url)}</a></div>`}
       <a class="todos" href="/blog/">Ver todos os posts →</a>
     </article>`;
   // Análise com painel interativo: entra no lugar de [dashboard] no texto, ou logo depois da linha fina
