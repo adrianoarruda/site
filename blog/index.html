@@ -58,6 +58,16 @@
   .item p { margin: 10px 0 0; color: var(--soft); max-width: 70ch; }
   .item .tema { font-size: 11px; color: var(--blue); white-space: nowrap; }
   .vazio { color: var(--soft); }
+  /* Vitrine de análises (/analises/, desde 06/11/2026) */
+  .an-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 16px; }
+  .an-card { background: var(--card); border-radius: 24px; padding: 28px; display: grid; gap: 12px; align-content: start; text-decoration: none; color: inherit; transition: background .2s; }
+  .an-card:hover { background: #ececec; }
+  .an-card .an-tag { justify-self: start; font-size: 11px; background: #000; color: #fff; border-radius: 9999px; padding: 4px 12px; }
+  .an-card h2 { margin: 0; font-size: clamp(30px, 3.4vw, 42px); line-height: .95; letter-spacing: -.03em; transition: color .2s; }
+  .an-card:hover h2 { color: var(--orange); }
+  .an-card p { margin: 0; color: var(--soft); font-size: 17px; line-height: 1.45; }
+  .an-card .an-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11px; color: var(--slate); margin-top: 4px; }
+  .an-card .an-abrir { font-weight: 600; margin-top: 6px; }
 
   /* Post */
   article.post { max-width: 720px; }
@@ -278,7 +288,26 @@
 </head>
 <body>
 
-<header class="topo-app uma fixo on-black"><div class="barra-1"><a class="marca" href="/"><span class="marca-ic">A</span><span class="brand cond">Adriano Arruda</span></a><nav class="barra-2" aria-label="Navegação principal"><ul class="nav"><li><a class="nav-link" href="/"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"/></svg>Início</a></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Sobre<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/#areas">Áreas<small>Design, desenvolvimento, dados e IA</small></a></li><li><a class="dd-item" href="/#trajetoria">Trajetória<small>21 anos, da Catho ao Bradesco</small></a></li><li><a class="dd-item" href="/#como">Como trabalho<small>Do dado bruto à decisão</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M4 15l4-5 4 3 6-8"/></svg>Análises<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/blog/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv">Balanços dos bancos<small>Itaú, Bradesco, Santander e BB em 10 anos</small></a></li><li><a class="dd-item" href="/blog/juro-real-no-brasil-esta-no-maior-patamar-dos-ultimos-10-anos-ky0e">Juro real no Brasil<small>Selic × IPCA, atualizado todo mês</small></a></li><li><a class="dd-item" href="/blog/?tema=An%C3%A1lises">Todas as análises<small>Feitas em Python, com dados públicos</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link ativo" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Blog<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/blog/">Todos os posts</a></li><li><a class="dd-item" href="/blog/?tema=Dados">Dados</a></li><li><a class="dd-item" href="/blog/?tema=IA">IA</a></li><li><a class="dd-item" href="/blog/?tema=Design">Design</a></li><li><a class="dd-item" href="/blog/?tema=Desenvolvimento">Desenvolvimento</a></li></ul></li><li><a class="nav-link" href="/curriculo/"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="9" r="2.5"/><path d="M8.5 15.5a3.5 3.5 0 0 1 7 0M9 18.5h6"/></svg>Currículo</a></li></ul></nav><div class="acoes-topo"><a class="ic-btn" href="https://github.com/adrianoarruda" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.7s.8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .6 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.3 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg></a><a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn</a><button class="ic-btn menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false" onclick="var t=this.closest('.topo-app'),a=t.classList.toggle('aberto');this.setAttribute('aria-expanded',a)"><svg class="ic-abrir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="ic-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><nav class="menu-movel" aria-label="Menu do celular" onclick="if(event.target.closest('a')){var t=this.closest('.topo-app');t.classList.remove('aberto');t.querySelector('.menu-btn').setAttribute('aria-expanded',false)}"><div class="mm-topo"><a href="/">Início</a><a href="/blog/" aria-current="page">Blog</a><a href="/curriculo/">Currículo</a></div><div class="mm-grupo"><span>Sobre</span><a href="/#areas">Áreas</a><a href="/#trajetoria">Trajetória</a><a href="/#como">Como trabalho</a></div><div class="mm-grupo"><span>Análises</span><a href="/blog/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv">Balanços dos bancos</a><a href="/blog/juro-real-no-brasil-esta-no-maior-patamar-dos-ultimos-10-anos-ky0e">Juro real no Brasil</a><a href="/blog/?tema=An%C3%A1lises">Todas as análises</a></div><div class="mm-grupo"><span>Contato</span><a href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://github.com/adrianoarruda" target="_blank" rel="noopener">GitHub ↗</a></div></nav></header><script>/* Menu de vidro: escuro sobre fundo escuro, claro sobre fundo claro (06/11/2026) */
+<header class="topo-app uma fixo on-black"><div class="barra-1"><a class="marca" href="/"><span class="marca-ic">A</span><span class="brand cond">Adriano Arruda</span></a><nav class="barra-2" aria-label="Navegação principal"><ul class="nav"><li><a class="nav-link" href="/"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"/></svg>Início</a></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Sobre<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/#areas">Áreas<small>Design, desenvolvimento, dados e IA</small></a></li><li><a class="dd-item" href="/#trajetoria">Trajetória<small>21 anos, da Catho ao Bradesco</small></a></li><li><a class="dd-item" href="/#como">Como trabalho<small>Do dado bruto à decisão</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M4 15l4-5 4 3 6-8"/></svg>Análises<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/analises/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv">Balanços dos bancos<small>Itaú, Bradesco, Santander e BB em 10 anos</small></a></li><li><a class="dd-item" href="/analises/juro-real-no-brasil-esta-no-maior-patamar-dos-ultimos-10-anos-ky0e">Juro real no Brasil<small>Selic × IPCA, atualizado todo mês</small></a></li><li><a class="dd-item" href="/analises/">Todas as análises<small>Painéis com dados públicos, feitos em Python</small></a></li></ul></li><li class="menu-wrap"><button class="nav-link ativo" type="button" aria-haspopup="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Blog<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a class="dd-item" href="/blog/">Todos os posts</a></li><li><a class="dd-item" href="/blog/?tema=Dados">Dados</a></li><li><a class="dd-item" href="/blog/?tema=IA">IA</a></li><li><a class="dd-item" href="/blog/?tema=Design">Design</a></li><li><a class="dd-item" href="/blog/?tema=Desenvolvimento">Desenvolvimento</a></li></ul></li><li><a class="nav-link" href="/curriculo/"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="9" r="2.5"/><path d="M8.5 15.5a3.5 3.5 0 0 1 7 0M9 18.5h6"/></svg>Currículo</a></li></ul></nav><div class="acoes-topo"><a class="ic-btn" href="https://github.com/adrianoarruda" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.7s.8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .6 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.3 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg></a><a class="btn dark" href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn</a><button class="ic-btn menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false" onclick="var t=this.closest('.topo-app'),a=t.classList.toggle('aberto');this.setAttribute('aria-expanded',a)"><svg class="ic-abrir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="ic-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><nav class="menu-movel" aria-label="Menu do celular" onclick="if(event.target.closest('a')){var t=this.closest('.topo-app');t.classList.remove('aberto');t.querySelector('.menu-btn').setAttribute('aria-expanded',false)}"><div class="mm-topo"><a href="/">Início</a><a href="/blog/" aria-current="page">Blog</a><a href="/curriculo/">Currículo</a></div><div class="mm-grupo"><span>Sobre</span><a href="/#areas">Áreas</a><a href="/#trajetoria">Trajetória</a><a href="/#como">Como trabalho</a></div><div class="mm-grupo"><span>Análises</span><a href="/analises/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv">Balanços dos bancos</a><a href="/analises/juro-real-no-brasil-esta-no-maior-patamar-dos-ultimos-10-anos-ky0e">Juro real no Brasil</a><a href="/analises/">Todas as análises</a></div><div class="mm-grupo"><span>Contato</span><a href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://github.com/adrianoarruda" target="_blank" rel="noopener">GitHub ↗</a></div></nav></header><script>/* Menu de vidro: escuro sobre fundo escuro, claro sobre fundo claro (06/11/2026) */
+(function () {
+  var t = document.currentScript.previousElementSibling, pend = false;
+  function escuro(el) {
+    for (; el && el !== document.documentElement; el = el.parentElement) {
+      var c = (getComputedStyle(el).backgroundColor.match(/[0-9.]+/g) || []).map(Number);
+      if (c.length >= 3 && (c.length < 4 || c[3] > .5)) return .299 * c[0] + .587 * c[1] + .114 * c[2] < 110;
+    }
+    return false;
+  }
+  function atualiza() {
+    pend = false;
+    var r = t.getBoundingClientRect();
+    var atras = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2).filter(function (e) { return !t.contains(e); })[0];
+    t.classList.toggle("on-black", escuro(atras));
+  }
+  function pede() { if (!pend) { pend = true; requestAnimationFrame(atualiza); } }
+  addEventListener("scroll", pede, { passive: true }); addEventListener("resize", pede);
+  document.addEventListener("DOMContentLoaded", atualiza); addEventListener("load", atualiza);
+})();</script><script>/* Menu de vidro: escuro sobre fundo escuro, claro sobre fundo claro (06/11/2026) */
 (function () {
   var t = document.currentScript.previousElementSibling, pend = false;
   function escuro(el) {
@@ -371,12 +400,25 @@
   </div>
 </main>
 
-<footer><div class="wrap mono">Adriano Arruda · blog</div></footer>
+<footer><div class="wrap mono" id="rodape">Adriano Arruda · blog</div></footer>
 
 <script>
 const API = "/api/posts";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+// Desde 06/11/2026, análise e blog têm endereços separados: /analises/ (painéis com dados públicos) e /blog/ (textos).
+// A mesma página serve os dois; o modo vem do endereço.
+const MODO = /^\/analises(\/|$)/.test(location.pathname) ? "analises" : "blog";
+const TEMA_AN = "Análises";
+const urlDe = p => (p.tema === TEMA_AN ? "/analises/" : "/blog/") + encodeURIComponent(p.slug);
+// No modo análises, o sublinhado do menu vai para "Análises" (a página é gerada com "Blog" ativo)
+if (MODO === "analises") {
+  const an = document.querySelector('.barra-2 .dropdown a[href="/analises/"]');
+  const linkAn = an && an.closest(".menu-wrap").querySelector(".nav-link");
+  document.querySelectorAll(".barra-2 .nav-link.ativo").forEach(l => l.classList.remove("ativo"));
+  if (linkAn) linkAn.classList.add("ativo");
+  document.addEventListener("DOMContentLoaded", () => { $("rodape").textContent = "Adriano Arruda · análises"; });
+}
 
 // Texto do post: parágrafos separados por linha em branco; "## " vira subtítulo, "- " vira lista, "> " vira citação, **negrito**
 function formata(txt) {
@@ -494,16 +536,34 @@ const PAINEIS = {
 function slugAtual() {
   const q = new URLSearchParams(location.search).get("p");
   if (q) return q;
-  const m = location.pathname.match(/\/blog\/([^/]+)\/?$/);
+  const m = location.pathname.match(/\/(?:blog|analises)\/([^/]+)\/?$/);
   return m && m[1] !== "index.html" ? decodeURIComponent(m[1]) : null;
 }
 
+async function analises() {
+  document.title = "Análises · Adriano Arruda";
+  $("crumb").textContent = "Análises";
+  $("titulo").innerHTML = "Pergunte<br><span class=\"dim\">aos dados</span>";
+  $("sub").textContent = "Painéis interativos com dados públicos, feitos em Python. Cada número tem o código que o gerou.";
+  const { posts = [] } = await (await fetch(API + "?tema=" + encodeURIComponent(TEMA_AN))).json();
+  $("conteudo").innerHTML = posts.length ? `<div class="an-grid">${posts.map(p => `
+    <a class="an-card" href="${urlDe(p)}">
+      <span class="an-tag mono">Painel interativo</span>
+      <h2 class="cond">${esc(p.titulo)}</h2>
+      ${p.resumo ? `<p>${esc(p.resumo)}</p>` : ""}
+      <div class="an-meta mono">${p.fonte ? `<span>Dados: ${esc(p.fonte)}</span>` : ""}<span>Publicada em ${esc(p.publicado)}</span></div>
+      <span class="an-abrir">Abrir o painel →</span>
+    </a>`).join("")}</div>` : `<p class="vazio">As primeiras análises estão chegando.</p>`;
+}
+
 async function lista() {
+  if (new URLSearchParams(location.search).get("tema") === TEMA_AN) { location.replace("/analises/"); return; }
   const r = await fetch(API);
-  const { posts = [] } = await r.json();
+  const { posts: todos = [] } = await r.json();
+  const posts = todos.filter(p => p.tema !== TEMA_AN);
   if (!posts.length) { $("conteudo").innerHTML = `<p class="vazio">Os primeiros posts estão chegando.</p>`; return; }
   // Temas presentes, com "Análises" primeiro; ?tema= no link abre já filtrado
-  const temas = [...new Set(posts.map(p => p.tema).filter(Boolean))].sort((a, b) => (b === "Análises") - (a === "Análises") || a.localeCompare(b, "pt-BR"));
+  const temas = [...new Set(posts.map(p => p.tema).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
   let ativo = new URLSearchParams(location.search).get("tema") || "";
   if (!temas.includes(ativo)) ativo = "";
   const desenha = () => {
@@ -511,7 +571,7 @@ async function lista() {
     $("conteudo").innerHTML = (temas.length > 1 ? `<div class="temas" role="group" aria-label="Filtrar por tema">${["", ...temas].map(t =>
         `<button type="button" data-tema="${esc(t)}" aria-pressed="${t === ativo}">${t ? esc(t) : "Todos"}</button>`).join("")}</div>` : "") +
       `<div class="lista">${vis.map(p => `
-      <a class="item" href="/blog/${encodeURIComponent(p.slug)}">
+      <a class="item" href="${urlDe(p)}">
         <span class="quando mono">${esc(p.publicado)}</span>
         <div><h2 class="cond">${esc(p.titulo)}</h2>${p.resumo ? `<p>${esc(p.resumo)}</p>` : ""}</div>
         <span class="tema mono">${esc(p.tema)}</span>
@@ -536,9 +596,10 @@ async function post(slug) {
     return;
   }
   const { post: p } = await r.json();
+  if ((p.tema === TEMA_AN) !== (MODO === "analises")) { location.replace(urlDe(p) + location.hash); return; }
   document.title = p.titulo + " · Adriano Arruda";
   document.querySelector('meta[name="description"]').setAttribute("content", p.resumo || p.titulo);
-  $("crumb").innerHTML = `<a href="/blog/">Blog</a>`;
+  $("crumb").innerHTML = MODO === "analises" ? `<a href="/analises/">Análises</a>` : `<a href="/blog/">Blog</a>`;
   $("titulo").textContent = p.titulo;
   $("titulo").style.fontSize = "clamp(44px, 7vw, 88px)";
   $("sub").hidden = true;
@@ -551,7 +612,7 @@ async function post(slug) {
         // Post autoral que aponta para algo do próprio site: é um exemplo, não uma fonte
         ? `<a class="fonte pratica" href="${esc(p.fonte_url.replace(/^https?:\/\/(www\.)?adrianoarruda\.com/, ""))}"><span class="mono">Veja na prática</span><b>${esc(p.fonte || "Abrir")} →</b></a>`
         : `<div class="fonte"><span class="mono">Fonte original${p.fonte ? " · " + esc(p.fonte) : ""}</span><a href="${esc(p.fonte_url)}" target="_blank" rel="noopener noreferrer">${esc(p.fonte_url)}</a></div>`}
-      <a class="todos" href="/blog/">Ver todos os posts →</a>
+      ${MODO === "analises" ? `<a class="todos" href="/analises/">Ver todas as análises →</a>` : `<a class="todos" href="/blog/">Ver todos os posts →</a>`}
     </article>`;
   // Análise com painel interativo: entra no lugar de [dashboard] no texto, ou logo depois da linha fina
   if (p.dashboard && PAINEIS[p.dashboard]) {
@@ -621,7 +682,7 @@ document.addEventListener("click", async e => {
 });
 
 const s = slugAtual();
-(s ? post(s) : lista()).catch(() => { $("conteudo").innerHTML = `<p class="vazio">Não consegui carregar os posts agora.</p>`; });
+(s ? post(s) : MODO === "analises" ? analises() : lista()).catch(() => { $("conteudo").innerHTML = `<p class="vazio">Não consegui carregar os posts agora.</p>`; });
 </script>
 </body>
 </html>

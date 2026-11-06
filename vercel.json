@@ -5,6 +5,18 @@
       "destination": "/blog/index.html"
     },
     {
+      "source": "/analises",
+      "destination": "/blog/index.html"
+    },
+    {
+      "source": "/analises/",
+      "destination": "/blog/index.html"
+    },
+    {
+      "source": "/analises/:slug",
+      "destination": "/blog/index.html"
+    },
+    {
       "source": "/:nome(comandos|celulares|mesa)",
       "destination": "/p/index.html"
     },
@@ -14,6 +26,16 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/blog/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv",
+      "destination": "/analises/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv",
+      "permanent": true
+    },
+    {
+      "source": "/blog/juro-real-no-brasil-esta-no-maior-patamar-dos-ultimos-10-anos-ky0e",
+      "destination": "/analises/juro-real-no-brasil-esta-no-maior-patamar-dos-ultimos-10-anos-ky0e",
+      "permanent": true
+    },
     {
       "source": "/((?!api/).*)",
       "has": [
