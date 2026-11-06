@@ -1197,5 +1197,48 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
     html body footer .bottom { grid-template-columns: 1fr; gap: 8px; }
   }
 </style>
+<style id="ajustes-flip">
+  /* ---------- Quatro áreas (05/11/2026): no PC, o cartão gira ao passar o mouse em vez de crescer ---------- */
+  html body .trio.flip { align-items: stretch; }
+  html body .trio.flip .c, html body .trio.flip .c.on { width: 290px; height: 440px; padding: 0; background: none; perspective: 1400px; outline: none; }
+  .trio.flip .giro { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,.7,.3,1); }
+  .trio.flip .c:hover .giro, .trio.flip .c:focus-visible .giro { transform: rotateY(180deg); }
+  .trio.flip .c:focus-visible .giro { box-shadow: 0 0 0 3px #000; border-radius: 24px; }
+  .trio.flip .face { position: absolute; inset: 0; border-radius: 24px; padding: 22px 24px; display: flex; flex-direction: column; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .trio.flip .frente { background: #f3f3f3; color: #000; }
+  .trio.flip .verso { background: var(--yellow); color: #000; transform: rotateY(180deg); }
+  html body .trio.flip .c h3, html body .trio.flip .c.on h3 { font-size: 34px; }
+  .trio.flip .frente .art { flex: 1; display: grid; place-items: center; }
+  .trio.flip .frente .art svg { transform: none; }
+  .trio.flip .gira { font: 400 11px var(--mono, monospace); text-transform: uppercase; letter-spacing: .04em; opacity: .45; align-self: flex-end; }
+  .trio.flip .verso .texto { margin-top: auto; }
+  html body .trio.flip .verso p, html body .trio.flip .verso .tools { opacity: 1; max-height: none; }
+  html body .trio.flip .verso .tools span { background: rgba(0,0,0,.1); }
+  @media (prefers-reduced-motion: reduce) { .trio.flip .giro { transition: none; } }
+</style>
+<script>
+  // Quatro áreas no PC (com mouse): cada cartão ganha frente (título, ícone) e verso (texto e ferramentas) e gira no hover.
+  // No celular nada muda: os cartões continuam mostrando tudo (ajustes-celular).
+  (() => {
+    const trio = document.getElementById("trio");
+    if (!trio || !matchMedia("(min-width: 901px) and (hover: hover)").matches) return;
+    trio.classList.add("flip");
+    trio.querySelectorAll(".c").forEach(c => {
+      c.classList.remove("on");
+      const [h3, yrs, art, p, tools] = ["h3", ".yrs", ".art", "p", ".tools"].map(s => c.querySelector(s));
+      const frente = document.createElement("div"); frente.className = "face frente";
+      const verso = document.createElement("div"); verso.className = "face verso";
+      const gira = document.createElement("span"); gira.className = "gira"; gira.textContent = "passe o mouse ↻";
+      frente.append(h3.cloneNode(true), yrs.cloneNode(true), art, gira);
+      const texto = document.createElement("div"); texto.className = "texto"; texto.append(p, tools);
+      verso.append(h3, yrs, texto);
+      const giro = document.createElement("div"); giro.className = "giro"; giro.append(frente, verso);
+      c.replaceChildren(giro);
+      c.tabIndex = 0;
+    });
+    // O destaque antigo (classe "on" no mouseenter) não vale mais aqui
+    new MutationObserver(() => trio.querySelectorAll(".c.on").forEach(c => c.classList.remove("on"))).observe(trio, { subtree: true, attributes: true, attributeFilter: ["class"] });
+  })();
+</script>
 </body>
 </html>
