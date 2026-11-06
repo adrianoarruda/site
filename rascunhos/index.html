@@ -194,7 +194,16 @@ function desenha({ rascunhos, publicados }) {
     : `<p class="vazio">Nada publicado ainda.</p>`;
 }
 
-async function carrega() { desenha(await api("GET")); }
+// Texto de cada post como estava no banco quando a página carregou: se mudar por fora (o Claude corrigiu
+// direto no banco, ou outra aba salvou), "Publicar"/"Salvar" não sobrescreve sem avisar.
+let original = {};
+const assinatura = p => JSON.stringify([p.titulo, p.resumo, p.corpo]);
+async function carrega() {
+  const d = await api("GET");
+  original = {};
+  [...d.rascunhos, ...d.publicados].forEach(p => { original[p.id] = assinatura(p); });
+  desenha(d);
+}
 
 async function entra() {
   try { await carrega(); $("area").hidden = false; } catch (e) {}
@@ -209,10 +218,18 @@ async function envia(e) {
   f.querySelectorAll("button").forEach(b => b.disabled = true);
   msg.textContent = "Salvando…";
   try {
+    const agora = await api("GET");
+    const noBanco = [...agora.rascunhos, ...agora.publicados].find(p => String(p.id) === f.dataset.id);
+    if (noBanco && original[f.dataset.id] && assinatura(noBanco) !== original[f.dataset.id]) {
+      msg.textContent = "";
+      f.querySelectorAll("button").forEach(b => b.disabled = false);
+      if (confirm("Este texto foi alterado depois que você abriu a página (por exemplo, uma correção do Claude). Recarregar para ver a versão mais nova? Suas mudanças nesta tela se perdem.")) location.reload();
+      return;
+    }
     const body = { id: f.dataset.id, titulo: f.titulo.value, resumo: f.resumo.value, corpo: f.corpo.value };
     if (acao !== "salvar") body.acao = acao;
     await api("PATCH", body);
-    if (acao === "salvar") { msg.textContent = "Salvo."; f.querySelectorAll("button").forEach(b => b.disabled = false); }
+    if (acao === "salvar") { original[f.dataset.id] = assinatura(body); msg.textContent = "Salvo."; f.querySelectorAll("button").forEach(b => b.disabled = false); }
     else {
       await carrega();
       // Depois de publicar, mostra onde o post foi parar, já com o aviso de publicado
