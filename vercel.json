@@ -3,6 +3,14 @@
     {
       "source": "/blog/:slug",
       "destination": "/blog/index.html"
+    },
+    {
+      "source": "/:nome(comandos|celulares|mesa)",
+      "destination": "/p/index.html"
+    },
+    {
+      "source": "/:nome(comandos|celulares|mesa)/",
+      "destination": "/p/index.html"
     }
   ],
   "redirects": [

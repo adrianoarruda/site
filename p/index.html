@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<title>Área privada · Adriano Arruda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..600&display=swap">
+<!-- Casca das páginas da Área privada que vieram dos artifacts (/comandos/, /celulares/, /mesa/...).
+     O vercel.json manda essas rotas para cá; o HTML de cada uma vem da API depois da sessão e roda num iframe. -->
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { display: flex; flex-direction: column; background: #fff; }
+  #barra { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: #000; color: #979797; font: 13px "Geist", Arial, sans-serif; padding: 9px 16px; }
+  #barra a, #barra button { color: #979797; background: none; border: 0; font: inherit; cursor: pointer; text-decoration: none; padding: 0; }
+  #barra a:hover, #barra button:hover { color: #fff; }
+  #barra b { color: #fff; font-weight: 500; }
+  #pagina { flex: 1; width: 100%; border: 0; display: block; }
+  #aviso { font: 15px "Geist", Arial, sans-serif; color: #5c5c5c; padding: 48px 16px; text-align: center; }
+</style>
+</head>
+<body>
+<div id="barra">
+  <a href="/privado/">← Área privada</a>
+  <span><b id="titulo"></b> <span id="enviado"></span> · <button id="sair" type="button">Sair</button></span>
+</div>
+<p id="aviso">Abrindo…</p>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const nome = location.pathname.split("/").filter(Boolean)[0] || "";
+
+  $("sair").addEventListener("click", async () => { await fetch("/api/entrar", { method: "DELETE" }); location.replace("/privado/"); });
+
+  fetch("/api/pagina?nome=" + encodeURIComponent(nome)).then(async r => {
+    // Sem sessão: entra pela área privada e volta para cá
+    if (r.status === 401) { location.replace("/privado/?volta=/" + nome + "/"); return; }
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $("aviso").textContent = r.status === 404 ? "Esta página não existe ou não está liberada com esta senha." : (j.erro || "Não deu certo."); return; }
+    document.title = j.titulo + " · Adriano Arruda";
+    $("titulo").textContent = j.titulo;
+    $("enviado").textContent = j.enviado ? "· atualizado em " + j.enviado : "";
+    const f = document.createElement("iframe");
+    f.id = "pagina";
+    f.title = j.titulo;
+    f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-modals allow-downloads");
+    f.srcdoc = j.html;
+    $("aviso").replaceWith(f);
+  }).catch(() => { $("aviso").textContent = "Sem conexão. Tente recarregar."; });
+})();
+</script>
+</body>
+</html>

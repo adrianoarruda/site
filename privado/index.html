@@ -195,6 +195,8 @@
           <span class="ir">Abrir →</span>
         </a>
       </div>
+      <!-- Páginas que vieram dos artifacts (lista da API, conforme a senha) -->
+      <div class="areas" id="outras" style="margin-top:14px"></div>
     </section>
   </div>
 </main>
@@ -214,7 +216,16 @@ function mostra(perfil) {
   $("tag").textContent = trab ? "do trabalho" : "pessoal";
   $("tag").classList.toggle("trab", trab);
   $("so-trab").hidden = !trab;
+  carregaOutras();
   if (trab) $("d-meudia").textContent = "Compromissos sem detalhes, tarefas do site e dos estudos, e salvos. Saúde, dinheiro, Detran e cartões ficam de fora.";
+}
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function carregaOutras() {
+  fetch("/api/pagina?lista=1").then(r => r.ok ? r.json() : { paginas: [] }).then(({ paginas }) => {
+    $("outras").innerHTML = paginas.map(p => `<a class="area-card" href="/${esc(p.nome)}/">
+      <h3 class="cond">${esc(p.titulo)}</h3>${p.descricao ? `<p>${esc(p.descricao)}</p>` : ""}<span class="ir">Abrir →</span></a>`).join("");
+  }).catch(() => {});
 }
 
 $("gate").addEventListener("submit", async e => {
