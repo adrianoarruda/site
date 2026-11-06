@@ -929,29 +929,30 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
       <div class="vs-head">
         <span class="crumb">Dashboards</span>
         <h3>Por que esse painel não é um Power BI</h3>
-        <p>Power BI para a operação acompanhar. Painel sob medida para a decisão ser tomada. Eu uso os dois e escolho pela pergunta.</p>
+        <p>Perto do dado, painel no Databricks ou em HTML. Na diretoria, por enquanto, Power BI. Eu faço os três e escolho pela distância entre quem faz e quem lê.</p>
       </div>
       <div class="vs-cols">
-        <div class="vs-c">
-          <span class="vs-tag">Power BI</span>
-          <b>Para o time explorar</b>
-          <ul>
-            <li>Cada um filtra e cruza do jeito que precisa, sem pedir ajuda.</li>
-            <li>Modelo de dados compartilhado e acesso controlado por pessoa.</li>
-            <li>Ótimo para acompanhar a operação, dia após dia.</li>
-          </ul>
-        </div>
         <div class="vs-c html">
           <span class="vs-tag">Dashboard navegável em HTML</span>
-          <b>Para convencer e explicar</b>
+          <b>Para quem vive o dado</b>
           <ul>
             <li>Navega como um site e abre por um link em qualquer tela, até no celular, sem login nem licença.</li>
-            <li>Conta a história: destaca o que mudou e termina numa conclusão.</li>
+            <li>Ligado à tabela por API: o dado aparece ao vivo.</li>
+            <li>Sem teto de visual: qualquer gráfico, com a cara do time.</li>
             <li>Perguntas prontas e, quando faz sentido, IA respondendo sobre os dados.</li>
-            <li>Com a cara da marca, sem o visual de mais um relatório.</li>
+          </ul>
+        </div>
+        <div class="vs-c">
+          <span class="vs-tag">Power BI</span>
+          <b>Para a diretoria confiar no número</b>
+          <ul>
+            <li>Modelo de dados compartilhado: todo mundo olha o mesmo número.</li>
+            <li>Acesso controlado por pessoa.</li>
+            <li>Formato que a diretoria já conhece e sabe onde encontrar.</li>
           </ul>
         </div>
       </div>
+      <a class="vs-post" href="/blog/nem-todo-painel-precisa-ser-um-power-bi-0nd6">Leia o post: Nem todo painel precisa ser um Power BI →</a>
     </div>
   </div>
 </section>
@@ -1274,7 +1275,9 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
   .vs-head { display: grid; gap: 14px; justify-items: start; max-width: 720px; }
   .vs-head h3 { margin: 0; font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; font-size: 56px; line-height: .92; letter-spacing: -.03em; }
   .vs-head p { margin: 0; font-size: 20px; line-height: 1.4; color: #5c5c5c; font-weight: 500; letter-spacing: -.02em; }
-  .vs-cols { display: grid; grid-template-columns: 1fr 1.25fr; gap: 16px; }
+  .vs-cols { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; }
+  .vs-post { justify-self: start; font-weight: 500; font-size: 17px; color: #000; text-decoration: underline; text-underline-offset: 4px; }
+  .vs-post:hover { color: var(--yellow); }
   .vs-c { background: #f3f3f3; border-radius: 24px; padding: 30px 32px; display: grid; gap: 14px; align-content: start; }
   .vs-c.html { background: #000; color: #fff; }
   .vs-tag { justify-self: start; font: 400 11px var(--mono, monospace); text-transform: uppercase; letter-spacing: .04em; border-radius: 9999px; padding: 4px 12px; background: rgba(0,0,0,.08); }
