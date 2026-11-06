@@ -728,48 +728,13 @@
   var t = document.querySelector(".topo-app"), pend = false;
   var inicio = t.querySelector('.barra-2 a.nav-link[href="#"]');
   var grupoDe = function (href) { var a = t.querySelector('.barra-2 .dropdown a[href^="' + href + '"]'); return a && a.closest(".menu-wrap").querySelector(".nav-link"); };
-  var sobre = grupoDe("#areas"), analises = grupoDe("/analises/");
-  var mapa = [["hero", inicio], ["areas", sobre], ["trajetoria", sobre], ["como", sobre], ["analises", analises]];
+  var sobre = grupoDe("#areas"), analises = grupoDe("/analises/"), blog = grupoDe("/blog/");
+  var mapa = [["hero", inicio], ["areas", sobre], ["trajetoria", sobre], ["como", sobre], ["analises", analises], ["blog", blog]];
   function atualiza() {
     pend = false;
     var linha = t.getBoundingClientRect().bottom + 24, atual = inicio;
-    mapa.forEach(function (m) { var el = document.getElementById(m[0]); if (el && el.getBoundingClientRect().top <= linha) atual = m[1]; });
-    [inicio, sobre, analises].forEach(function (l) { if (l) l.classList.toggle("ativo", l === atual); });
-  }
-  function pede() { if (!pend) { pend = true; requestAnimationFrame(atualiza); } }
-  addEventListener("scroll", pede, { passive: true }); addEventListener("resize", pede);
-  document.addEventListener("DOMContentLoaded", atualiza);
-})();</script><script>/* Menu de vidro: escuro sobre fundo escuro, claro sobre fundo claro (06/11/2026) */
-(function () {
-  var t = document.currentScript.previousElementSibling, pend = false;
-  function escuro(el) {
-    for (; el && el !== document.documentElement; el = el.parentElement) {
-      var c = (getComputedStyle(el).backgroundColor.match(/[0-9.]+/g) || []).map(Number);
-      if (c.length >= 3 && (c.length < 4 || c[3] > .5)) return .299 * c[0] + .587 * c[1] + .114 * c[2] < 110;
-    }
-    return false;
-  }
-  function atualiza() {
-    pend = false;
-    var r = t.getBoundingClientRect();
-    var atras = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2).filter(function (e) { return !t.contains(e); })[0];
-    t.classList.toggle("on-black", escuro(atras));
-  }
-  function pede() { if (!pend) { pend = true; requestAnimationFrame(atualiza); } }
-  addEventListener("scroll", pede, { passive: true }); addEventListener("resize", pede);
-  document.addEventListener("DOMContentLoaded", atualiza); addEventListener("load", atualiza);
-})();</script><script>/* Sublinhado do menu segue a seção (06/11/2026) */
-(function () {
-  var t = document.querySelector(".topo-app"), pend = false;
-  var inicio = t.querySelector('.barra-2 a.nav-link[href="#"]');
-  var grupoDe = function (href) { var a = t.querySelector('.barra-2 .dropdown a[href^="' + href + '"]'); return a && a.closest(".menu-wrap").querySelector(".nav-link"); };
-  var sobre = grupoDe("#areas"), analises = grupoDe("/blog/?tema=An");
-  var mapa = [["hero", inicio], ["areas", sobre], ["trajetoria", sobre], ["como", sobre], ["analises", analises]];
-  function atualiza() {
-    pend = false;
-    var linha = t.getBoundingClientRect().bottom + 24, atual = inicio;
-    mapa.forEach(function (m) { var el = document.getElementById(m[0]); if (el && el.getBoundingClientRect().top <= linha) atual = m[1]; });
-    [inicio, sobre, analises].forEach(function (l) { if (l) l.classList.toggle("ativo", l === atual); });
+    mapa.forEach(function (m) { var el = document.getElementById(m[0]); if (el && !el.hidden && el.getBoundingClientRect().top <= linha) atual = m[1]; });
+    [inicio, sobre, analises, blog].forEach(function (l) { if (l) l.classList.toggle("ativo", l === atual); });
   }
   function pede() { if (!pend) { pend = true; requestAnimationFrame(atualiza); } }
   addEventListener("scroll", pede, { passive: true }); addEventListener("resize", pede);
