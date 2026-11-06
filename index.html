@@ -264,12 +264,12 @@
 
   /* ---------- Rodapé ---------- */
   footer { background: var(--card); padding: 70px 0 40px; }
-  footer .cols { display: grid; grid-template-columns: 1.3fr repeat(4, 1fr); gap: 24px; }
+  footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px; }
   footer h6 { margin: 0 0 14px; font: 500 15px var(--sans); }
   footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   footer li a { color: var(--slate); font-size: 16px; }
   footer li a:hover { color: var(--ink); }
-  footer .bottom { margin-top: 60px; padding-top: 24px; border-top: 1px solid #e6e6e9; display: grid; grid-template-columns: 1.3fr repeat(4,1fr); gap: 24px; color: var(--slate); font-size: 15px; }
+  footer .bottom { margin-top: 60px; padding-top: 24px; border-top: 1px solid #e6e6e9; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px; color: var(--slate); font-size: 15px; }
   .credit { text-align: center; color: var(--ash); font-size: 12px; padding: 18px 16px 30px; background: var(--card); }
 
   /* ---------- Celular ---------- */
@@ -962,11 +962,9 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
     <div class="cols">
       <span style="font:400 24px/1 var(--serif)">Adriano Arruda</span>
       <div><h6>Site</h6><ul><li><a href="#areas">Áreas</a></li><li><a href="#trajetoria">Trajetória</a></li><li><a href="#como">Como trabalho</a></li><li><a href="#analises">Análises</a></li><li><a href="/blog/">Blog</a></li><li><a href="/curriculo/">Currículo</a></li></ul></div>
-      <div><h6>Formação</h6><ul><li><a>Pós em E-commerce · BSP</a></li><li><a>Design de Publicidade · Panamericana</a></li><li><a>Propaganda e Marketing · UNIP</a></li></ul></div>
-      <div><h6>Certificações</h6><ul><li><a>Ciência de Dados · USP/Esalq</a></li><li><a>CSPO · Scrum Product Owner</a></li><li><a>Google Analytics (GAIQ)</a></li><li><a>Google Ads</a></li></ul></div>
       <div><h6>Contato</h6><ul><li><a href="https://www.linkedin.com/in/adrianoarruda" target="_blank" rel="noopener">LinkedIn ↗</a></li><li><a href="https://github.com/adrianoarruda" target="_blank" rel="noopener">GitHub ↗</a></li></ul></div>
     </div>
-    <div class="bottom"><span></span><span>© 2026 Adriano Arruda</span><span>São Paulo, Brasil</span><span>Feito com HTML, JavaScript, Python e IA</span><span></span></div>
+    <div class="bottom"><span>Feito com HTML, JavaScript, Python e IA</span><span>© 2026 Adriano Arruda</span><span>São Paulo, Brasil</span></div>
   </div>
 </footer>
 
@@ -1194,6 +1192,9 @@ df[<span class="s">"real"</span>] = juro_real(df)</div></div></div><b>Código qu
     html body .feats3 .shot { aspect-ratio: 16 / 10; }
     /* Letras de 10px no diagrama */
     html body .core .three span { font-size: 11px; }
+    /* Rodapé: nome em cima, Site e Contato lado a lado; linha de baixo em 1 coluna */
+    html body footer .cols > span { grid-column: 1 / -1; }
+    html body footer .bottom { grid-template-columns: 1fr; gap: 8px; }
   }
 </style>
 </body>
