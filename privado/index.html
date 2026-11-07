@@ -134,6 +134,14 @@
   .area-card p { margin: 0; color: var(--soft); }
   .area-card .ir { font-weight: 500; }
   .area-card .so { justify-self: start; font-size: 11px; color: #fff; background: var(--blue); border-radius: 9999px; padding: 3px 10px; }
+  .area-card h3 a { text-decoration: none; }
+  .area-card h3 a::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
+  .cmds { position: relative; z-index: 1; display: grid; gap: 6px; margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .cmds .rot { font-size: 10.5px; color: var(--slate); }
+  .cmd { font: 13.5px/1.35 var(--mono); letter-spacing: -.01em; text-align: left; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; cursor: pointer; display: grid; gap: 2px; }
+  .cmd:hover { border-color: #000; }
+  .cmd small { font-family: var(--sans); font-size: 12px; color: var(--slate); }
+  .cmd.ok small { color: var(--ink); }
   .perfil { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 28px; color: var(--soft); }
   .perfil b { color: var(--ink); }
   .perfil .tag { font-size: 11px; color: #000; background: var(--green); border-radius: 9999px; padding: 3px 10px; }
@@ -154,7 +162,7 @@
   <div class="wrap">
     <div class="crumb mono">Área privada</div>
     <h1 class="cond">Área<br><span class="dim">privada</span></h1>
-    <p>Meu Dia, links úteis e rascunhos do blog. Uma senha abre os três.</p>
+    <p>Meu Dia, links, rascunhos e as páginas de pesquisa, com os comandos para pedir ao Claude em cada uma. Uma senha abre tudo.</p>
   </div>
 </header>
 
@@ -177,24 +185,7 @@
         <span>Conectado com a senha</span><span class="tag mono" id="tag"></span>
         <button class="sair" id="sair" type="button">Sair</button>
       </div>
-      <div class="areas">
-        <a class="area-card" href="/meudia/">
-          <h3 class="cond">Meu Dia</h3>
-          <p id="d-meudia">Pendências, compromissos, pagamentos e salvos.</p>
-          <span class="so mono" id="so-trab" hidden>Versão do trabalho</span>
-          <span class="ir">Abrir →</span>
-        </a>
-        <a class="area-card" href="/links/">
-          <h3 class="cond">Links úteis</h3>
-          <p>Ferramentas e referências de design, dados, desenvolvimento e IA.</p>
-          <span class="ir">Abrir →</span>
-        </a>
-        <a class="area-card" href="/rascunhos/">
-          <h3 class="cond">Rascunhos</h3>
-          <p>Posts que o Claude escreve toda segunda, para revisar e publicar no blog.</p>
-          <span class="ir">Abrir →</span>
-        </a>
-      </div>
+      <div class="areas" id="fixas"></div>
       <!-- Páginas que vieram dos artifacts (lista da API, conforme a senha) -->
       <div class="areas" id="outras" style="margin-top:14px"></div>
     </section>
@@ -215,16 +206,73 @@ function mostra(perfil) {
   const trab = perfil === "trabalho";
   $("tag").textContent = trab ? "do trabalho" : "pessoal";
   $("tag").classList.toggle("trab", trab);
-  $("so-trab").hidden = !trab;
+  perfilAtual = trab ? "trabalho" : "pessoal";
+  $("fixas").innerHTML = FIXAS.map(cartao).join("");
   carregaOutras();
-  if (trab) $("d-meudia").textContent = "Compromissos sem detalhes, tarefas do site e dos estudos, e salvos. Saúde, dinheiro, Detran e cartões ficam de fora.";
 }
+
+// Comandos para pedir ao Claude em cada página (clique copia a frase). 3º campo false = some na versão do trabalho.
+const COMANDOS = {
+  meudia: [
+    ["/meudia", "rodada completa: pendências, e-mails e o painel"],
+    ["só os e-mails", "só a triagem do Gmail"],
+    ["quais minhas pendências?", "resumo do que vence primeiro"],
+    ["resolvi <o quê>", "tira do painel e registra no histórico"],
+    ["paguei <a conta>", "move para Pagos", false],
+    ["/youtube-salvos  ·  /instagram-salvos", "atualiza a aba Salvos"],
+  ],
+  links: [
+    ["salva este link: <endereço>", "descreve, escolhe a categoria e grava"],
+    ["descreve os links sem descrição", "completa os que estão vazios"],
+  ],
+  rascunhos: [
+    ["roda a rotina do blog agora", "3 rascunhos novos fora da segunda"],
+    ["revisa o rascunho <título> no meu tom", "ajusta o texto antes de publicar"],
+    ["vira post: <assunto ou análise>", "rascunho novo sob encomenda"],
+  ],
+  celulares: [
+    ["atualiza os preços dos celulares", "ML, Amazon e Magalu, com histórico"],
+    ["inclui o <modelo> no comparativo", "ficha, preço e veredito"],
+    ["troca a recomendação para o <modelo>", "muda o destaque da página"],
+  ],
+  mesa: [
+    ["atualiza os preços das mesas", "mesas, braços e totais"],
+    ["analisa esta mesa: <link>", "diz se vale pôr na página"],
+    ["varre as lojas de mesa de novo", "catálogos, showroom em SP e montagem"],
+  ],
+  comandos: [
+    ["cria um comando para <tarefa>", "vira skill e entra no catálogo"],
+    ["atualiza o catálogo de comandos", "sincroniza skills e rotinas"],
+  ],
+};
+let perfilAtual = "pessoal";
+const FIXAS = [
+  { nome: "meudia", titulo: "Meu Dia", descricao: "Pendências, compromissos, pagamentos e salvos.", descTrab: "Compromissos sem detalhes, tarefas do site e dos estudos, e salvos. Saúde, dinheiro, Detran e cartões ficam de fora." },
+  { nome: "links", titulo: "Links úteis", descricao: "Ferramentas e referências de design, dados, desenvolvimento e IA." },
+  { nome: "rascunhos", titulo: "Rascunhos", descricao: "Posts que o Claude escreve toda segunda, para revisar e publicar no blog." },
+];
+function cartao(p) {
+  const trab = perfilAtual === "trabalho";
+  const cmds = (COMANDOS[p.nome] || []).filter(c => !(trab && c[2] === false));
+  const desc = trab && p.descTrab ? p.descTrab : p.descricao;
+  return `<div class="area-card">
+    <h3 class="cond"><a href="/${esc(p.nome)}/">${esc(p.titulo)}</a></h3>${desc ? `<p>${esc(desc)}</p>` : ""}
+    ${trab && p.nome === "meudia" ? '<span class="so mono">Versão do trabalho</span>' : ""}
+    ${cmds.length ? `<div class="cmds"><span class="rot mono">Peça ao Claude · clique para copiar</span>${cmds.map(([c, o]) =>
+      `<button type="button" class="cmd" data-c="${esc(c)}" title="Copiar a frase"><span>${esc(c)}</span><small>${esc(o)}</small></button>`).join("")}</div>` : ""}
+    <span class="ir">Abrir →</span></div>`;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest(".cmd"); if (!b) return;
+  const txt = b.dataset.c, sm = b.querySelector("small"), antes = sm.textContent;
+  const feito = () => { b.classList.add("ok"); sm.textContent = "copiado ✓"; setTimeout(() => { b.classList.remove("ok"); sm.textContent = antes; }, 1400); };
+  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(feito).catch(() => { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); try { document.execCommand("copy"); feito(); } catch (_) {} t.remove(); });
+});
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 function carregaOutras() {
   fetch("/api/pagina?lista=1").then(r => r.ok ? r.json() : { paginas: [] }).then(({ paginas }) => {
-    $("outras").innerHTML = paginas.map(p => `<a class="area-card" href="/${esc(p.nome)}/">
-      <h3 class="cond">${esc(p.titulo)}</h3>${p.descricao ? `<p>${esc(p.descricao)}</p>` : ""}<span class="ir">Abrir →</span></a>`).join("");
+    $("outras").innerHTML = paginas.map(cartao).join("");
   }).catch(() => {});
 }
 
