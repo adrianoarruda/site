@@ -104,21 +104,30 @@
     .rasc input.t { font-size: 24px; }
     .gate .row { flex-direction: column; }
   }
+
+  /* Barra única da Área privada (07/11/2026): cabeçalho claro, no padrão da visão geral */
+  body { background: #f5f5f4; }
+  header.hero { background: transparent; color: var(--ink); padding: 28px 0 22px; }
+  header.hero h1 { font-size: 44px; line-height: .95; margin-top: 4px; }
+  header.hero h1 .dim { color: inherit; }
+  header.hero .crumb::before { content: none; }
+  header.hero .crumb { font-size: 11.5px; color: var(--slate); }
+  header.hero p { color: var(--soft); font-size: 15px; margin-top: 10px; }
+  main { background: transparent; border-radius: 0; margin-top: 0; padding-top: 8px; }
+  .wrap { max-width: 1440px; }
+  /* Campos brancos com borda: no fundo cinza da Área privada, o cinza-claro antigo sumia */
+  input, textarea { background: #fff; border-color: var(--line); }
+  input:focus, textarea:focus { background: #fff; border-color: #000; }
+  @media (max-width: 640px) { header.hero { padding: 22px 0 16px; } header.hero h1 { font-size: 36px; } main { border-radius: 0; margin-top: 0; padding-top: 8px; } }
 </style>
 </head>
 <body>
-
-<nav class="top">
-  <div class="wrap">
-    <a class="brand cond" href="/">Adriano Arruda</a>
-    <div class="navlinks"><a href="/blog/">Blog</a><a href="/privado/">Área privada</a></div>
-  </div>
-</nav>
+<script src="/privado/barra.js"></script>
 
 <header class="hero">
   <div class="wrap">
     <div class="crumb mono">Área privada</div>
-    <h1 class="cond">Rascunhos<br><span class="dim">do blog</span></h1>
+    <h1 class="cond">Rascunhos do blog</h1>
     <p>Toda segunda, às 7h, o Claude escreve rascunhos a partir das fontes de notícia. Edite o que quiser e publique só o que tiver a sua cara. O que ficar aqui por mais de 15 dias é descartado sozinho.</p>
   </div>
 </header>

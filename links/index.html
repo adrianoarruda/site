@@ -93,24 +93,35 @@
   .novo .dica { font-size: 12px; color: #6f6f6f; }
   .fonte { justify-self: start; font-size: 11px; color: #fff; background: var(--blue, #4686ac); border-radius: 9999px; padding: 3px 9px; }
 
-  /* Lista por categoria */
-  .cat { margin-bottom: 44px; }
+  /* Lista compacta (07/11/2026): uma tabela por categoria, dentro de um cartão branco */
+  .cats { display: flex; flex-wrap: wrap; gap: 6px; margin: -16px 0 22px; }
+  .chip { font: 13px var(--sans); border: 1px solid var(--line); background: #fff; color: var(--soft); border-radius: 9999px; padding: 5px 12px; cursor: pointer; }
+  .chip:hover { border-color: #cfcfcf; color: var(--ink); }
+  .chip.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .chip small { font-family: var(--mono); font-size: 11px; opacity: .7; margin-left: 4px; }
+  .tabela { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
   .cat[hidden] { display: none; }
-  .cat h2 { margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px; font-size: 40px; line-height: .9; letter-spacing: -.03em; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
-  .cat h2 small { font-family: var(--mono); font-stretch: 100%; font-weight: 400; font-size: 12px; color: var(--slate); letter-spacing: .04em; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
-  .card { background: var(--card); border-radius: 16px; padding: 20px; display: grid; gap: 8px; align-content: start; position: relative; transition: background-color .2s; }
-  .card:hover { background: #ececec; }
-  .card[hidden] { display: none; }
-  .card a.t { font-weight: 600; font-size: 18px; letter-spacing: -.02em; text-decoration: none; }
-  .card a.t::after { content: ""; position: absolute; inset: 0; border-radius: 16px; }
-  .card a.t:hover { text-decoration: underline; }
-  .card .host { font-size: 11px; color: var(--slate); word-break: break-all; }
-  .card p { margin: 0; color: var(--soft); font-size: 15px; }
-  .card .pe { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; }
-  .card .pe .mono { font-size: 11px; color: var(--slate); }
-  .card .rm { position: relative; z-index: 1; background: none; border: 0; color: var(--slate); font: 13px var(--sans); cursor: pointer; padding: 2px 0; }
-  .card .rm:hover { color: var(--red); text-decoration: underline; }
+  .cat h2 { margin: 0; display: flex; align-items: baseline; gap: 10px; font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--soft); background: #fafafa; padding: 10px 18px; border-top: 1px solid var(--line); }
+  .cat:first-child h2 { border-top: 0; }
+  .cat h2 small { font-weight: 400; color: var(--slate); }
+  .lk { display: grid; grid-template-columns: minmax(200px, 1.1fr) minmax(0, 3fr) 92px 64px; gap: 4px 20px; align-items: baseline; padding: 11px 18px; border-top: 1px solid var(--line); }
+  .cat h2 + .lk { border-top: 0; }
+  .lk:hover { background: #fafaf9; }
+  .lk[hidden] { display: none; }
+  .lk .nome { display: grid; gap: 1px; min-width: 0; }
+  .lk a.t { font-weight: 600; font-size: 15px; letter-spacing: -.02em; text-decoration: none; }
+  .lk a.t:hover { text-decoration: underline; }
+  .lk .host { font-size: 11px; color: var(--slate); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lk .d { margin: 0; color: var(--soft); font-size: 14px; line-height: 1.45; }
+  .lk .fonte { font-size: 10px; padding: 1px 7px; margin-left: 6px; vertical-align: 1px; }
+  .lk .quando { font-size: 11px; color: var(--slate); white-space: nowrap; }
+  .lk .rm { background: none; border: 0; color: var(--slate); font: 13px var(--sans); cursor: pointer; padding: 0; justify-self: end; }
+  .lk .rm:hover { color: var(--red); text-decoration: underline; }
+  @media (max-width: 760px) {
+    .lk { grid-template-columns: minmax(0, 1fr) auto; }
+    .lk .nome { grid-column: 1; } .lk .rm { grid-column: 2; grid-row: 1; }
+    .lk .d { grid-column: 1 / -1; } .lk .quando { display: none; }
+  }
   .vazio { color: var(--soft); }
 
   footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--slate); font-size: 12px; }
@@ -121,25 +132,34 @@
     main { border-radius: 40px 40px 0 0; margin-top: -48px; padding-top: 40px; }
     .novo { padding: 20px; border-radius: 20px; }
     .novo .grid { grid-template-columns: 1fr; }
-    .cat h2 { font-size: 32px; }
     .gate .row { flex-direction: column; }
     .bar .n { margin-left: 0; width: 100%; }
   }
+
+  /* Barra única da Área privada (07/11/2026): cabeçalho claro, no padrão da visão geral */
+  body { background: #f5f5f4; }
+  header.hero { background: transparent; color: var(--ink); padding: 28px 0 22px; }
+  header.hero h1 { font-size: 44px; line-height: .95; margin-top: 4px; }
+  header.hero h1 .dim { color: inherit; }
+  header.hero .crumb::before { content: none; }
+  header.hero .crumb { font-size: 11.5px; color: var(--slate); }
+  header.hero p { color: var(--soft); font-size: 15px; margin-top: 10px; }
+  main { background: transparent; border-radius: 0; margin-top: 0; padding-top: 8px; }
+  .wrap { max-width: 1440px; }
+  /* Campos brancos com borda: no fundo cinza da Área privada, o cinza-claro antigo sumia */
+  input, textarea { background: #fff; border-color: var(--line); }
+  input:focus, textarea:focus { background: #fff; border-color: #000; }
+  .novo input, .novo textarea { border-color: transparent; }
+  @media (max-width: 640px) { header.hero { padding: 22px 0 16px; } header.hero h1 { font-size: 36px; } main { border-radius: 0; margin-top: 0; padding-top: 8px; } }
 </style>
 </head>
 <body>
-
-<nav class="top">
-  <div class="wrap">
-    <a class="brand cond" href="../">Adriano Arruda</a>
-    <a class="voltar" href="/privado/">← Área privada</a>
-  </div>
-</nav>
+<script src="/privado/barra.js"></script>
 
 <header class="hero">
   <div class="wrap">
     <div class="crumb mono">Área privada</div>
-    <h1 class="cond">Links<br><span class="dim">úteis</span></h1>
+    <h1 class="cond">Links úteis</h1>
     <p>Ferramentas e referências que eu quero ter sempre à mão: design, dashboards, desenvolvimento e IA.</p>
   </div>
 </header>
@@ -152,7 +172,6 @@
         <input type="search" id="busca" placeholder="Buscar por nome, site ou assunto" aria-label="Buscar links">
         <button class="btn green" id="abrir-novo" type="button">+ Incluir link</button>
         <span class="n mono" id="total"></span>
-        <button class="sair" id="sair" type="button">Sair</button>
       </div>
 
       <form class="novo" id="novo" hidden>
@@ -172,7 +191,8 @@
         <p class="erro" id="novo-erro" role="alert"></p>
       </form>
 
-      <div id="lista"></div>
+      <div class="cats" id="filtros" role="group" aria-label="Filtrar por categoria"></div>
+      <div class="tabela" id="lista"></div>
       <p class="vazio" id="vazio" hidden>Nada encontrado com essa busca.</p>
     </section>
   </div>
@@ -199,21 +219,24 @@ async function api(method, body, query = "") {
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const host = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u; } };
 
+let catSel = "";
 function desenha() {
   const cats = [...new Set(links.map(l => l.cat))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  if (catSel && !cats.includes(catSel)) catSel = "";
   $("cats").innerHTML = cats.map(c => `<option value="${esc(c)}">`).join("");
+  $("filtros").innerHTML = `<button type="button" class="chip${catSel ? "" : " on"}" data-cat="">Todas<small>${links.length}</small></button>` +
+    cats.map(c => `<button type="button" class="chip${c === catSel ? " on" : ""}" data-cat="${esc(c)}">${esc(c)}<small>${links.filter(l => l.cat === c).length}</small></button>`).join("");
   $("lista").innerHTML = cats.map(c => {
     const li = links.filter(l => l.cat === c).sort((a, b) => a.t.localeCompare(b.t, "pt-BR"));
     return `<section class="cat" data-cat="${esc(c)}">
-      <h2 class="cond">${esc(c)} <small>${li.length}</small></h2>
-      <div class="cards">${li.map(l => `
-        <article class="card" data-busca="${esc((l.t + " " + l.url + " " + l.cat + " " + l.d).toLowerCase())}">
-          <a class="t" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.t)}</a>
-          <span class="host mono">${esc(host(l.url))}</span>
-          ${l.feed ? `<span class="fonte mono" title="${esc(l.feed)}">Fonte do blog</span>` : ""}
-          ${l.d ? `<p>${esc(l.d)}</p>` : ""}
-          <div class="pe"><span class="mono">salvo em ${esc(l.add)}</span><button class="rm" type="button" data-id="${esc(l.id)}" data-t="${esc(l.t)}">Remover</button></div>
-        </article>`).join("")}</div>
+      <h2>${esc(c)} <small>${li.length}</small></h2>${li.map(l => `
+      <div class="lk" data-busca="${esc((l.t + " " + l.url + " " + l.cat + " " + l.d).toLowerCase())}">
+        <span class="nome"><span><a class="t" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.t)}</a>${l.feed ? `<span class="fonte mono" title="Fonte do blog: ${esc(l.feed)}">blog</span>` : ""}</span>
+          <span class="host mono">${esc(host(l.url))}</span></span>
+        <p class="d">${esc(l.d || "—")}</p>
+        <span class="quando mono">${esc(l.add)}</span>
+        <button class="rm" type="button" data-id="${esc(l.id)}" data-t="${esc(l.t)}">Remover</button>
+      </div>`).join("")}
     </section>`;
   }).join("");
   $("total").textContent = links.length + (links.length === 1 ? " link" : " links");
@@ -225,12 +248,20 @@ function filtra() {
   let algum = false;
   document.querySelectorAll(".cat").forEach(sec => {
     let n = 0;
-    sec.querySelectorAll(".card").forEach(c => { const ok = !q || c.dataset.busca.includes(q); c.hidden = !ok; if (ok) n++; });
+    const naCat = !catSel || sec.dataset.cat === catSel;
+    sec.querySelectorAll(".lk").forEach(c => { const ok = naCat && (!q || c.dataset.busca.includes(q)); c.hidden = !ok; if (ok) n++; });
     sec.hidden = n === 0;
     if (n) algum = true;
   });
+  $("lista").hidden = !algum;
   $("vazio").hidden = algum || !links.length;
 }
+$("filtros").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  catSel = b.dataset.cat;
+  document.querySelectorAll("#filtros .chip").forEach(x => x.classList.toggle("on", x === b));
+  filtra();
+});
 
 async function entra() {
   try {
@@ -241,7 +272,6 @@ async function entra() {
 }
 
 $("busca").addEventListener("input", filtra);
-$("sair").addEventListener("click", async () => { await fetch("/api/entrar", { method: "DELETE" }); location.replace("/privado/"); });
 
 $("abrir-novo").addEventListener("click", () => { $("novo").hidden = false; $("n-url").focus(); });
 $("cancelar").addEventListener("click", () => { $("novo").reset(); $("novo").hidden = true; $("novo-erro").textContent = ""; });

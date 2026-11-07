@@ -17,27 +17,22 @@
 <style>
   [hidden] { display: none !important; }
   html, body { margin: 0; }
-  #carregando { font: 15px "Figtree", Arial, sans-serif; color: #6b7280; padding: 40px 16px; text-align: center; }
+  #carregando { font: 15px "Geist", Arial, sans-serif; color: #5c5c5c; padding: 40px 16px; text-align: center; }
   /* O painel nasceu para o artifact (largura do claude.ai). No celular, sem isto, a grade passa da tela. */
   #app .wrap, #app .view { grid-template-columns: minmax(0, 1fr); }
   #app .wrap :where(section, div, details, ul, li, article, header, p, label) { min-width: 0; }
   #app .item .d, #app .pay .d { overflow-wrap: anywhere; }
+  /* A barra da Área privada encosta nas bordas: o espaçamento que o painel punha no body vai para o #app */
+  body { padding: 0 !important; }
+  #app { padding: 28px 16px 56px; }
   @media (max-width: 600px) { #app .views { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
-  /* Linha discreta do site no topo do painel, depois de entrar */
-  #barra-site { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 12px;
-    font: 13px "Figtree", Arial, sans-serif; color: #6b7280; padding-bottom: 12px; margin-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,.08); }
-  #barra-site a, #barra-site button { color: inherit; background: none; border: 0; font: inherit; cursor: pointer; text-decoration: none; padding: 0; }
-  #barra-site a:hover, #barra-site button:hover { color: #111; text-decoration: underline; }
 </style>
 </head>
 <body>
+<script src="/privado/barra.js"></script>
 
 <p id="carregando">Abrindo o Meu Dia…</p>
 
-<div id="barra-site" hidden>
-  <a href="/privado/">← Área privada</a>
-  <span><span id="perfil"></span><span id="enviado"></span> · <button id="sair" type="button">Sair</button></span>
-</div>
 <div id="app"></div>
 
 <script>
@@ -92,19 +87,13 @@
     }
   };
 
-  $("sair").addEventListener("click", async () => { await fetch("/api/entrar", { method: "DELETE" }); location.replace("/privado/"); });
-
   api("parte=conteudo").then(c => {
     $("carregando").remove();
     const estilo = document.createElement("style");
     estilo.textContent = c.css;
     document.head.appendChild(estilo);
     $("app").innerHTML = c.html;
-    $("perfil").textContent = c.perfil === "trabalho" ? "versão do trabalho · " : "";
-    $("enviado").textContent = c.enviado ? "enviado ao site em " + c.enviado : "";
-    $("barra-site").hidden = false;
-    const topo = document.querySelector("#app .wrap");
-    if (topo) topo.prepend($("barra-site"));
+    if (window.AreaBarra) AreaBarra.info((c.perfil === "trabalho" ? "Versão do trabalho · " : "") + (c.enviado ? "enviado ao site em " + c.enviado : ""));
     const script = document.createElement("script");
     script.textContent = c.js;
     document.body.appendChild(script);

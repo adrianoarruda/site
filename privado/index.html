@@ -8,208 +8,249 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#ffffff">
 <title>Área privada · Adriano Arruda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
 <style>
-  /* Mesma identidade da v3: preto e branco, verde neon como única cor de destaque */
+  /* Disposição de painel administrativo (barra no topo, cabeçalho da página, grade de cartões),
+     com a identidade do site: preto e branco, laranja como destaque. */
   :root {
-    --ink: #000; --slate: #8a8a8a; --soft: #5c5c5c; --line: #e5e5e5; --card: #f3f3f3; --paper: #fff;
-    --green: #ff3b1f; --green-h: #e5301a; --blue: #4686ac; --red: #d4321c;
+    --ink: #0b0b0b; --slate: #8a8a8a; --soft: #5c5c5c; --line: #e6e6e6; --bg: #f5f5f4; --card: #fff; --chip: #f1f1f0;
+    --accent: #ff3b1f; --accent-h: #e5301a; --accent-soft: #fff0ed; --blue: #4686ac; --blue-soft: #eaf2f7;
+    --green: #2f8f5b; --green-soft: #e8f5ee; --red: #d4321c; --amber: #b7791f; --amber-soft: #fdf3e2;
     --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
     --mono: "Geist Mono", ui-monospace, Consolas, monospace;
     --cond: "Archivo", "Arial Narrow", sans-serif;
+    --r: 14px;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   html, body { margin: 0; }
-  body { font: 16px/1.5 var(--sans); letter-spacing: -.01em; color: var(--ink); background: var(--paper); }
+  body { font: 15px/1.5 var(--sans); letter-spacing: -.01em; color: var(--ink); background: var(--bg); }
   a { color: inherit; }
-  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: 24px; }
-  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding-inline: 24px; }
+  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; }
   .cond { font-family: var(--cond); font-stretch: 68%; font-weight: 700; text-transform: uppercase; }
+  .ico { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-  nav.top { height: 72px; background: #000; }
-  nav.top .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .brand { color: #fff; text-decoration: none; font-size: 26px; letter-spacing: -.02em; }
-  .voltar { color: #979797; font-size: 14px; text-decoration: none; }
-  .voltar:hover { color: #fff; }
-
-  header.hero { background: #000; color: #fff; padding: 56px 0 96px; }
-  .crumb { font-size: 12px; color: #979797; }
-  .crumb::before { content: "— "; }
-  h1 { margin: 16px 0 0; font-size: clamp(64px, 11vw, 132px); line-height: .92; letter-spacing: -.04em; }
-  h1 .dim { color: #5c5c5c; }
-  .hero p { margin: 22px 0 0; max-width: 56ch; color: #cdcdcd; font-size: 18px; letter-spacing: -.02em; }
-
-  main { background: var(--paper); border-radius: 64px 64px 0 0; margin-top: -64px; position: relative; padding: 56px 0 96px; min-height: 50vh; }
-
-  .btn { font: 500 15px var(--sans); letter-spacing: -.01em; border: 0; cursor: pointer; height: 44px; padding-inline: 20px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
-  .btn.green { background: var(--green); color: #000; border-radius: 9999px; }
-  .btn.green:hover { background: var(--green-h); }
-  .btn.dark { background: #000; color: #fff; border-radius: 12px; }
-  .btn.dark:hover { background: #222; }
-  .btn.soft { background: var(--card); color: #000; border-radius: 12px; }
-  .btn.soft:hover { background: #e9e9e9; }
+  /* ---------- Cabeçalho da página ---------- */
+  .page-head { padding: 28px 0 22px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; }
+  .pretitulo { font-size: 11.5px; color: var(--slate); }
+  .page-head h1 { margin: 4px 0 0; font-size: 44px; line-height: .95; letter-spacing: -.03em; }
+  .acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { font: 500 14px var(--sans); letter-spacing: -.01em; height: 40px; padding-inline: 16px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border-radius: 10px; cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .btn:hover { border-color: #cfcfcf; }
+  .btn.pri { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .btn.pri:hover { background: #222; }
+  .btn.acc { background: var(--accent); border-color: var(--accent); color: #000; border-radius: 9999px; }
+  .btn.acc:hover { background: var(--accent-h); }
   .btn:disabled { opacity: .5; cursor: wait; }
 
-  input, textarea { font: 16px var(--sans); color: var(--ink); background: var(--card); border: 1px solid transparent; border-radius: 12px; padding: 11px 14px; width: 100%; }
-  input:focus, textarea:focus { outline: none; border-color: #000; background: #fff; }
-  textarea { resize: vertical; min-height: 84px; }
-  label.f { display: grid; gap: 6px; font-size: 13px; color: var(--soft); }
-  label.f span { font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em; font-size: 11px; }
-  :focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+  /* ---------- Grade e cartões ---------- */
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; padding-bottom: 48px; }
+  .c3 { grid-column: span 3; } .c4 { grid-column: span 4; } .c5 { grid-column: span 5; } .c6 { grid-column: span 6; } .c7 { grid-column: span 7; } .c8 { grid-column: span 8; } .c12 { grid-column: span 12; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .card-head h2 { margin: 0; font: 600 16px var(--sans); letter-spacing: -.02em; }
+  .card-head a { font-size: 13px; color: var(--soft); text-decoration: none; }
+  .card-head a:hover { color: var(--ink); text-decoration: underline; }
+  .sub { font-size: 11.5px; color: var(--slate); }
+  .num { font: 600 32px/1 var(--sans); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .num small { font-size: 14px; font-weight: 500; color: var(--slate); letter-spacing: -.01em; margin-left: 6px; }
+  .nota { color: var(--soft); font-size: 13.5px; margin: 0; }
+  .barra { height: 6px; border-radius: 9999px; background: var(--chip); overflow: hidden; }
+  .barra i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+
+  .boas { background: linear-gradient(135deg, #0b0b0b 0%, #232323 100%); color: #fff; border: 0; position: relative; overflow: hidden; }
+  .boas h2 { margin: 0; font-size: 40px; line-height: .95; letter-spacing: -.03em; }
+  .boas p { margin: 0; color: #cfcfcf; max-width: 46ch; }
+  .boas .mini { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 10px; }
+  .boas .mini .sub { color: #9b9b9b; }
+  .boas .mini b { display: block; font: 600 26px/1.1 var(--sans); letter-spacing: -.03em; }
+  .boas .mini b em { font-style: normal; font-size: 13px; color: var(--accent); margin-left: 6px; font-weight: 500; }
+  .boas .marca { position: absolute; right: -20px; bottom: -40px; font: 800 220px/1 var(--cond); font-stretch: 62%; color: rgba(255,255,255,.04); pointer-events: none; }
+  .boas .btn { background: #fff; color: #000; border-color: #fff; justify-self: start; margin-top: 6px; }
+
+  .stat-ico { display: flex; gap: 14px; align-items: center; }
+  .stat-ico .q { width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center; flex: none; }
+  .stat-ico .q .ico { width: 20px; height: 20px; }
+  .q.acc { background: var(--accent-soft); color: var(--accent); } .q.blue { background: var(--blue-soft); color: var(--blue); }
+  .q.green { background: var(--green-soft); color: var(--green); } .q.amber { background: var(--amber-soft); color: var(--amber); }
+  .stat-ico b { display: block; font-size: 15px; font-weight: 600; letter-spacing: -.02em; }
+  .stat-ico span { color: var(--slate); font-size: 13px; }
+  a.card { text-decoration: none; transition: border-color .15s; }
+  a.card:hover { border-color: #cfcfcf; }
+
+  .lista-itens { list-style: none; margin: 0; padding: 0; display: grid; }
+  .lista-itens li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 11px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .lista-itens li:first-child { border-top: 0; }
+  .lista-itens .t { font-weight: 500; }
+  .lista-itens .meta { grid-column: 1; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .lista-itens .due { font-size: 12.5px; color: var(--red); text-align: right; }
+  .lista-itens .due.amb { color: var(--amber); } .lista-itens .due.cin { color: var(--slate); }
+  .tag { font-size: 10.5px; padding: 2px 8px; border-radius: 9999px; background: var(--chip); color: var(--soft); white-space: nowrap; }
+  .vazio { color: var(--slate); font-size: 14px; padding: 8px 0; }
+
+  .agenda li { grid-template-columns: 52px minmax(0, 1fr); }
+  .dia { text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 4px 0; line-height: 1.1; }
+  .dia b { display: block; font: 600 18px var(--sans); }
+  .dia span { font-size: 10px; color: var(--slate); text-transform: uppercase; letter-spacing: .05em; }
+  .dia.hoje { border-color: var(--accent); }
+  .agenda .info { display: grid; gap: 2px; }
+  .agenda .info span { color: var(--slate); font-size: 13px; }
+
+  /* Páginas e comandos */
+  .pag { display: grid; gap: 10px; align-content: start; }
+  .pag h3 { margin: 0; font-size: 30px; line-height: .95; letter-spacing: -.03em; }
+  .pag h3 a { text-decoration: none; }
+  .pag h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .pag p { margin: 0; color: var(--soft); font-size: 14px; }
+  .cmds { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .cmd { font: 13px/1.35 var(--mono); letter-spacing: -.01em; text-align: left; color: var(--ink); background: var(--bg); border: 1px solid transparent; border-radius: 9px; padding: 8px 10px; cursor: pointer; display: grid; gap: 2px; }
+  .cmd:hover { border-color: #cfcfcf; background: #fff; }
+  .cmd small { font-family: var(--sans); font-size: 12px; color: var(--slate); }
+  .cmd.ok small { color: var(--green); }
+  .pag .abrir { font-weight: 500; text-decoration: none; justify-self: start; font-size: 14px; }
+  .pag .abrir:hover { text-decoration: underline; }
+  .so { justify-self: start; font-size: 10.5px; color: #fff; background: var(--blue); border-radius: 9999px; padding: 2px 9px; }
 
   /* Portão da senha */
-  .gate { max-width: 420px; display: grid; gap: 14px; }
-  .gate h2 { margin: 0; font-size: 44px; line-height: .9; letter-spacing: -.03em; }
+  .gate-wrap { min-height: calc(100vh - 64px); display: grid; place-items: center; padding: 24px; }
+  .gate { width: min(420px, 100%); background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: grid; gap: 14px; }
+  .gate h2 { margin: 0; font-size: 40px; line-height: .9; letter-spacing: -.03em; }
   .gate p { margin: 0; color: var(--soft); }
-  .gate .row { display: flex; gap: 8px; }
-  .gate .row input { flex: 1; }
+  .gate input[type=password] { font: 16px var(--sans); color: var(--ink); background: var(--bg); border: 1px solid transparent; border-radius: 10px; padding: 11px 14px; width: 100%; }
+  .gate input[type=password]:focus { outline: none; border-color: var(--ink); background: #fff; }
   .lembrar { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--soft); cursor: pointer; }
-  .erro, .gate .erro { color: var(--red); font-size: 14px; margin: 0; min-height: 21px; }
+  .erro { color: var(--red); font-size: 14px; margin: 0; min-height: 21px; }
 
-  /* Barra de ferramentas */
-  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 36px; }
-  .bar input[type=search] { flex: 1 1 260px; max-width: 420px; border-radius: 9999px; padding-left: 18px; }
-  .bar .n { font-size: 12px; color: var(--slate); margin-left: auto; }
-  .bar .sair { background: none; border: 0; color: var(--slate); font: 14px var(--sans); cursor: pointer; text-decoration: underline; }
+  footer { border-top: 1px solid var(--line); padding: 20px 0 32px; color: var(--slate); font-size: 12px; }
 
-  /* Formulário de inclusão */
-  .novo { background: #000; color: #fff; border-radius: 24px; padding: 28px; margin-bottom: 40px; display: grid; gap: 16px; }
-  .novo[hidden] { display: none; }
-  .novo h3 { margin: 0; font-size: 36px; line-height: .9; letter-spacing: -.03em; }
-  .novo .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .novo .full { grid-column: 1 / -1; }
-  .novo label.f { color: #979797; }
-  .novo input, .novo textarea { background: #1a1a1a; color: #fff; }
-  .novo input:focus, .novo textarea:focus { border-color: var(--green); background: #111; }
-  .novo .acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .novo .btn.soft { background: #1a1a1a; color: #fff; }
-  .novo .btn.soft:hover { background: #262626; }
-  .novo .erro { color: #ff8a73; }
-  .novo .dica { font-size: 12px; color: #6f6f6f; }
-  .fonte { justify-self: start; font-size: 10.5px; color: #fff; background: var(--blue, #4686ac); border-radius: 9999px; padding: 3px 9px; }
-
-  /* Lista por categoria */
-  .cat { margin-bottom: 44px; }
-  .cat[hidden] { display: none; }
-  .cat h2 { margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px; font-size: 40px; line-height: .9; letter-spacing: -.03em; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
-  .cat h2 small { font-family: var(--mono); font-stretch: 100%; font-weight: 400; font-size: 12px; color: var(--slate); letter-spacing: .04em; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
-  .card { background: var(--card); border-radius: 16px; padding: 20px; display: grid; gap: 8px; align-content: start; position: relative; transition: background-color .2s; }
-  .card:hover { background: #ececec; }
-  .card[hidden] { display: none; }
-  .card a.t { font-weight: 600; font-size: 18px; letter-spacing: -.02em; text-decoration: none; }
-  .card a.t::after { content: ""; position: absolute; inset: 0; border-radius: 16px; }
-  .card a.t:hover { text-decoration: underline; }
-  .card .host { font-size: 11px; color: var(--slate); word-break: break-all; }
-  .card p { margin: 0; color: var(--soft); font-size: 15px; }
-  .card .pe { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; }
-  .card .pe .mono { font-size: 11px; color: var(--slate); }
-  .card .rm { position: relative; z-index: 1; background: none; border: 0; color: var(--slate); font: 13px var(--sans); cursor: pointer; padding: 2px 0; }
-  .card .rm:hover { color: var(--red); text-decoration: underline; }
-  .vazio { color: var(--soft); }
-
-  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--slate); font-size: 12px; }
-
+  @media (max-width: 1180px) {
+    .c3 { grid-column: span 6; } .c4, .c5, .c7, .c8 { grid-column: span 12; } .c6 { grid-column: span 12; }
+  }
   @media (max-width: 640px) {
     .wrap { padding-inline: 16px; }
-    header.hero { padding: 40px 0 88px; }
-    main { border-radius: 40px 40px 0 0; margin-top: -48px; padding-top: 40px; }
-    .novo { padding: 20px; border-radius: 20px; }
-    .novo .grid { grid-template-columns: 1fr; }
-    .cat h2 { font-size: 32px; }
-    .gate .row { flex-direction: column; }
-    .bar .n { margin-left: 0; width: 100%; }
+    .c3 { grid-column: span 12; }
+    .page-head h1 { font-size: 36px; }
+    .boas h2 { font-size: 32px; }
   }
-
-  /* Área privada: entrada única */
-  .areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
-  .area-card { background: var(--card); border-radius: 20px; padding: 26px; display: grid; gap: 10px; align-content: start; position: relative; text-decoration: none; transition: background-color .2s; }
-  .area-card:hover { background: #ececec; }
-  .area-card h3 { margin: 0; font-size: 40px; line-height: .9; letter-spacing: -.03em; }
-  .area-card p { margin: 0; color: var(--soft); }
-  .area-card .ir { font-weight: 500; }
-  .area-card .so { justify-self: start; font-size: 11px; color: #fff; background: var(--blue); border-radius: 9999px; padding: 3px 10px; }
-  .area-card h3 a { text-decoration: none; }
-  .area-card h3 a::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
-  .cmds { position: relative; z-index: 1; display: grid; gap: 6px; margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
-  .cmds .rot { font-size: 10.5px; color: var(--slate); }
-  .cmd { font: 13.5px/1.35 var(--mono); letter-spacing: -.01em; text-align: left; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; cursor: pointer; display: grid; gap: 2px; }
-  .cmd:hover { border-color: #000; }
-  .cmd small { font-family: var(--sans); font-size: 12px; color: var(--slate); }
-  .cmd.ok small { color: var(--ink); }
-  .perfil { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 28px; color: var(--soft); }
-  .perfil b { color: var(--ink); }
-  .perfil .tag { font-size: 11px; color: #000; background: var(--green); border-radius: 9999px; padding: 3px 10px; }
-  .perfil .tag.trab { background: var(--blue); color: #fff; }
-  .perfil .sair { background: none; border: 0; color: var(--slate); font: 14px var(--sans); cursor: pointer; text-decoration: underline; margin-left: auto; }
 </style>
 </head>
 <body>
 
-<nav class="top">
-  <div class="wrap">
-    <a class="brand cond" href="/">Adriano Arruda</a>
-    <a class="voltar" href="/">← Voltar ao site</a>
-  </div>
-</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-casa" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></symbol>
+  <symbol id="i-dia" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-texto" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-lupa" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-term" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></symbol>
+  <symbol id="i-seta" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-sair" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/></symbol>
+  <symbol id="i-site" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-relogio" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-cifrao" viewBox="0 0 24 24"><path d="M12 3v18M16 7.5C16 5.6 14.2 4.5 12 4.5S8 5.6 8 7.5s1.8 2.8 4 3.3 4 1.4 4 3.4-1.8 3.3-4 3.3-4-1.2-4-3"/></symbol>
+  <symbol id="i-marca" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+</svg>
 
-<header class="hero">
-  <div class="wrap">
-    <div class="crumb mono">Área privada</div>
-    <h1 class="cond">Área<br><span class="dim">privada</span></h1>
-    <p>Meu Dia, links, rascunhos e as páginas de pesquisa, com os comandos para pedir ao Claude em cada uma. Uma senha abre tudo.</p>
-  </div>
-</header>
+<script src="/privado/barra.js"></script>
 
-<main>
+<div class="gate-wrap" id="gate-wrap" hidden>
+  <form class="gate" id="gate" autocomplete="on">
+    <span class="pretitulo mono">Área privada</span>
+    <h2 class="cond">Precisa de senha</h2>
+    <p>Esta área é só minha.</p>
+    <input type="text" name="username" value="adrianoarruda.com" autocomplete="username" hidden>
+    <input type="password" id="senha" name="password" autocomplete="current-password" placeholder="Senha" required aria-label="Senha">
+    <label class="lembrar"><input type="checkbox" id="lembrar"> Manter conectado neste aparelho por 30 dias</label>
+    <button class="btn acc" id="entrar" type="submit" style="justify-content:center">Entrar →</button>
+    <p class="erro" id="gate-erro" role="alert"></p>
+  </form>
+</div>
+
+<main id="area" hidden>
   <div class="wrap">
-    <form class="gate" id="gate" autocomplete="on" hidden>
-      <h2 class="cond">Precisa de senha</h2>
-      <p>Esta área é só minha.</p>
-      <input type="text" name="username" value="adrianoarruda.com" autocomplete="username" hidden>
-      <div class="row">
-        <input type="password" id="senha" name="password" autocomplete="current-password" placeholder="Senha" required aria-label="Senha">
-        <button class="btn green" id="entrar" type="submit">Entrar →</button>
+    <div class="page-head">
+      <div>
+        <div class="pretitulo mono">Área privada · <span id="hoje"></span></div>
+        <h1 class="cond">Visão geral</h1>
       </div>
-      <label class="lembrar"><input type="checkbox" id="lembrar" style="width:auto"> Manter conectado neste aparelho por 30 dias</label>
-      <p class="erro" id="gate-erro" role="alert"></p>
-    </form>
-
-    <section id="area" hidden>
-      <div class="perfil">
-        <span>Conectado com a senha</span><span class="tag mono" id="tag"></span>
-        <button class="sair" id="sair" type="button">Sair</button>
+      <div class="acoes">
+        <a class="btn" href="/rascunhos/"><svg class="ico"><use href="#i-texto"/></svg>Revisar rascunhos</a>
+        <a class="btn pri" href="/meudia/"><svg class="ico"><use href="#i-dia"/></svg>Abrir o Meu Dia</a>
       </div>
-      <div class="areas" id="fixas"></div>
-      <!-- Páginas que vieram dos artifacts (lista da API, conforme a senha) -->
-      <div class="areas" id="outras" style="margin-top:14px"></div>
-    </section>
+    </div>
+
+    <div class="grid">
+      <!-- Boas-vindas + números do Meu Dia -->
+      <section class="card boas c6">
+        <span class="marca" aria-hidden="true">AA</span>
+        <span class="sub mono" id="b-stamp">Meu Dia</span>
+        <h2 class="cond">Olá, Adriano</h2>
+        <p id="b-frase">Carregando o seu dia…</p>
+        <div class="mini">
+          <div><span class="sub mono">Para fazer agora</span><b id="b-agora">–</b></div>
+          <div><span class="sub mono">Com data</span><b id="b-datas">–</b></div>
+          <div><span class="sub mono">Esperando resposta</span><b id="b-espera">–</b></div>
+        </div>
+        <a class="btn" href="/meudia/">Ver pendências →</a>
+      </section>
+
+      <a class="card c3" href="/meudia/#compromissos">
+        <span class="sub mono">Próximo compromisso</span>
+        <div class="num" id="k-comp">–</div>
+        <p class="nota" id="k-comp-t"></p>
+      </a>
+
+      <a class="card c3" id="k-pag-card" href="/meudia/#pagamentos">
+        <span class="sub mono">A pagar</span>
+        <div class="num" id="k-pag">–</div>
+        <p class="nota" id="k-pag-t"></p>
+      </a>
+
+      <!-- Atalhos com número -->
+      <a class="card c3" href="/rascunhos/"><div class="stat-ico"><span class="q acc"><svg class="ico"><use href="#i-texto"/></svg></span><div><b id="s-rasc">–</b><span>rascunhos na fila do blog</span></div></div></a>
+      <a class="card c3" href="/links/"><div class="stat-ico"><span class="q blue"><svg class="ico"><use href="#i-link"/></svg></span><div><b id="s-links">–</b><span>links úteis salvos</span></div></div></a>
+      <a class="card c3" href="/meudia/#salvos"><div class="stat-ico"><span class="q green"><svg class="ico"><use href="#i-marca"/></svg></span><div><b id="s-salvos">–</b><span>salvos para ver (YouTube e Instagram)</span></div></div></a>
+      <a class="card c3" href="#paginas"><div class="stat-ico"><span class="q amber"><svg class="ico"><use href="#i-lupa"/></svg></span><div><b id="s-pags">–</b><span>páginas de pesquisa</span></div></div></a>
+
+      <!-- Listas -->
+      <section class="card c7">
+        <div class="card-head"><h2>Para fazer agora</h2><a href="/meudia/">Ver tudo →</a></div>
+        <ul class="lista-itens" id="l-agora"><li class="vazio">Carregando…</li></ul>
+      </section>
+      <section class="card c5">
+        <div class="card-head"><h2>Próximos compromissos</h2><a href="/meudia/#compromissos">Agenda →</a></div>
+        <ul class="lista-itens agenda" id="l-comp"><li class="vazio">Carregando…</li></ul>
+      </section>
+
+      <section class="card c7">
+        <div class="card-head"><h2>Com data marcada</h2><a href="/meudia/">Ver tudo →</a></div>
+        <ul class="lista-itens" id="l-datas"><li class="vazio">Carregando…</li></ul>
+      </section>
+      <section class="card c5">
+        <div class="card-head"><h2>Resolvido nos últimos dias</h2></div>
+        <ul class="lista-itens" id="l-rec"><li class="vazio">Carregando…</li></ul>
+      </section>
+
+      <!-- Páginas, com os comandos de cada uma -->
+      <div class="c12 card-head" id="paginas" style="padding-top:12px"><h2 style="font-size:18px">Páginas e comandos</h2><span class="sub mono">Clique numa frase para copiar e colar na conversa com o Claude</span></div>
+      <div class="c12 grid" id="pags" style="padding:0;grid-column:span 12"></div>
+    </div>
   </div>
+  <footer><div class="wrap mono">Adriano Arruda · área privada</div></footer>
 </main>
-
-<footer><div class="wrap mono">Adriano Arruda · área privada</div></footer>
 
 <script>
 const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 // Depois de entrar, volta para a página que pediu a senha (só caminhos deste site)
 const volta = (() => { const v = new URLSearchParams(location.search).get("volta") || ""; return /^\/[a-z]/.test(v) ? v : ""; })();
-
-function mostra(perfil) {
-  if (volta) { location.replace(volta); return; }
-  $("gate").hidden = true;
-  $("area").hidden = false;
-  const trab = perfil === "trabalho";
-  $("tag").textContent = trab ? "do trabalho" : "pessoal";
-  $("tag").classList.toggle("trab", trab);
-  perfilAtual = trab ? "trabalho" : "pessoal";
-  $("fixas").innerHTML = FIXAS.map(cartao).join("");
-  carregaOutras();
-}
 
 // Comandos para pedir ao Claude em cada página (clique copia a frase). 3º campo false = some na versão do trabalho.
 const COMANDOS = {
@@ -245,22 +286,24 @@ const COMANDOS = {
     ["atualiza o catálogo de comandos", "sincroniza skills e rotinas"],
   ],
 };
-let perfilAtual = "pessoal";
 const FIXAS = [
-  { nome: "meudia", titulo: "Meu Dia", descricao: "Pendências, compromissos, pagamentos e salvos.", descTrab: "Compromissos sem detalhes, tarefas do site e dos estudos, e salvos. Saúde, dinheiro, Detran e cartões ficam de fora." },
-  { nome: "links", titulo: "Links úteis", descricao: "Ferramentas e referências de design, dados, desenvolvimento e IA." },
-  { nome: "rascunhos", titulo: "Rascunhos", descricao: "Posts que o Claude escreve toda segunda, para revisar e publicar no blog." },
+  { nome: "meudia", titulo: "Meu Dia", icone: "i-dia", descricao: "Pendências, compromissos, pagamentos e salvos.", descTrab: "Compromissos sem detalhes, tarefas do site e dos estudos, e salvos. Saúde, dinheiro, Detran e cartões ficam de fora." },
+  { nome: "links", titulo: "Links úteis", icone: "i-link", descricao: "Ferramentas e referências de design, dados, desenvolvimento e IA." },
+  { nome: "rascunhos", titulo: "Rascunhos", icone: "i-texto", descricao: "Posts que o Claude escreve toda segunda, para revisar e publicar no blog." },
 ];
+let perfilAtual = "pessoal";
+
+// ---------- Páginas com comandos ----------
 function cartao(p) {
   const trab = perfilAtual === "trabalho";
   const cmds = (COMANDOS[p.nome] || []).filter(c => !(trab && c[2] === false));
   const desc = trab && p.descTrab ? p.descTrab : p.descricao;
-  return `<div class="area-card">
+  return `<section class="card pag c4">
     <h3 class="cond"><a href="/${esc(p.nome)}/">${esc(p.titulo)}</a></h3>${desc ? `<p>${esc(desc)}</p>` : ""}
     ${trab && p.nome === "meudia" ? '<span class="so mono">Versão do trabalho</span>' : ""}
-    ${cmds.length ? `<div class="cmds"><span class="rot mono">Peça ao Claude · clique para copiar</span>${cmds.map(([c, o]) =>
+    ${cmds.length ? `<div class="cmds"><span class="sub mono">Peça ao Claude</span>${cmds.map(([c, o]) =>
       `<button type="button" class="cmd" data-c="${esc(c)}" title="Copiar a frase"><span>${esc(c)}</span><small>${esc(o)}</small></button>`).join("")}</div>` : ""}
-    <span class="ir">Abrir →</span></div>`;
+    <a class="abrir" href="/${esc(p.nome)}/">Abrir →</a></section>`;
 }
 document.addEventListener("click", e => {
   const b = e.target.closest(".cmd"); if (!b) return;
@@ -269,35 +312,99 @@ document.addEventListener("click", e => {
   (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(feito).catch(() => { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); try { document.execCommand("copy"); feito(); } catch (_) {} t.remove(); });
 });
 
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-function carregaOutras() {
+// ---------- Dados ----------
+const brl = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+const hojeISO = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+function corDue(t) { return /atras|hoje|desde|amanhã|era /i.test(t) ? "" : /\d/.test(t) ? "amb" : "cin"; }
+function itens(el, lista, n, vazio) {
+  const vis = lista.slice(0, n);
+  el.innerHTML = vis.length ? vis.map(i => `<li><span class="t">${esc(i.t)}</span><span class="due ${corDue(i.due)}">${esc(i.due)}</span>
+    <span class="meta"><span class="tag">${esc(i.area)}</span></span></li>`).join("") +
+    (lista.length > n ? `<li class="vazio">e mais ${lista.length - n} no Meu Dia</li>` : "") : `<li class="vazio">${vazio}</li>`;
+}
+
+async function carregaResumo() {
+  try {
+    const [r, m] = await Promise.all([
+      fetch("/api/meudia?parte=resumo").then(x => x.ok ? x.json() : null),
+      fetch("/api/meudia?parte=marcas").then(x => x.ok ? x.json() : { marcas: {} }),
+    ]);
+    const R = r && r.resumo; if (!R) { $("b-frase").textContent = "O resumo do Meu Dia ainda não foi enviado."; return; }
+    const feito = id => m.marcas[id] && m.marcas[id].done;
+    const agora = R.agora.filter(i => !feito(i.id)), datas = R.datas.filter(i => !feito(i.id)), espera = R.espera.filter(i => !feito(i.id));
+    $("b-stamp").textContent = "Meu Dia · " + (R.stamp || ("enviado " + r.enviado));
+    $("b-agora").innerHTML = agora.length; $("b-datas").textContent = datas.length; $("b-espera").textContent = espera.length;
+    $("b-frase").textContent = agora.length ? `Você tem ${agora.length} ${agora.length === 1 ? "coisa" : "coisas"} para resolver agora e ${datas.length} com data marcada.` : "Nada urgente agora. Bom momento para adiantar o que tem data.";
+    itens($("l-agora"), agora, 6, "Nada para agora.");
+    itens($("l-datas"), datas, 6, "Nada com data.");
+    $("l-rec").innerHTML = (R.recentes || []).length ? R.recentes.map(t => `<li><span class="t" style="font-weight:400">${esc(t)}</span><span class="due cin">✓</span></li>`).join("") : '<li class="vazio">Nada por aqui.</li>';
+
+    const hoje = hojeISO();
+    const prox = R.compromissos.filter(c => c.quando.slice(0, 10) >= hoje && !feito(c.id)).sort((a, b) => a.quando.localeCompare(b.quando));
+    $("l-comp").innerHTML = prox.length ? prox.slice(0, 5).map(c => {
+      const d = new Date(c.quando.length > 10 ? c.quando : c.quando + "T12:00");
+      const hora = c.quando.length > 10 ? c.quando.slice(11, 16).replace(":00", "h").replace(":", "h") : "";
+      return `<li><div class="dia${c.quando.slice(0, 10) === hoje ? " hoje" : ""}"><b>${d.getDate()}</b><span>${MESES[d.getMonth()]}</span></div>
+        <div class="info"><b style="font-weight:500">${esc(c.t)}</b><span>${DIAS[d.getDay()]}${hora ? ", " + hora : ""}${c.local ? " · " + esc(c.local) : ""}</span></div></li>`;
+    }).join("") : '<li class="vazio">Nenhum compromisso pela frente.</li>';
+    if (prox.length) {
+      const c = prox[0], d = new Date(c.quando.length > 10 ? c.quando : c.quando + "T12:00");
+      const dias = Math.round((new Date(c.quando.slice(0, 10) + "T12:00") - new Date(hoje + "T12:00")) / 864e5);
+      $("k-comp").innerHTML = `${d.getDate()} ${MESES[d.getMonth()]}<small>${dias === 0 ? "hoje" : dias === 1 ? "amanhã" : "em " + dias + " dias"}</small>`;
+      $("k-comp-t").textContent = c.t + (c.quando.length > 10 ? " · " + c.quando.slice(11, 16).replace(":00", "h").replace(":", "h") : "");
+    } else { $("k-comp").textContent = "—"; $("k-comp-t").textContent = "Nada marcado."; }
+
+    if (R.pagar) {
+      const ab = R.pagar.filter(p => !feito(p.id)), total = ab.reduce((s, p) => s + (p.valor || 0), 0);
+      $("k-pag").innerHTML = `${ab.length}<small>${ab.length === 1 ? "conta ou multa" : "contas e multas"}</small>`;
+      $("k-pag-t").textContent = ab.length ? "≈ " + brl(total) + " no total, no plano dos próximos meses" : "Nada pendente.";
+    }
+    const sv = R.salvos || {}; $("s-salvos").textContent = Object.values(sv).reduce((s, n) => s + n, 0).toLocaleString("pt-BR");
+  } catch (_) { $("b-frase").textContent = "Não consegui carregar o resumo agora."; }
+}
+function carregaNumeros() {
+  fetch("/api/posts?rascunhos=1").then(r => r.ok ? r.json() : null).then(j => { if (j) $("s-rasc").textContent = j.rascunhos.length; }).catch(() => {});
+  fetch("/api/links").then(r => r.ok ? r.json() : null).then(j => { if (j) $("s-links").textContent = (j.links || j).length; }).catch(() => {});
+}
+function carregaPaginas() {
   fetch("/api/pagina?lista=1").then(r => r.ok ? r.json() : { paginas: [] }).then(({ paginas }) => {
-    $("outras").innerHTML = paginas.map(cartao).join("");
-  }).catch(() => {});
+    $("s-pags").textContent = paginas.filter(p => p.nome !== "comandos").length;
+    $("pags").innerHTML = FIXAS.concat(paginas).map(cartao).join("");
+  }).catch(() => { $("pags").innerHTML = FIXAS.map(cartao).join(""); });
+}
+
+function mostra(perfil) {
+  if (volta) { location.replace(volta); return; }
+  const trab = perfil === "trabalho";
+  perfilAtual = trab ? "trabalho" : "pessoal";
+  $("gate-wrap").hidden = true; $("area").hidden = false;
+  const d = new Date(); $("hoje").textContent = DIAS[d.getDay()] + ", " + d.getDate() + " de " + MESES[d.getMonth()];
+  // Versão do trabalho: sem dinheiro
+  $("k-pag-card").hidden = trab;
+  if (trab) { const c = document.querySelector('a.card[href="/meudia/#compromissos"]'); c.classList.replace("c3", "c6"); }
+  carregaPaginas(); carregaResumo(); carregaNumeros();
 }
 
 $("gate").addEventListener("submit", async e => {
   e.preventDefault();
-  $("entrar").disabled = true;
-  $("gate-erro").textContent = "";
+  $("entrar").disabled = true; $("gate-erro").textContent = "";
   try {
     const r = await fetch("/api/entrar", { method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({ senha: $("senha").value, lembrar: $("lembrar").checked }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(r.status === 401 ? "Senha incorreta." : (j.erro || "Não deu certo (erro " + r.status + ")"));
     mostra(j.perfil);
-  } catch (err) {
-    $("gate-erro").textContent = err.message;
-  } finally {
-    $("entrar").disabled = false;
-  }
+    window.AreaBarra && window.AreaBarra.recarrega();
+  } catch (err) { $("gate-erro").textContent = err.message; }
+  finally { $("entrar").disabled = false; }
 });
 
-$("sair").addEventListener("click", async () => { await fetch("/api/entrar", { method: "DELETE" }); location.replace("/privado/"); });
 
 fetch("/api/entrar").then(r => r.ok ? r.json() : null).then(j => {
-  if (j) mostra(j.perfil); else { $("gate").hidden = false; $("senha").focus(); }
-}).catch(() => { $("gate").hidden = false; });
+  if (j) mostra(j.perfil); else { $("gate-wrap").hidden = false; $("senha").focus(); }
+}).catch(() => { $("gate-wrap").hidden = false; });
 </script>
 </body>
 </html>

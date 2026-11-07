@@ -34,6 +34,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ perfil, css: c.css || "", html: c[h] || "", js: c[j] || "", enviado: em });
     }
 
+    if (req.method === "GET" && parte === "resumo") {
+      const [l] = await sql`select valor, to_char(atualizado at time zone 'America/Sao_Paulo', 'DD/MM HH24:MI') as em
+        from meudia_conteudo where chave = ${trabalho ? "resumo_trabalho" : "resumo"}`;
+      return res.status(200).json({ perfil, resumo: l ? JSON.parse(l.valor) : null, enviado: l ? l.em : "" });
+    }
+
     if (req.method === "GET" && parte === "marcas") {
       const linhas = await sql`select id, dados from meudia_marcas`;
       const permitidos = trabalho ? await idsTrabalho() : null;
