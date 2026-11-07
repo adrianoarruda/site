@@ -215,8 +215,8 @@
 
       <!-- Atalhos com número -->
       <a class="card c3" href="/rascunhos/"><div class="stat-ico"><span class="q acc"><svg class="ico"><use href="#i-texto"/></svg></span><div><b id="s-rasc">–</b><span>rascunhos na fila do blog</span></div></div></a>
-      <a class="card c3" href="/links/"><div class="stat-ico"><span class="q blue"><svg class="ico"><use href="#i-link"/></svg></span><div><b id="s-links">–</b><span>links úteis salvos</span></div></div></a>
-      <a class="card c3" href="/meudia/#salvos"><div class="stat-ico"><span class="q green"><svg class="ico"><use href="#i-marca"/></svg></span><div><b id="s-salvos">–</b><span>salvos para ver (YouTube e Instagram)</span></div></div></a>
+      <a class="card c3" href="/salvos/#links"><div class="stat-ico"><span class="q blue"><svg class="ico"><use href="#i-link"/></svg></span><div><b id="s-links">–</b><span>links úteis salvos</span></div></div></a>
+      <a class="card c3" href="/salvos/#youtube"><div class="stat-ico"><span class="q green"><svg class="ico"><use href="#i-marca"/></svg></span><div><b id="s-salvos">–</b><span>salvos para ver (YouTube e Instagram)</span></div></div></a>
       <a class="card c3" href="#paginas"><div class="stat-ico"><span class="q amber"><svg class="ico"><use href="#i-lupa"/></svg></span><div><b id="s-pags">–</b><span>páginas de pesquisa</span></div></div></a>
 
       <!-- Listas -->
@@ -260,10 +260,11 @@ const COMANDOS = {
     ["quais minhas pendências?", "resumo do que vence primeiro"],
     ["resolvi <o quê>", "tira do painel e registra no histórico"],
     ["paguei <a conta>", "move para Pagos", false],
-    ["/youtube-salvos  ·  /instagram-salvos", "atualiza a aba Salvos"],
   ],
-  links: [
+  salvos: [
     ["salva este link: <endereço>", "descreve, escolhe a categoria e grava"],
+    ["/youtube-salvos", "triagem nova do YouTube"],
+    ["/instagram-salvos", "triagem nova do Instagram"],
     ["descreve os links sem descrição", "completa os que estão vazios"],
   ],
   rascunhos: [
@@ -287,8 +288,8 @@ const COMANDOS = {
   ],
 };
 const FIXAS = [
-  { nome: "meudia", titulo: "Meu Dia", icone: "i-dia", descricao: "Pendências, compromissos, pagamentos e salvos.", descTrab: "Compromissos sem detalhes, tarefas do site e dos estudos, e salvos. Saúde, dinheiro, Detran e cartões ficam de fora." },
-  { nome: "links", titulo: "Links úteis", icone: "i-link", descricao: "Ferramentas e referências de design, dados, desenvolvimento e IA." },
+  { nome: "meudia", titulo: "Meu Dia", icone: "i-dia", descricao: "Pendências, compromissos e pagamentos.", descTrab: "Compromissos sem detalhes, tarefas do site e dos estudos. Saúde, dinheiro, Detran e cartões ficam de fora." },
+  { nome: "salvos", titulo: "Salvos", icone: "i-marca", descricao: "Links úteis e o que você salvou no YouTube e no Instagram, já triado." },
   { nome: "rascunhos", titulo: "Rascunhos", icone: "i-texto", descricao: "Posts que o Claude escreve toda segunda, para revisar e publicar no blog." },
 ];
 let perfilAtual = "pessoal";

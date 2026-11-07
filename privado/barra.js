@@ -80,6 +80,7 @@
     sair: '<path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3"/>',
     site: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+    marca: '<path d="M6 3h12v18l-6-4-6 4z"/>',
   };
   const ico = (n, cls = "") => `<svg class="ab-ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${icone[n]}</svg>`;
 
@@ -111,7 +112,7 @@
   document.body.prepend(topo);
   const q = s => topo.querySelector(s);
 
-  const FIXAS = [["privado", "Visão geral", "casa"], ["meudia", "Meu Dia", "dia"], ["links", "Links úteis", "link"], ["rascunhos", "Rascunhos", "texto"]];
+  const FIXAS = [["privado", "Visão geral", "casa"], ["meudia", "Meu Dia", "dia"], ["salvos", "Salvos", "marca"], ["rascunhos", "Rascunhos", "texto"]];
   function monta(paginas) {
     const pesquisas = paginas.filter(p => p.nome !== "comandos");
     const temCmds = paginas.some(p => p.nome === "comandos");

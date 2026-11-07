@@ -27,6 +27,16 @@
   ],
   "redirects": [
     {
+      "source": "/links",
+      "destination": "/salvos/",
+      "permanent": true
+    },
+    {
+      "source": "/links/",
+      "destination": "/salvos/",
+      "permanent": true
+    },
+    {
       "source": "/blog/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv",
       "destination": "/analises/dez-anos-de-balanco-dos-quatro-maiores-bancos-em-numeros-5fpv",
       "permanent": true

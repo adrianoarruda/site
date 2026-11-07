@@ -34,6 +34,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ perfil, css: c.css || "", html: c[h] || "", js: c[j] || "", enviado: em });
     }
 
+    // Salvos do YouTube e do Instagram (página /salvos/ do site): iguais para as duas senhas
+    if (req.method === "GET" && parte === "salvos") {
+      const [l] = await sql`select valor from meudia_conteudo where chave = 'salvos'`;
+      return res.status(200).json({ perfil, salvos: l ? JSON.parse(l.valor) : {} });
+    }
+
     if (req.method === "GET" && parte === "resumo") {
       const [l] = await sql`select valor, to_char(atualizado at time zone 'America/Sao_Paulo', 'DD/MM HH24:MI') as em
         from meudia_conteudo where chave = ${trabalho ? "resumo_trabalho" : "resumo"}`;

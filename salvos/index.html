@@ -9,7 +9,7 @@
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#000000">
-<title>Links úteis · Adriano Arruda</title>
+<title>Salvos · Adriano Arruda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
@@ -151,6 +151,57 @@
   input:focus, textarea:focus { background: #fff; border-color: #000; }
   .novo input, .novo textarea { border-color: transparent; }
   @media (max-width: 640px) { header.hero { padding: 22px 0 16px; } header.hero h1 { font-size: 36px; } main { border-radius: 0; margin-top: 0; padding-top: 8px; } }
+  /* Página Salvos (07/11/2026): abas Links úteis, YouTube e Instagram */
+  .abas { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 24px; overflow-x: auto; }
+  .aba { font: 500 15px var(--sans); letter-spacing: -.01em; padding: 10px 14px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--soft); cursor: pointer; white-space: nowrap; display: flex; gap: 8px; align-items: baseline; }
+  .aba:hover { color: var(--ink); }
+  .aba[aria-selected="true"] { color: var(--ink); border-bottom-color: #ff3b1f; }
+  .aba small { font: 12px var(--mono); color: var(--slate); }
+  .painel[hidden] { display: none; }
+  #p-videos .cats { margin: 0 0 10px; }
+  .abas { scrollbar-width: none; }
+  .abas::-webkit-scrollbar { display: none; }
+  @media (max-width: 640px) { .aba { padding: 10px 9px; font-size: 14px; } .aba .pv { display: none; } }
+  .vbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .vbar input[type=search] { flex: 1 1 260px; max-width: 420px; border-radius: 9999px; padding-left: 18px; }
+  .vbar label { display: flex; gap: 6px; align-items: center; font-size: 14px; color: var(--soft); cursor: pointer; margin-left: auto; }
+  .vbar label input { width: auto; }
+  .fonte-linha { font-size: 12.5px; color: var(--slate); margin: 0 0 12px; }
+  .vd { display: grid; grid-template-columns: 22px 72px minmax(0, 1.4fr) minmax(0, 1.6fr) 120px; gap: 4px 16px; align-items: center; padding: 10px 18px; border-top: 1px solid var(--line); }
+  .cat h2 + .vd { border-top: 0; }
+  .vd:hover { background: #fafaf9; }
+  .vd[hidden] { display: none; }
+  .vd.feito { opacity: .55; }
+  .vd.feito a.t { text-decoration: line-through; }
+  .vd input[type=checkbox] { width: 18px; height: 18px; margin: 0; padding: 0; accent-color: #0b0b0b; cursor: pointer; }
+  .vd .mini { width: 72px; height: 40px; border-radius: 6px; background: #eee center / cover no-repeat; display: block; }
+  .vd .mini.sq { width: 40px; }
+  .vd .nome { display: grid; gap: 2px; min-width: 0; }
+  .vd a.t { font-weight: 600; font-size: 14.5px; letter-spacing: -.02em; text-decoration: none; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .vd a.t:hover { text-decoration: underline; }
+  .vd .meta .as { color: var(--soft); }
+  .vd .meta { font-size: 11.5px; color: var(--slate); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .vd .d { margin: 0; color: var(--soft); font-size: 13.5px; line-height: 1.4; }
+  .vd .acao { justify-self: end; background: none; border: 0; color: var(--slate); font: 13px var(--sans); cursor: pointer; padding: 0; }
+  .vd .acao:hover { color: var(--ink); text-decoration: underline; }
+  .vd .nota { grid-column: 3 / -1; font-size: 13px; color: var(--ink); background: #fff8e6; border-radius: 8px; padding: 6px 10px; }
+  .vd .nota small { display: block; color: var(--slate); font-size: 11px; }
+  .vd .editor { grid-column: 3 / -1; display: grid; gap: 6px; }
+  .vd .editor textarea { min-height: 64px; font-size: 14px; }
+  .vd .editor div { display: flex; gap: 8px; }
+  .vd .editor button { font: 500 13px var(--sans); border-radius: 8px; padding: 6px 12px; cursor: pointer; border: 1px solid var(--line); background: #fff; }
+  .vd .editor button.ok { background: #0b0b0b; color: #fff; border-color: #0b0b0b; }
+  .mais { display: block; width: 100%; background: #fafafa; border: 0; border-top: 1px solid var(--line); padding: 10px; font: 500 13px var(--sans); color: var(--soft); cursor: pointer; }
+  .mais:hover { color: var(--ink); }
+  details.desc { margin-top: 12px; font-size: 13px; color: var(--soft); }
+  details.desc ul { margin: 6px 0 0; padding-left: 18px; }
+  @media (max-width: 760px) {
+    .vd { grid-template-columns: 22px 56px minmax(0, 1fr); }
+    .vd .mini { width: 56px; height: 32px; } .vd .mini.sq { width: 32px; height: 32px; }
+    .vd .d { grid-column: 3; } .vd .acao { grid-column: 3; justify-self: start; }
+    .vd .nota, .vd .editor { grid-column: 1 / -1; }
+    .vbar label { margin-left: 0; }
+  }
 </style>
 </head>
 <body>
@@ -159,8 +210,8 @@
 <header class="hero">
   <div class="wrap">
     <div class="crumb mono">Área privada</div>
-    <h1 class="cond">Links úteis</h1>
-    <p>Ferramentas e referências que eu quero ter sempre à mão: design, dashboards, desenvolvimento e IA.</p>
+    <h1 class="cond">Salvos</h1>
+    <p>Links úteis para ter sempre à mão e o que você salvou no YouTube e no Instagram, já triado pelo Claude. Marque o que já viu.</p>
   </div>
 </header>
 
@@ -168,6 +219,13 @@
   <div class="wrap">
 
     <section id="area" hidden>
+      <nav class="abas" role="tablist" aria-label="Tipo de salvo">
+        <button type="button" class="aba" role="tab" data-aba="links" aria-selected="true">Links úteis <small id="n-links"></small></button>
+        <button type="button" class="aba" role="tab" data-aba="youtube" aria-selected="false">YouTube <small id="n-youtube"></small></button>
+        <button type="button" class="aba" role="tab" data-aba="instagram" aria-selected="false">Instagram <small id="n-instagram"></small></button>
+      </nav>
+
+      <div class="painel" id="p-links">
       <div class="bar">
         <input type="search" id="busca" placeholder="Buscar por nome, site ou assunto" aria-label="Buscar links">
         <button class="btn green" id="abrir-novo" type="button">+ Incluir link</button>
@@ -194,11 +252,26 @@
       <div class="cats" id="filtros" role="group" aria-label="Filtrar por categoria"></div>
       <div class="tabela" id="lista"></div>
       <p class="vazio" id="vazio" hidden>Nada encontrado com essa busca.</p>
+      </div>
+
+      <div class="painel" id="p-videos" hidden>
+        <div class="vbar">
+          <input type="search" id="vbusca" placeholder="Buscar por título, canal ou assunto" aria-label="Buscar nos salvos">
+          <div class="cats" id="vordem" role="group" aria-label="Ordem" style="margin:0"><button type="button" class="chip" data-ordem="recentes">Mais recentes</button><button type="button" class="chip" data-ordem="assunto">Por assunto</button></div>
+          <label><input type="checkbox" id="esconde"> Esconder o que já vi</label>
+        </div>
+        <div class="cats" id="vprio" role="group" aria-label="Filtrar por prioridade" style="margin:0 0 8px"></div>
+        <div class="cats" id="vassunto" role="group" aria-label="Filtrar por assunto"></div>
+        <p class="fonte-linha" id="vfonte"></p>
+        <div class="tabela" id="vlista"></div>
+        <p class="vazio" id="vvazio" hidden>Nada aqui com esses filtros.</p>
+        <div id="vdesc"></div>
+      </div>
     </section>
   </div>
 </main>
 
-<footer><div class="wrap mono">Adriano Arruda · links úteis</div></footer>
+<footer><div class="wrap mono">Adriano Arruda · salvos</div></footer>
 
 <script>
 const API = "/api/links";
@@ -210,7 +283,7 @@ async function api(method, body, query = "") {
     body: body ? JSON.stringify(body) : undefined,
   });
   // Sem sessão: entra pela área privada e volta para cá
-  if (r.status === 401) { location.replace("/privado/?volta=/links/"); throw new Error("Entre pela área privada"); }
+  if (r.status === 401) { location.replace("/privado/?volta=/salvos/" + location.hash); throw new Error("Entre pela área privada"); }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(j.erro || "Não deu certo (erro " + r.status + ")"); e.status = r.status; throw e; }
   return j;
@@ -240,6 +313,7 @@ function desenha() {
     </section>`;
   }).join("");
   $("total").textContent = links.length + (links.length === 1 ? " link" : " links");
+  if (typeof contagens === "function" && SALVOS) contagens();
   filtra();
 }
 
@@ -263,11 +337,171 @@ $("filtros").addEventListener("click", e => {
   filtra();
 });
 
+// ---------- YouTube e Instagram ----------
+// Dados: /api/meudia?parte=salvos (gerados pelo /youtube-salvos e /instagram-salvos e enviados pelo meudia/site/enviar.mjs).
+// "Vi" e comentários: mesmas marcações do Meu Dia (/api/meudia?parte=marcas; ids yt-* e ig-*), que o Claude lê no /meudia.
+const MD = "/api/meudia";
+async function md(query, opts = {}) {
+  const r = await fetch(MD + "?" + query, { method: opts.method || "GET", headers: opts.body ? { "content-type": "application/json" } : {}, body: opts.body ? JSON.stringify(opts.body) : undefined });
+  if (r.status === 401) { location.replace("/privado/?volta=/salvos/" + location.hash); throw new Error("Entre pela área privada"); }
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || "Não deu certo (erro " + r.status + ")");
+  return j;
+}
+let SALVOS = null, MARCAS = {}, THUMBS = {}, thumbsPedido = false;
+let aba = "links", prio = "ver", editando = null;
+const assuntoSel = { youtube: "", instagram: "" };
+const PRIOS = [["ver", "Vale ver"], ["talvez", "Talvez"], ["outros", "Já coberto e lazer"]];
+const naPrio = (i, p) => p === "outros" ? (i.ver === "já coberto" || i.ver === "lazer") : i.ver === p;
+const visto = id => !!(MARCAS[id] && MARCAS[id].done);
+const POR_GRUPO = 25;
+const abertos = {};
+let ordem = "recentes";
+try { ordem = localStorage.getItem("salvos-ordem") || "recentes"; } catch (e) {}
+// Mais recente primeiro: YouTube pela posição na lista (1 = salvo por último); Instagram pela data em que foi salvo
+const porRecencia = (a, b) => aba === "youtube" ? (a.ord ?? 1e9) - (b.ord ?? 1e9) : String(b.ord || "").localeCompare(String(a.ord || ""));
+let esconde = false;
+try { esconde = localStorage.getItem("salvos-esconde") === "1"; } catch (e) {}
+$("esconde").checked = esconde;
+const fmt = iso => { if (!iso) return ""; const d = new Date(iso); if (isNaN(d)) return ""; const p = n => String(n).padStart(2, "0"); return p(d.getDate()) + "/" + p(d.getMonth() + 1) + " " + p(d.getHours()) + ":" + p(d.getMinutes()); };
+
+function contagens() {
+  $("n-links").textContent = links.length;
+  for (const k of ["youtube", "instagram"]) {
+    const it = (SALVOS && SALVOS[k] && SALVOS[k].items) || [];
+    $("n-" + k).innerHTML = it.length ? it.filter(i => i.ver === "ver" && !visto(i.id)).length + "<span class=\"pv\"> para ver</span>" : "";
+  }
+}
+
+function carregaThumbs() {
+  if (thumbsPedido) return;
+  thumbsPedido = true;
+  (async () => {
+    for (let p = 0; ; p++) {
+      const { thumbs, mais } = await md("parte=thumbs&pagina=" + p);
+      Object.assign(THUMBS, thumbs);
+      document.querySelectorAll(".vd .mini[data-id]").forEach(el => { const t = THUMBS[el.dataset.id]; if (t && !el.style.backgroundImage) el.style.backgroundImage = "url('" + t + "')"; });
+      if (!mais) break;
+    }
+  })().catch(() => {});
+}
+
+function linhaVideo(i) {
+  const m = MARCAS[i.id] || {};
+  const meta = esc([i.canal, i.dur, i.idade, i.origem].filter(Boolean).join(" · ")) + (ordem === "recentes" && i.assunto ? ` · <span class="as">${esc(i.assunto)}</span>` : "");
+  const t = THUMBS[i.id];
+  let extra = "";
+  if (editando === i.id) {
+    extra = `<div class="editor"><textarea id="ta-${esc(i.id)}" placeholder="Por que guardou, o que quer estudar, o que achou…">${esc(m.note || "")}</textarea>
+      <div><button type="button" class="ok" data-salvar="${esc(i.id)}">Salvar</button><button type="button" data-cancelar="1">Cancelar</button></div></div>`;
+  } else if (m.note) {
+    extra = `<div class="nota">${esc(m.note)}<small>${fmt(m.updatedAt)} · ${m.lidoEm ? "o Claude leu em " + fmt(m.lidoEm) : "o Claude ainda não leu"}</small></div>`;
+  }
+  return `<div class="vd${visto(i.id) ? " feito" : ""}" data-id="${esc(i.id)}">
+    <input type="checkbox" data-vi="${esc(i.id)}" ${visto(i.id) ? "checked" : ""} aria-label="Já vi">
+    <a class="mini${i.id.startsWith("ig-") ? " sq" : ""}" data-id="${esc(i.id)}" href="${esc(i.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"${t ? ` style="background-image:url('${t}')"` : ""}></a>
+    <span class="nome"><a class="t" href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.t)}</a><span class="meta mono">${meta}</span></span>
+    <p class="d">${esc(i.motivo || "")}</p>
+    <button type="button" class="acao" data-comentar="${esc(i.id)}">${m.note ? "Editar comentário" : "Comentar"}</button>
+    ${extra}
+  </div>`;
+}
+
+function desenhaVideos() {
+  const s = (SALVOS && SALVOS[aba]) || {};
+  const itens = s.items || [];
+  if (!itens.length) {
+    $("vprio").innerHTML = ""; $("vassunto").innerHTML = ""; $("vlista").innerHTML = ""; $("vdesc").innerHTML = "";
+    $("vfonte").textContent = s.status || "Ainda sem triagem. Peça ao Claude: /" + aba + "-salvos";
+    return;
+  }
+  $("vfonte").textContent = s.fonte || "";
+  $("vprio").innerHTML = PRIOS.map(([p, rot]) => {
+    const n = itens.filter(i => naPrio(i, p));
+    return `<button type="button" class="chip${p === prio ? " on" : ""}" data-prio="${p}">${rot}<small>${n.filter(i => !visto(i.id)).length}/${n.length}</small></button>`;
+  }).join("");
+  const naFaixa = itens.filter(i => naPrio(i, prio));
+  const grupos = [...new Set(naFaixa.map(i => i.assunto))];
+  if (assuntoSel[aba] && !grupos.includes(assuntoSel[aba])) assuntoSel[aba] = "";
+  const sel = assuntoSel[aba];
+  $("vassunto").innerHTML = `<button type="button" class="chip${sel ? "" : " on"}" data-assunto="">Todos os assuntos<small>${naFaixa.length}</small></button>` +
+    grupos.map(g => `<button type="button" class="chip${g === sel ? " on" : ""}" data-assunto="${esc(g)}">${esc(g)}<small>${naFaixa.filter(i => i.assunto === g).length}</small></button>`).join("");
+  const q = $("vbusca").value.trim().toLowerCase();
+  const mostra = i => (!esconde || !visto(i.id)) && (!q || [i.t, i.canal, i.assunto, i.motivo, i.origem].join(" ").toLowerCase().includes(q));
+  document.querySelectorAll("#vordem .chip").forEach(b => b.classList.toggle("on", b.dataset.ordem === ordem));
+  let html;
+  if (ordem === "recentes") {
+    const todos = naFaixa.filter(i => !sel || i.assunto === sel).sort(porRecencia);
+    const vis = todos.filter(mostra);
+    const lim = abertos[aba + "|recentes"] || 50;
+    html = vis.length ? `<section class="cat"><h2>Mais recentes primeiro <small>${todos.filter(i => !visto(i.id)).length} para ver de ${todos.length}</small></h2>
+      ${vis.slice(0, lim).map(linhaVideo).join("")}
+      ${vis.length > lim ? `<button type="button" class="mais" data-mais="|recentes">Mostrar mais ${Math.min(vis.length - lim, 50)} (faltam ${vis.length - lim})</button>` : ""}</section>` : "";
+  } else html = grupos.filter(g => !sel || g === sel).map(g => {
+    const todos = naFaixa.filter(i => i.assunto === g);
+    const vis = todos.filter(mostra);
+    if (!vis.length) return "";
+    const lim = abertos[aba + g] || (sel ? 60 : POR_GRUPO);
+    return `<section class="cat"><h2>${esc(g)} <small>${todos.filter(i => !visto(i.id)).length} para ver de ${todos.length}</small></h2>
+      ${vis.slice(0, lim).map(linhaVideo).join("")}
+      ${vis.length > lim ? `<button type="button" class="mais" data-mais="${esc(g)}">Mostrar mais ${Math.min(vis.length - lim, 50)} (faltam ${vis.length - lim})</button>` : ""}</section>`;
+  }).join("");
+  $("vlista").innerHTML = html;
+  $("vlista").hidden = !html;
+  $("vvazio").hidden = !!html;
+  const ref = (s.referencia || []).map(([m, n]) => `<li>${esc(m)}: ${n}</li>`).join("");
+  const desc = (s.descartados || []).map(([m, n]) => `<li>${esc(m)}: ${n}</li>`).join("");
+  $("vdesc").innerHTML = (ref ? `<details class="desc"><summary>${s.referenciaTotal} de referência pessoal (receitas, casa, lugares, treino): ficam no Instagram, sem lista aqui</summary><ul>${ref}</ul></details>` : "") +
+    (desc ? `<details class="desc"><summary>${s.descartadosTotal} descartados (datados ou fora dos seus temas)</summary><ul>${desc}</ul></details>` : "");
+}
+
+async function grava(id, patch) {
+  const prev = MARCAS[id] || {};
+  const next = { ...prev, done: !!prev.done, note: prev.note || "", ...patch, updatedAt: new Date().toISOString() };
+  MARCAS[id] = next;
+  contagens(); desenhaVideos();
+  try { await md("parte=marca&id=" + encodeURIComponent(id), { method: "PUT", body: next }); }
+  catch (e) { alert("Não salvou: " + e.message); }
+}
+
+$("p-videos").addEventListener("click", e => {
+  const b = e.target.closest("[data-prio],[data-assunto],[data-mais],[data-ordem],[data-comentar],[data-salvar],[data-cancelar]");
+  if (!b) return;
+  if (b.dataset.prio) { prio = b.dataset.prio; desenhaVideos(); }
+  else if (b.dataset.assunto !== undefined) { assuntoSel[aba] = b.dataset.assunto; desenhaVideos(); }
+  else if (b.dataset.mais) { const k = aba + b.dataset.mais; abertos[k] = (abertos[k] || (b.dataset.mais === "|recentes" ? 50 : assuntoSel[aba] ? 60 : POR_GRUPO)) + 50; desenhaVideos(); }
+  else if (b.dataset.ordem) { ordem = b.dataset.ordem; try { localStorage.setItem("salvos-ordem", ordem); } catch (_) {} desenhaVideos(); }
+  else if (b.dataset.comentar) { editando = b.dataset.comentar; desenhaVideos(); const ta = document.getElementById("ta-" + editando); if (ta) ta.focus(); }
+  else if (b.dataset.salvar) { const id = b.dataset.salvar; const v = document.getElementById("ta-" + id).value.trim(); editando = null; grava(id, { note: v }); }
+  else if (b.dataset.cancelar) { editando = null; desenhaVideos(); }
+});
+$("p-videos").addEventListener("change", e => {
+  const c = e.target.closest("[data-vi]");
+  if (c) grava(c.dataset.vi, { done: c.checked });
+});
+$("vbusca").addEventListener("input", desenhaVideos);
+$("esconde").addEventListener("change", e => { esconde = e.target.checked; try { localStorage.setItem("salvos-esconde", esconde ? "1" : "0"); } catch (_) {} desenhaVideos(); });
+
+function mostraAba(a) {
+  if (!["links", "youtube", "instagram"].includes(a)) a = "links";
+  aba = a;
+  document.querySelectorAll(".aba").forEach(b => b.setAttribute("aria-selected", b.dataset.aba === a));
+  $("p-links").hidden = a !== "links";
+  $("p-videos").hidden = a === "links";
+  if (a !== "links") { editando = null; desenhaVideos(); carregaThumbs(); }
+  if (location.hash !== "#" + a) history.replaceState(null, "", "#" + a);
+}
+document.querySelector(".abas").addEventListener("click", e => { const b = e.target.closest(".aba"); if (b) mostraAba(b.dataset.aba); });
+addEventListener("hashchange", () => mostraAba(location.hash.slice(1)));
+
 async function entra() {
   try {
-    links = (await api("GET")).links;
+    const [l, sv, mk] = await Promise.all([api("GET"), md("parte=salvos"), md("parte=marcas")]);
+    links = l.links; SALVOS = sv.salvos || {}; MARCAS = mk.marcas || {};
     $("area").hidden = false;
     desenha();
+    contagens();
+    mostraAba(location.hash.slice(1) || "links");
   } catch (e) {}
 }
 

@@ -35,7 +35,6 @@
     const j = await r.json().catch(() => ({}));
     if (!r.ok) { $("aviso").textContent = r.status === 404 ? "Esta página não existe ou não está liberada com esta senha." : (j.erro || "Não deu certo."); return; }
     document.title = j.titulo + " · Adriano Arruda";
-    if (window.AreaBarra) AreaBarra.info(j.enviado ? "atualizado em " + j.enviado : "");
     const f = document.createElement("iframe");
     f.id = "pagina";
     f.title = j.titulo;

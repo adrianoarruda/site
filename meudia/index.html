@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script>/* Cópia no GitHub Pages: leva para o domínio oficial */ if (location.hostname.endsWith("github.io")) location.replace("https://www.adrianoarruda.com" + location.pathname.replace(/^\/site/, "") + location.search + location.hash);</script>
+<script>/* Os salvos saíram do Meu Dia em 07/11/2026: links antigos (#salvos, #links) vão para a página Salvos */ (function () { const vai = () => { if (location.hash === "#salvos" || location.hash === "#links") location.replace("/salvos/" + (location.hash === "#links" ? "#links" : "#youtube")); }; vai(); addEventListener("hashchange", vai); })();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -24,7 +25,10 @@
   #app .item .d, #app .pay .d { overflow-wrap: anywhere; }
   /* A barra da Área privada encosta nas bordas: o espaçamento que o painel punha no body vai para o #app */
   body { padding: 0 !important; }
-  #app { padding: 28px 16px 56px; }
+  #app { padding: 28px 24px 56px; }
+  /* Mesma largura da barra do topo e das outras páginas da Área privada */
+  #app .wrap { max-width: 1392px; } /* 1440 da barra menos os 24 px de cada lado */
+  @media (max-width: 640px) { #app { padding-inline: 16px; } }
   @media (max-width: 600px) { #app .views { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 </style>
 </head>
@@ -93,7 +97,6 @@
     estilo.textContent = c.css;
     document.head.appendChild(estilo);
     $("app").innerHTML = c.html;
-    if (window.AreaBarra) AreaBarra.info((c.perfil === "trabalho" ? "Versão do trabalho · " : "") + (c.enviado ? "enviado ao site em " + c.enviado : ""));
     const script = document.createElement("script");
     script.textContent = c.js;
     document.body.appendChild(script);
