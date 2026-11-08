@@ -220,11 +220,11 @@
     </div>
 
     <div class="grid">
-      <!-- Atualizações automáticas: a rotina das 8h (nuvem) e a tarefa das 7h30 (PC) -->
+      <!-- Atualizações automáticas: a rotina das 8h (nuvem); YouTube e Instagram só manuais -->
       <section class="card c12" id="auto-card">
         <div class="auto-head"><h2>Atualizações automáticas</h2><span class="pill neutro" id="auto-pill">carregando…</span></div>
         <div class="auto-grid" id="auto-lista"></div>
-        <p class="sub mono" style="margin:0">Nuvem todo dia às 8h (e-mail, trânsito, fundos, notícias) · PC todo dia às 7h30 (pedidos, YouTube; Instagram toda semana) · clique numa linha para ver o detalhe</p>
+        <p class="sub mono" style="margin:0">Nuvem todo dia às 8h (e-mail, trânsito, fundos, notícias) · YouTube e Instagram quando você pedir na conversa · clique numa linha para ver o detalhe</p>
       </section>
 
       <!-- Boas-vindas + números do Meu Dia -->
@@ -280,7 +280,7 @@
 
       <!-- Pedidos ao Claude (botão "Pedir" dos comandos) -->
       <section class="card c12" id="ped-card" hidden>
-        <div class="card-head"><h2>Pedidos ao Claude</h2><span class="sub mono">feitos todo dia às 7h30 no PC, ou no próximo /meudia</span></div>
+        <div class="card-head"><h2>Pedidos ao Claude</h2><span class="sub mono">feitos no próximo /meudia</span></div>
         <div id="ped-lista"><p class="vazio">Nenhum pedido. Use o botão "Pedir" ao lado de um comando.</p></div>
       </section>
 
@@ -368,9 +368,9 @@ const AGENDA = [
   { parte: "noticias_rf", nome: "Notícias renda fixa", dias: "uteis", h: 8 },
   { parte: "noticias_rv", nome: "Notícias renda variável", dias: "uteis", h: 8 },
   { parte: "instagram_email", nome: "Instagram: e-mail do arquivo", dias: "todos", h: 8 },
-  { parte: "pedidos", nome: "Fila de pedidos", dias: "todos", h: 7.5, pc: true },
-  { parte: "youtube", nome: "YouTube", dias: "todos", h: 7.5, pc: true },
-  { parte: "instagram", nome: "Instagram", dias: "semanal", h: 7.5, pc: true },
+  // Sem horário: rodam quando o Adriano pede na conversa (a tarefa do PC foi excluída em 08/11/2026)
+  { parte: "youtube", nome: "YouTube (manual)", manual: true },
+  { parte: "instagram", nome: "Instagram (manual)", manual: true },
 ];
 const FOLGA_H = 1.5;
 function esperadoDesde(a, agora) {
@@ -389,16 +389,16 @@ async function carregaAtualizacoes() {
     const j = await r.json();
     const por = Object.fromEntries(j.partes.map(p => [p.parte, p]));
     const agora = new Date(j.agora);
-    const agenda = perfilAtual === "trabalho" ? AGENDA.filter(a => ["youtube", "instagram", "pedidos"].includes(a.parte)) : AGENDA;
+    const agenda = perfilAtual === "trabalho" ? AGENDA.filter(a => a.manual) : AGENDA;
     let ruins = 0, nunca = 0;
     $("auto-lista").innerHTML = agenda.map(a => {
       const p = por[a.parte];
       let cls, st, rs, qd;
-      if (!p) { cls = "nunca"; st = "○"; rs = "ainda não rodou nenhuma vez"; qd = "—"; nunca++; }
+      if (!p) { cls = "nunca"; st = "○"; rs = a.manual ? "roda quando você pedir na conversa" : "ainda não rodou nenhuma vez"; qd = "—"; nunca++; }
       else {
-        const atrasado = new Date(p.quando) < esperadoDesde(a, agora);
+        const atrasado = !a.manual && new Date(p.quando) < esperadoDesde(a, agora);
         qd = hhmm(p.quando);
-        if (atrasado) { cls = "atraso"; st = "❌"; rs = "não rodou no horário" + (a.pc ? " (o PC estava ligado às 7h30?)" : "") + (p.resumo ? " · último: " + p.resumo : ""); ruins++; }
+        if (atrasado) { cls = "atraso"; st = "❌"; rs = "não rodou no horário" + (p.resumo ? " · último: " + p.resumo : ""); ruins++; }
         else if (p.situacao === "erro") { cls = "erro"; st = "❌"; rs = p.resumo || "deu erro"; ruins++; }
         else if (p.situacao === "aviso") { cls = "aviso"; st = "⚠️"; rs = p.resumo; ruins++; }
         else if (p.situacao === "aguardando") { cls = "aguardando"; st = "⏳"; rs = p.resumo; }
