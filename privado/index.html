@@ -120,6 +120,11 @@
   /* Atualizações automáticas */
   .auto-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
   .auto-head h2 { margin: 0; font: 600 16px var(--sans); letter-spacing: -.02em; }
+  .auto-toggle { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+  .auto-toggle .ico { width: 18px; height: 18px; transition: transform .2s; }
+  #auto-card:not(.aberto) .auto-toggle .ico { transform: rotate(-90deg); }
+  #auto-card:not(.aberto) .auto-grid, #auto-card:not(.aberto) .auto-nota { display: none; }
+  .auto-toggle:hover h2 { text-decoration: underline; }
   .pill { font: 500 12px var(--sans); border-radius: 9999px; padding: 3px 10px; }
   .pill.ok { background: var(--green-soft); color: var(--green); }
   .pill.ruim { background: var(--accent-soft); color: var(--red); }
@@ -222,9 +227,9 @@
     <div class="grid">
       <!-- Atualizações automáticas: a rotina das 8h (nuvem); YouTube e Instagram só manuais -->
       <section class="card c12" id="auto-card">
-        <div class="auto-head"><h2>Atualizações automáticas</h2><span class="pill neutro" id="auto-pill">carregando…</span></div>
+        <div class="auto-head"><button type="button" class="auto-toggle" id="auto-toggle" aria-expanded="false" aria-controls="auto-lista"><svg class="ico"><use href="#i-seta"/></svg><h2>Atualizações automáticas</h2></button><span class="pill neutro" id="auto-pill">carregando…</span></div>
         <div class="auto-grid" id="auto-lista"></div>
-        <p class="sub mono" style="margin:0">Nuvem todo dia às 8h (e-mail, trânsito, fundos, notícias) · YouTube e Instagram quando você pedir na conversa · clique numa linha para ver o detalhe</p>
+        <p class="sub mono auto-nota" style="margin:0">Nuvem todo dia às 8h (e-mail, trânsito, fundos, notícias) · YouTube e Instagram quando você pedir na conversa · clique numa linha para ver o detalhe</p>
       </section>
 
       <!-- Boas-vindas + números do Meu Dia -->
@@ -412,6 +417,10 @@ async function carregaAtualizacoes() {
     else { pill.className = "pill ok"; pill.textContent = "tudo certo"; }
   } catch (_) { $("auto-pill").className = "pill neutro"; $("auto-pill").textContent = "não consegui carregar"; }
 }
+// O quadro começa fechado (só o selo de situação aparece); abrir/fechar fica lembrado neste aparelho
+function abreAuto(aberto) { $("auto-card").classList.toggle("aberto", aberto); $("auto-toggle").setAttribute("aria-expanded", aberto); }
+try { abreAuto(localStorage.getItem("auto-aberto") === "1"); } catch (_) {}
+$("auto-toggle").addEventListener("click", () => { const aberto = !$("auto-card").classList.contains("aberto"); abreAuto(aberto); try { localStorage.setItem("auto-aberto", aberto ? "1" : "0"); } catch (_) {} });
 $("auto-lista").addEventListener("click", e => { const b = e.target.closest(".auto"); if (b && b.querySelector(".det")) b.classList.toggle("aberto"); });
 
 // ---------- Pedidos ao Claude ----------
