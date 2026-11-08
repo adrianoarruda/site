@@ -81,6 +81,7 @@
     site: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
     marca: '<path d="M6 3h12v18l-6-4-6 4z"/>',
+    peso: '<path d="M2 12h20M6 7v10M18 7v10M3.5 9v6M20.5 9v6"/>',
   };
   const ico = (n, cls = "") => `<svg class="ab-ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${icone[n]}</svg>`;
 
@@ -114,13 +115,16 @@
 
   const FIXAS = [["privado", "Visão geral", "casa"], ["meudia", "Meu Dia", "dia"], ["salvos", "Salvos", "marca"], ["rascunhos", "Rascunhos", "texto"]];
   function monta(paginas) {
-    const pesquisas = paginas.filter(p => p.nome !== "comandos");
+    // Comandos e Treino têm item próprio no menu; o resto são páginas de pesquisa
+    const pesquisas = paginas.filter(p => p.nome !== "comandos" && p.nome !== "treino");
     const temCmds = paginas.some(p => p.nome === "comandos");
+    const temTreino = paginas.some(p => p.nome === "treino");
     const emPesquisa = pesquisas.some(p => p.nome === atual);
     const item = (nome, txt, ic) => `<a href="/${nome}/"${nome === atual ? ' class="ab-on" aria-current="page"' : ""}>${ico(ic)}${esc(txt)}</a>`;
     q(".ab-menu").innerHTML = FIXAS.map(([n, t, i]) => item(n, t, i)).join("") +
       (pesquisas.length ? `<div class="ab-drop${emPesquisa ? " ab-on" : ""}"><button type="button" aria-expanded="false">${ico("lupa")}Pesquisas${ico("seta", "ab-seta")}</button>
         <div class="ab-lista">${pesquisas.map(p => `<a href="/${esc(p.nome)}/"${p.nome === atual ? ' class="ab-on" aria-current="page"' : ""}>${esc(p.titulo)}<small>${esc(p.descricao || "")}</small></a>`).join("")}</div></div>` : "") +
+      (temTreino ? item("treino", "Treino", "peso") : "") +
       (temCmds ? item("comandos", "Comandos", "term") : "");
     q(".ab-menu").hidden = false;
     q(".ab-cmds").hidden = !temCmds;

@@ -17,11 +17,11 @@
       "destination": "/blog/index.html"
     },
     {
-      "source": "/:nome(comandos|celulares|mesa)",
+      "source": "/:nome(comandos|celulares|mesa|treino)",
       "destination": "/p/index.html"
     },
     {
-      "source": "/:nome(comandos|celulares|mesa)/",
+      "source": "/:nome(comandos|celulares|mesa|treino)/",
       "destination": "/p/index.html"
     }
   ],

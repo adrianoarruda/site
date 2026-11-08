@@ -513,7 +513,7 @@ function carregaNumeros() {
 }
 function carregaPaginas() {
   fetch("/api/pagina?lista=1").then(r => r.ok ? r.json() : { paginas: [] }).then(({ paginas }) => {
-    $("s-pags").textContent = paginas.filter(p => p.nome !== "comandos").length;
+    $("s-pags").textContent = paginas.filter(p => p.nome !== "comandos" && p.nome !== "treino").length;
     $("pags").innerHTML = FIXAS.concat(paginas).map(cartao).join("");
   }).catch(() => { $("pags").innerHTML = FIXAS.map(cartao).join(""); });
 }
