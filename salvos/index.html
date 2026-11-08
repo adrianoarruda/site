@@ -351,8 +351,9 @@ async function md(query, opts = {}) {
 let SALVOS = null, MARCAS = {}, THUMBS = {}, thumbsPedido = false;
 let aba = "links", prio = "ver", editando = null;
 const assuntoSel = { youtube: "", instagram: "" };
-const PRIOS = [["ver", "Vale ver"], ["talvez", "Talvez"], ["outros", "Já coberto e lazer"]];
-const naPrio = (i, p) => p === "outros" ? (i.ver === "já coberto" || i.ver === "lazer") : i.ver === p;
+// "Descartados" e "Todos" só aparecem quando a aba tem descartados (Instagram, desde 08/11/2026)
+const PRIOS = [["ver", "Vale ver"], ["talvez", "Talvez"], ["outros", "Já coberto e lazer"], ["descartar", "Descartados"], ["todos", "Todos"]];
+const naPrio = (i, p) => p === "todos" ? true : p === "outros" ? (i.ver === "já coberto" || i.ver === "lazer") : i.ver === p;
 const visto = id => !!(MARCAS[id] && MARCAS[id].done);
 const POR_GRUPO = 25;
 const abertos = {};
@@ -416,7 +417,9 @@ function desenhaVideos() {
     return;
   }
   $("vfonte").textContent = s.fonte || "";
-  $("vprio").innerHTML = PRIOS.map(([p, rot]) => {
+  const temDesc = itens.some(i => i.ver === "descartar");
+  if (!temDesc && (prio === "descartar" || prio === "todos")) prio = "ver";
+  $("vprio").innerHTML = PRIOS.filter(([p]) => temDesc || (p !== "descartar" && p !== "todos")).map(([p, rot]) => {
     const n = itens.filter(i => naPrio(i, p));
     return `<button type="button" class="chip${p === prio ? " on" : ""}" data-prio="${p}">${rot}<small>${n.filter(i => !visto(i.id)).length}/${n.length}</small></button>`;
   }).join("");
