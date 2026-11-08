@@ -113,6 +113,39 @@
   .cmd:hover { border-color: #cfcfcf; background: #fff; }
   .cmd small { font-family: var(--sans); font-size: 12px; color: var(--slate); }
   .cmd.ok small { color: var(--green); }
+  .cmdlinha { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; align-items: stretch; }
+  .pedir { font: 500 12px var(--sans); border: 1px solid var(--line); background: #fff; color: var(--soft); border-radius: 9px; padding: 0 10px; cursor: pointer; white-space: nowrap; }
+  .pedir:hover { border-color: var(--ink); color: var(--ink); }
+  .pedir.ok { color: var(--green); border-color: var(--green); }
+  /* Atualizações automáticas */
+  .auto-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+  .auto-head h2 { margin: 0; font: 600 16px var(--sans); letter-spacing: -.02em; }
+  .pill { font: 500 12px var(--sans); border-radius: 9999px; padding: 3px 10px; }
+  .pill.ok { background: var(--green-soft); color: var(--green); }
+  .pill.ruim { background: var(--accent-soft); color: var(--red); }
+  .pill.neutro { background: var(--chip); color: var(--soft); }
+  .auto-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; }
+  .auto { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 2px 10px; padding: 10px 0; border-top: 1px solid var(--line); align-items: baseline; cursor: pointer; background: none; border-left: 0; border-right: 0; border-bottom: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
+  .auto:hover .nm { text-decoration: underline; }
+  .auto .st { font-size: 14px; }
+  .auto .nm { font-weight: 500; font-size: 14px; }
+  .auto .qd { font: 11.5px var(--mono); color: var(--slate); white-space: nowrap; }
+  .auto .rs { grid-column: 2 / -1; color: var(--soft); font-size: 13px; }
+  .auto.erro .rs, .auto.atraso .rs { color: var(--red); }
+  .auto .det { grid-column: 2 / -1; display: none; white-space: pre-wrap; font-size: 12.5px; color: var(--soft); background: var(--bg); border-radius: 8px; padding: 8px 10px; margin-top: 4px; }
+  .auto.aberto .det { display: block; }
+  @media (max-width: 1180px) { .auto-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .auto-grid { grid-template-columns: minmax(0, 1fr); } }
+  /* Pedidos */
+  .ped { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .ped:first-child { border-top: 0; }
+  .ped .tx { font: 13.5px var(--mono); }
+  .ped .sit { font: 500 12px var(--sans); border-radius: 9999px; padding: 2px 9px; background: var(--chip); color: var(--soft); white-space: nowrap; }
+  .ped .sit.feito { background: var(--green-soft); color: var(--green); }
+  .ped .sit.erro { background: var(--accent-soft); color: var(--red); }
+  .ped .sit.fazendo { background: var(--amber-soft); color: var(--amber); }
+  .ped .rs { grid-column: 1 / -1; color: var(--soft); font-size: 13px; }
+  .ped .cancel { background: none; border: 0; color: var(--slate); font: 12px var(--sans); cursor: pointer; padding: 0; text-decoration: underline; }
   .pag .abrir { font-weight: 500; text-decoration: none; justify-self: start; font-size: 14px; }
   .pag .abrir:hover { text-decoration: underline; }
   .so { justify-self: start; font-size: 10.5px; color: #fff; background: var(--blue); border-radius: 9999px; padding: 2px 9px; }
@@ -187,6 +220,13 @@
     </div>
 
     <div class="grid">
+      <!-- Atualizações automáticas: a rotina das 8h (nuvem) e a tarefa das 7h30 (PC) -->
+      <section class="card c12" id="auto-card">
+        <div class="auto-head"><h2>Atualizações automáticas</h2><span class="pill neutro" id="auto-pill">carregando…</span></div>
+        <div class="auto-grid" id="auto-lista"></div>
+        <p class="sub mono" style="margin:0">Nuvem todo dia às 8h (e-mail, trânsito, fundos, notícias) · PC todo dia às 7h30 (pedidos, YouTube; Instagram toda semana) · clique numa linha para ver o detalhe</p>
+      </section>
+
       <!-- Boas-vindas + números do Meu Dia -->
       <section class="card boas c6">
         <span class="marca" aria-hidden="true">AA</span>
@@ -236,6 +276,12 @@
       <section class="card c5">
         <div class="card-head"><h2>Resolvido nos últimos dias</h2></div>
         <ul class="lista-itens" id="l-rec"><li class="vazio">Carregando…</li></ul>
+      </section>
+
+      <!-- Pedidos ao Claude (botão "Pedir" dos comandos) -->
+      <section class="card c12" id="ped-card" hidden>
+        <div class="card-head"><h2>Pedidos ao Claude</h2><span class="sub mono">feitos todo dia às 7h30 no PC, ou no próximo /meudia</span></div>
+        <div id="ped-lista"><p class="vazio">Nenhum pedido. Use o botão "Pedir" ao lado de um comando.</p></div>
       </section>
 
       <!-- Páginas, com os comandos de cada uma -->
@@ -302,8 +348,8 @@ function cartao(p) {
   return `<section class="card pag c4">
     <h3 class="cond"><a href="/${esc(p.nome)}/">${esc(p.titulo)}</a></h3>${desc ? `<p>${esc(desc)}</p>` : ""}
     ${trab && p.nome === "meudia" ? '<span class="so mono">Versão do trabalho</span>' : ""}
-    ${cmds.length ? `<div class="cmds"><span class="sub mono">Peça ao Claude</span>${cmds.map(([c, o]) =>
-      `<button type="button" class="cmd" data-c="${esc(c)}" title="Copiar a frase"><span>${esc(c)}</span><small>${esc(o)}</small></button>`).join("")}</div>` : ""}
+    ${cmds.length ? `<div class="cmds"><span class="sub mono">Peça ao Claude · copie ou clique em Pedir</span>${cmds.map(([c, o]) =>
+      `<div class="cmdlinha"><button type="button" class="cmd" data-c="${esc(c)}" title="Copiar a frase"><span>${esc(c)}</span><small>${esc(o)}</small></button>${trab ? "" : `<button type="button" class="pedir" data-pedir="${esc(c)}" data-pagina="${esc(p.nome)}" title="Deixar este pedido para o Claude fazer">Pedir</button>`}</div>`).join("")}</div>` : ""}
     <a class="abrir" href="/${esc(p.nome)}/">Abrir →</a></section>`;
 }
 document.addEventListener("click", e => {
@@ -311,6 +357,94 @@ document.addEventListener("click", e => {
   const txt = b.dataset.c, sm = b.querySelector("small"), antes = sm.textContent;
   const feito = () => { b.classList.add("ok"); sm.textContent = "copiado ✓"; setTimeout(() => { b.classList.remove("ok"); sm.textContent = antes; }, 1400); };
   (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(feito).catch(() => { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); try { document.execCommand("copy"); feito(); } catch (_) {} t.remove(); });
+});
+
+// ---------- Atualizações automáticas ----------
+// Horário esperado de cada parte; se passou da hora (com folga) e não chegou registro, o quadro avisa "não rodou".
+const AGENDA = [
+  { parte: "email", nome: "E-mail", dias: "todos", h: 8 },
+  { parte: "transito", nome: "Trânsito", dias: "todos", h: 8 },
+  { parte: "fundos", nome: "Fundos (Fatos Relevantes)", dias: "uteis", h: 8 },
+  { parte: "noticias_rf", nome: "Notícias renda fixa", dias: "uteis", h: 8 },
+  { parte: "noticias_rv", nome: "Notícias renda variável", dias: "uteis", h: 8 },
+  { parte: "instagram_email", nome: "Instagram: e-mail do arquivo", dias: "todos", h: 8 },
+  { parte: "pedidos", nome: "Fila de pedidos", dias: "todos", h: 7.5, pc: true },
+  { parte: "youtube", nome: "YouTube", dias: "todos", h: 7.5, pc: true },
+  { parte: "instagram", nome: "Instagram", dias: "semanal", h: 7.5, pc: true },
+];
+const FOLGA_H = 1.5;
+function esperadoDesde(a, agora) {
+  // Momento da última execução esperada (no fuso do navegador, que é o de Brasília)
+  const d = new Date(agora); d.setHours(Math.floor(a.h), (a.h % 1) * 60, 0, 0);
+  const limite = new Date(d.getTime() + FOLGA_H * 36e5);
+  if (agora < limite) d.setDate(d.getDate() - 1);
+  if (a.dias === "uteis") while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() - 1);
+  if (a.dias === "semanal") d.setDate(d.getDate() - 7);
+  return d;
+}
+const hhmm = iso => { const d = new Date(iso); const p = n => String(n).padStart(2, "0"); const hoje = new Date().toDateString() === d.toDateString(); return (hoje ? "hoje " : p(d.getDate()) + "/" + p(d.getMonth() + 1) + " ") + p(d.getHours()) + ":" + p(d.getMinutes()); };
+async function carregaAtualizacoes() {
+  try {
+    const r = await fetch("/api/atualizacoes"); if (!r.ok) throw 0;
+    const j = await r.json();
+    const por = Object.fromEntries(j.partes.map(p => [p.parte, p]));
+    const agora = new Date(j.agora);
+    const agenda = perfilAtual === "trabalho" ? AGENDA.filter(a => ["youtube", "instagram", "pedidos"].includes(a.parte)) : AGENDA;
+    let ruins = 0, nunca = 0;
+    $("auto-lista").innerHTML = agenda.map(a => {
+      const p = por[a.parte];
+      let cls, st, rs, qd;
+      if (!p) { cls = "nunca"; st = "○"; rs = "ainda não rodou nenhuma vez"; qd = "—"; nunca++; }
+      else {
+        const atrasado = new Date(p.quando) < esperadoDesde(a, agora);
+        qd = hhmm(p.quando);
+        if (atrasado) { cls = "atraso"; st = "❌"; rs = "não rodou no horário" + (a.pc ? " (o PC estava ligado às 7h30?)" : "") + (p.resumo ? " · último: " + p.resumo : ""); ruins++; }
+        else if (p.situacao === "erro") { cls = "erro"; st = "❌"; rs = p.resumo || "deu erro"; ruins++; }
+        else if (p.situacao === "aviso") { cls = "aviso"; st = "⚠️"; rs = p.resumo; ruins++; }
+        else if (p.situacao === "aguardando") { cls = "aguardando"; st = "⏳"; rs = p.resumo; }
+        else { cls = "ok"; st = "✅"; rs = p.resumo; }
+      }
+      const det = p && p.detalhe ? `<span class="det">${esc(p.detalhe)}</span>` : "";
+      return `<button type="button" class="auto ${cls}"><span class="st">${st}</span><span class="nm">${esc(a.nome)}</span><span class="qd">${esc(qd)}</span><span class="rs">${esc(rs || "")}</span>${det}</button>`;
+    }).join("");
+    const pill = $("auto-pill");
+    if (ruins) { pill.className = "pill ruim"; pill.textContent = ruins === 1 ? "1 parte com problema" : ruins + " partes com problema"; }
+    else if (nunca === agenda.length) { pill.className = "pill neutro"; pill.textContent = "ainda não começou"; }
+    else { pill.className = "pill ok"; pill.textContent = "tudo certo"; }
+  } catch (_) { $("auto-pill").className = "pill neutro"; $("auto-pill").textContent = "não consegui carregar"; }
+}
+$("auto-lista").addEventListener("click", e => { const b = e.target.closest(".auto"); if (b && b.querySelector(".det")) b.classList.toggle("aberto"); });
+
+// ---------- Pedidos ao Claude ----------
+const SIT = { fila: "na fila", fazendo: "fazendo", feito: "feito", erro: "não deu certo" };
+async function carregaPedidos() {
+  if (perfilAtual === "trabalho") return;
+  try {
+    const r = await fetch("/api/pedidos"); if (!r.ok) return;
+    const { pedidos } = await r.json();
+    $("ped-card").hidden = false;
+    $("ped-lista").innerHTML = pedidos.length ? pedidos.map(p => `<div class="ped"><span class="tx">${esc(p.texto)}</span>
+      <span class="sit ${p.situacao}">${SIT[p.situacao] || p.situacao}</span>
+      <span class="rs">${p.resultado ? esc(p.resultado) : "pedido em " + hhmm(p.criado)}${p.situacao === "fila" ? ` · <button type="button" class="cancel" data-cancelar="${p.id}">cancelar</button>` : ""}</span></div>`).join("")
+      : '<p class="vazio">Nenhum pedido. Use o botão "Pedir" ao lado de um comando.</p>';
+  } catch (_) {}
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest(".pedir");
+  if (b) {
+    let texto = b.dataset.pedir;
+    if (/<[^>]+>/.test(texto)) { texto = prompt("Complete o pedido (troque o que está entre < >):", texto); if (!texto || /<[^>]+>/.test(texto)) return; }
+    b.disabled = true;
+    try {
+      const r = await fetch("/api/pedidos", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texto, pagina: b.dataset.pagina }) });
+      if (!r.ok) throw 0;
+      b.classList.add("ok"); b.textContent = "na fila ✓"; carregaPedidos();
+      setTimeout(() => { b.classList.remove("ok"); b.textContent = "Pedir"; b.disabled = false; }, 2500);
+    } catch (_) { b.disabled = false; alert("Não consegui registrar o pedido. Tente de novo."); }
+    return;
+  }
+  const c = e.target.closest("[data-cancelar]");
+  if (c) { await fetch("/api/pedidos?id=" + c.dataset.cancelar, { method: "DELETE" }); carregaPedidos(); }
 });
 
 // ---------- Dados ----------
@@ -385,7 +519,7 @@ function mostra(perfil) {
   // Versão do trabalho: sem dinheiro
   $("k-pag-card").hidden = trab;
   if (trab) { const c = document.querySelector('a.card[href="/meudia/#compromissos"]'); c.classList.replace("c3", "c6"); }
-  carregaPaginas(); carregaResumo(); carregaNumeros();
+  carregaPaginas(); carregaResumo(); carregaNumeros(); carregaAtualizacoes(); carregaPedidos();
 }
 
 $("gate").addEventListener("submit", async e => {
