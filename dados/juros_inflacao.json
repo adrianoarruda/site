@@ -1,21 +1,15 @@
 {
   "fonte": "Banco Central do Brasil (SGS 4390: Selic) e IBGE (IPCA, publicado no SGS 433)",
-  "atualizado_em": "2026-10-29",
-  "ultimo_mes": "2026-09",
+  "atualizado_em": "2026-11-12",
+  "ultimo_mes": "2026-10",
   "resumo": {
-    "selic_12m": 14.47,
-    "ipca_12m": 4.58,
-    "juro_real_12m": 9.46,
-    "juro_real_medio_10a": 4.21,
+    "selic_12m": 14.23,
+    "ipca_12m": 4.63,
+    "juro_real_12m": 9.18,
+    "juro_real_medio_10a": 4.24,
     "meses_juro_real_negativo": 22
   },
   "serie": [
-    {
-      "mes": "2016-10",
-      "selic": 14.1,
-      "ipca": 7.87,
-      "juro_real": 5.77
-    },
     {
       "mes": "2016-11",
       "selic": 14.07,
@@ -729,6 +723,12 @@
       "selic": 14.47,
       "ipca": 4.58,
       "juro_real": 9.46
+    },
+    {
+      "mes": "2026-10",
+      "selic": 14.23,
+      "ipca": 4.63,
+      "juro_real": 9.18
     }
   ]
 }
